@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/BryceColeman/helios-drafts/issues"
   },
-  "homepage": "https://github.com/BryceColeman/helios-drafts#readme"
+  "homepage": "https://github.com/BryceColeman/helios-drafts#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
 }
