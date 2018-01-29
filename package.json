@@ -1,0 +1,24 @@
+{
+  "name": "helios-drafts",
+  "version": "1.0.0",
+  "description": "Draft search app for IXL",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BryceColeman/helios-drafts.git"
+  },
+  "keywords": [
+    "Drafts",
+    "Templates",
+    "Search"
+  ],
+  "author": "Bryce Coleman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BryceColeman/helios-drafts/issues"
+  },
+  "homepage": "https://github.com/BryceColeman/helios-drafts#readme"
+}
