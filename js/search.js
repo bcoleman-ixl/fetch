@@ -1,11 +1,8 @@
 function search() {
-  // On document load:
-  // Loop through SQL database
-  // Load all elements with data
   pass = true;
   elementId = "element"
   if (pass) {
-    for (var k = 1; k < 9; k++) {
+    for (var k = 1; k < 19; k++) {
       object = createObj(k);
       var div = document.getElementById("data-table");
       div.appendChild(object);
@@ -19,19 +16,28 @@ function createObj(id) {
     ["You will find these skills in your analytics...", "skills"],
     ["This subject will now appear in your Analytics...", "analytics"],
     ["Please provide me with the skill you were...", "skills"],
-    ["2) Click on the Analytics tab at the top...", "analytics"],
     ["To sign in to your account, please...", "signingIn"],
+    ["Click on the Analytics tab at the top...", "analytics"],
     ["The SmartScore will adjust...", "smartScore"],
-    ["To see your SmartScore, please sign in...","signingIn"]
+    ["To sign in to your account...","signingIn"],
+    ["This subject will now appear in your Analytics...", "analytics"],
+    ["The SmartScore will adjust...", "smartScore"],
+    ["You will find these skills in your analytics...", "skills"],
+    ["Click on the Analytics tab at the top...", "analytics"],
+    ["To access the Trouble spots report, please...", "analytics"],
+    ["To sign in to your account, please...", "signingIn"],
+    ["Please provide me with the skill you were...", "skills"],
+    ["Please go to ixl.com to sign in...","signingIn"]
   ]
   var li = document.createElement("LI");
-  var a = document.createElement("a");
+  var a = document.createElement("p");
   var h3 = document.createElement("h3");
   var br = document.createElement("br");
-  var nodeTitle = document.createTextNode("Template " + id + "." + id);
+  var nodeTitle = document.createTextNode("Template " + id + "." + Math.floor(Math.random() * 20)  );
   var nodeTemplate = document.createTextNode(templateArr[id - 1][0]);
   li.id = elementId;
   a.classList.add(templateArr[id -1][1]);
+  h3.classList.add(templateArr[id -1][1]);
   h3.appendChild(nodeTitle)
   li.appendChild(h3);
   li.appendChild(a);
@@ -47,7 +53,7 @@ function filter() {
   ul = document.getElementById("data-table");
   li = ul.getElementsByTagName("li");
   for (i = 0; i < li.length; i++) {
-    a = li[i].getElementsByTagName("a")[0];
+    a = li[i].getElementsByTagName("p")[0];
     if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
       li[i].style.display = "";
     } else {
