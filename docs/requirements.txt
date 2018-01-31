@@ -1,0 +1,44 @@
+-------------------------------------------------------------------------------
+*                                                                             *
+*                                                                             *
+*                                                                             *
+*                     Helios - Quick Reference Search                         *
+*                                                                             *
+*                                                                             *
+*                                                                             *
+-------------------------------------------------------------------------------
+
+Helios stores a database of elements that can be quickly
+searched using a key word or phrase. The application shows, in real-time, the
+results of the search and allows users to copy the content for use in customer
+e-mails. Admin users can add, remove, or edit existing elements to customize
+the quick reference for personalized use. Uses Java, HTML, CSS, Javascript
+
+Model, View, Controller Design:
+
+Model: Data storage, integrity, consistency, quieries, and mutations.
+Controller: Receive, interpret and validate input; create and update views; query and modify models.
+
+Use Case #1
+User Opens program and cursor is placed in Text Box
+Program shows grid of templates, organized by category/color
+Each entry in the grid shows the element title and a preview of the content
+
+Use Case #2
+User begins typing a keyword in the search box
+Grid of quick reference items updates to show only items that match the keyword
+
+Use Case #3
+Once user sees desired information, they click to copy
+
+Use Case #4
+
+
+Ideas:
+Learns what you use the most within a specific search
+Symbols and colors for easier identification?
+Add your own custom templates (required Google sign in) '-' signs for removing templates
+Settings (Select your greeting, Dear NAME, or Hello, or Hello NAME)
+Each box contains a title, text, type(template, note, instructions), category, creation date, last edit date
+Attach keywords that are similar to users search ('outdated' may be written as 'expired')
+Link words/phrases to master doc (Score chart, Diagnostic) and make updating easy by changing them to Score grid, IXL Continuous diagnostic, etc. in one location

@@ -1,0 +1,5 @@
+User: helios@localhost
+Password: Jemaco21!!
+Database: helios
+Table: templates
+Input for each row: (id int, content text, category text)

@@ -6,6 +6,11 @@ p {
   font-family: "Arial";
 }
 
+h3 {
+  font-family: 'Open Sans', sans-serif;
+  color: #2F4F4F !important;
+}
+
 #header {
   text-align: center;
   font-family: "Arial";
@@ -17,15 +22,10 @@ p {
 }
 
 #title {
-  font-family: "Arial";
+  font-family: 'Open Sans', sans-serif;
   font-size: 50px;
   text-align: center;
   letter-spacing: 5px;
-}
-
-#sub-title {
-  font-size: 20px;
-  letter-spacing: 3px;
 }
 
 #author {
@@ -36,7 +36,7 @@ p {
 }
 
 #data-table {
-  font-family: "Arial";
+  font-family: 'Roboto', sans-serif;
   color: gray;
   font-size: 15px;
 }
@@ -47,13 +47,13 @@ p {
 
 #element {
   display: inline-block;
-  width: 250px;
-  height: 250px;
+  width: 400px;
+  height: 400px;
   margin: 10px;
   border: 1px solid lightgrey;
-  padding: 1em;
+  padding: 2em;
   margin: 1em;
-  text-align: center;
+  text-align: left;
   border-radius: 8px;
 }
 
@@ -63,6 +63,22 @@ p {
 
 .space {
   padding: 1.5em;
+}
+
+.blue {
+  color: blue;
+}
+
+.black {
+  color: black;
+}
+
+.orange {
+  color: orange;
+}
+
+.red {
+  color: red;
 }
 
 .center {

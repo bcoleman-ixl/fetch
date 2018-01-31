@@ -10,3 +10,4 @@ app.get('/', (req, res) => {
 })
 
 app.use(express.static(__dirname + '/css'));
+app.use(express.static(__dirname + '/js'));
