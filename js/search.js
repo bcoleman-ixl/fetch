@@ -32,14 +32,18 @@ function createObj(id) {
   var li = document.createElement("LI");
   var a = document.createElement("p");
   var h3 = document.createElement("h3");
+  var h5 = document.createElement("h5");
   var br = document.createElement("br");
-  var nodeTitle = document.createTextNode("Template " + id + "." + Math.floor(Math.random() * 20)  );
+  var nodeTitle = document.createTextNode("Template " + id + "." + Math.floor(Math.random() * 20));
+  var nodeLastUpdatedDate = document.createTextNode('Last updated Jan 31, 2018');
   var nodeTemplate = document.createTextNode(templateArr[id - 1][0]);
   li.id = elementId;
   a.classList.add(templateArr[id -1][1]);
   h3.classList.add(templateArr[id -1][1]);
   h3.appendChild(nodeTitle)
+  h5.appendChild(nodeLastUpdatedDate)
   li.appendChild(h3);
+  li.appendChild(h5);
   li.appendChild(a);
   a.appendChild(br)
   a.appendChild(nodeTemplate)
