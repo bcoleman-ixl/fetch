@@ -26,10 +26,10 @@ Each entry in the grid shows the element title and a preview of the content
 
 Use Case #2
 User begins typing a keyword in the search box
-Grid of quick reference items updates to show only items that match the keyword
+Grid of quick reference items updates to show only items that match the keyword or phrase
 
 Use Case #3
-Once user sees desired information, they click to copy
+Once user sees desired information, they click the tile to copy the template
 
 Use Case #4
 
@@ -42,3 +42,4 @@ Settings (Select your greeting, Dear NAME, or Hello, or Hello NAME)
 Each box contains a title, text, type(template, note, instructions), category, creation date, last edit date
 Attach keywords that are similar to users search ('outdated' may be written as 'expired')
 Link words/phrases to master doc (Score chart, Diagnostic) and make updating easy by changing them to Score grid, IXL Continuous diagnostic, etc. in one location
+Add last updated date to each template
