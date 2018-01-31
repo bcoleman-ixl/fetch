@@ -29,7 +29,7 @@ h3 {
 }
 
 #author {
-  font-size: 15px;
+  font-size: 25px;
   letter-spacing: 2px;
   font-style: italic;
   padding-top: 5px;
@@ -65,23 +65,31 @@ h3 {
   padding: 1.5em;
 }
 
-.blue {
-  color: blue;
+.skills {
+  color: #00aeef;
 }
 
-.black {
-  color: black;
+.signingIn {
+  color: #686868;
 }
 
-.orange {
-  color: orange;
+.smartScore {
+  color: #ffcb0a;
 }
 
-.red {
-  color: red;
+.analytics {
+  color: #7dbb02;
 }
 
 .center {
+  text-align: center;
+  display: block;
+}
+
+.key {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: bold;
+  font-size: 20px;
   text-align: center;
   display: block;
 }

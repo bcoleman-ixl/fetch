@@ -15,14 +15,14 @@ function search() {
 
 function createObj(id) {
   templateArr = [
-    ["The red fox jumped over the river.", "red"],
-    ["The blue dog went under the river", "blue"],
-    ["The red heron jumped over the moon.", "red"],
-    ["The blue bear visited the moon.", "blue"],
-    ["The red jaguar visited the river.", "red"],
-    ["The black bee swam underneath the bridge.", "black"],
-    ["The orange tiger swam underneath the moonlight", "orange"],
-    ["The black flamingo jumped over the moon","black"]
+    ["For teachers, IXL Analytics offers real-time...", "analytics"],
+    ["You will find these skills in your analytics...", "skills"],
+    ["This subject will now appear in your Analytics...", "analytics"],
+    ["Please provide me with the skill you were...", "skills"],
+    ["2) Click on the Analytics tab at the top...", "analytics"],
+    ["To sign in to your account, please...", "signingIn"],
+    ["The SmartScore will adjust...", "smartScore"],
+    ["To see your SmartScore, please sign in...","signingIn"]
   ]
   var li = document.createElement("LI");
   var a = document.createElement("a");
