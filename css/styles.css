@@ -8,7 +8,7 @@ p {
 
 h3 {
   font-family: 'Open Sans', sans-serif;
-  color: #2F4F4F !important;
+  font-weight: bold !important;
 }
 
 #header {
@@ -29,7 +29,7 @@ h3 {
 }
 
 #author {
-  font-size: 25px;
+  font-size: 18px;
   letter-spacing: 2px;
   font-style: italic;
   padding-top: 5px;
@@ -48,13 +48,13 @@ h3 {
 #element {
   display: inline-block;
   width: 400px;
-  height: 400px;
+  height: 500px;
   margin: 10px;
-  border: 1px solid lightgrey;
   padding: 2em;
   margin: 1em;
   text-align: left;
   border-radius: 8px;
+  box-shadow: 2px 2px 15px lightgrey;
 }
 
 .options {
@@ -88,8 +88,27 @@ h3 {
 
 .key {
   font-family: 'Open Sans', sans-serif;
+  font-style: italic;
   font-weight: bold;
   font-size: 20px;
   text-align: center;
   display: block;
+  padding: 0.5em;
+}
+
+
+/* NOTE: Chang glow of search box */
+
+.form-control:focus {
+  border-color: #00aeef;
+}
+
+/* NOTE: Creates space between links at bottom */
+
+.links a {
+  font-size: 18px;
+  color: #00aeef;
+  text-decoration: underline;
+  font-family: 'Open Sans', sans-serif;
+  padding: 3em;
 }
