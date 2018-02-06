@@ -4,7 +4,7 @@
   "description": "Draft search app for IXL",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -23,9 +23,7 @@
   "homepage": "https://github.com/BryceColeman/helios-drafts#readme",
   "dependencies": {
     "express": "^4.16.2",
+    "mongodb": "^3.0.2",
     "nodemon": "^1.14.11"
-  },
-  "scripts": {
-    "dev": "nodemon server.js"
   }
 }

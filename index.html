@@ -45,16 +45,16 @@
   <div class="row space">
     <div class="col-lg-2"></div>
     <div class="col-lg-2">
-        <p class="skills key">Skills</p>
+      <p class="skills key">Skills</p>
     </div>
     <div class="col-lg-2">
-        <p class="signingIn key">Signing in</p>
+      <p class="signingIn key">Signing in</p>
     </div>
     <div class="col-lg-2">
-        <p class="smartScore key">SmartScore</p>
+      <p class="smartScore key">SmartScore</p>
     </div>
     <div class="col-lg-2">
-        <p class="analytics key">Analytics</p>
+      <p class="analytics key">Analytics</p>
     </div>
     <div class="col-lg-2"></div>
   </div>
@@ -124,6 +124,34 @@
     </div>
     <div class="col-lg-2">
 
+    </div>
+  </div>
+
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#add-new-draft">
+    Add new draft
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="add-new-draft" tabindex="-1" role="dialog" aria-labelledby="Add New Draft" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add new draft</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <form action="/drafts" method="POST">
+          <input type="text" placeholder="name" name="name">
+          <input type="text" placeholder="quote" name="quote">
+          <button type="submit">Submit</button>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary">Save</button>
+        </div>
+      </div>
     </div>
   </div>
 </body>
