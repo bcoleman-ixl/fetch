@@ -12,23 +12,40 @@
 <body>
 
   <!-- 'Add new template' modal -->
-  <div class="modal fade" id="add-new-template" tabindex="-1" role="dialog" aria-labelledby="Add New template" aria-hidden="true">
+  <div class="modal fade" id="add-template" tabindex="-1" role="dialog" aria-labelledby="Add template" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add new template</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
         </div>
-        <form action="/templates" method="POST">
-          <input type="text" placeholder="name" name="name">
-          <input type="text" placeholder="quote" name="quote">
-          <button type="submit">Submit</button>
-        </form>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary">Save</button>
+        <div class="new-template">
+          <form action="/templates" method="POST">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" name="name">
+            </div>
+            <div class="form-group">
+               <label for="type">Category</label>
+               <select class="form-control" id="category" name="category">
+                  <option>Skills</option>
+                  <option>Signing In</option>
+                  <option>SmartScore</option>
+                  <option>Analytics</option>
+               </select>
+            </div>
+            <div class="form-group">
+               <label for="type">Type</label>
+               <select class="form-control" id="type" name="type">
+                  <option>Template</option>
+                  <option>Note</option>
+                  <option>Instruction</option>
+                  <option>Code</option>
+               </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
         </div>
       </div>
     </div>
@@ -39,7 +56,8 @@
   <nav class="navbar navbar-default">
     <div class="container-fluid navbar-right">
       <ul class="nav navbar-nav">
-        <li><a id="" href="#add-new-template" data-toggle="modal" data-target="#add-new-template">New template</a></li>
+        <li><a id="" href="#add-template" data-toggle="modal" data-target="#add-template">New template</a></li>
+        <li><a id="" href="#add-template" data-toggle="modal" data-target="#add-template">Sign in</a></li>
       </ul>
     </div>
   </nav>

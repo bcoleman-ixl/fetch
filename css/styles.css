@@ -46,6 +46,11 @@ h5 {
   padding-top: 5px;
 }
 
+#add-template {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+}
+
 #data-table {
   font-family: 'Roboto', sans-serif;
   color: gray;
@@ -141,4 +146,6 @@ h5 {
   margin: 0 !important;
 }
 
-#new-template-link {}
+.new-template {
+  padding: 1em;
+}
