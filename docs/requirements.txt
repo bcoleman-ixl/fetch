@@ -31,7 +31,8 @@ Grid of quick reference items updates to show only items that match the keyword 
 Use Case #3
 Once user sees desired information, they click the tile to copy the template
 
-Use Case #4
+Each draft/template has the following fields:
+lastModifiedDate, tags (as an array), category, approvalStatus(public, private, approved, etc), type (note, instructions, code), Template #
 
 
 Ideas:
