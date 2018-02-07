@@ -5,23 +5,25 @@ const app = express();
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html')
 })
+var bodyParser = require('body-parser');
 
 app.use(express.static(__dirname + '/css'));
 app.use(express.static(__dirname + '/js'));
+app.use(bodyParser());
 
 var db;
 
 const MongoClient = require('mongodb').MongoClient
-MongoClient.connect('mongodb://helios-user:helios-user@ds225608.mlab.com:25608/helios-drafts', (err, client) => {
+MongoClient.connect('mongodb://helios-user:helios-user@ds125628.mlab.com:25628/templates', (err, client) => {
   if (err) return console.log(err)
-  db = client.db('helios-drafts')
+  db = client.db('templates')
   app.listen(3000, function() {
     console.log('listening on 3000')
   })
 })
 
-app.post('/drafts', (req, res) => {
-  db.collection('drafts').save(req.body, (err, result) => {
+app.post('/templates', (req, res) => {
+  db.collection('templates').save(req.body, (err, result) => {
     if (err) return console.log(err)
 
     console.log('saved to database')
