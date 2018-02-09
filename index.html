@@ -4,7 +4,9 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="/styles.css">
+  <!-- Bootstrap -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto|Rubik+Mono+One" rel="stylesheet">
   <title>Helios - QR Search</title>
 </head>
@@ -27,7 +29,7 @@
               <input type="text" class="form-control" id="name" name="name">
             </div>
             <div class="form-group">
-              <iframe src="/document.html" class="editor" name="template"></iframe>
+              <textarea name="editor" rows="8" cols="80" id="editor"></textarea>
             </div>
             <div class="form-group">
               <label for="type">Category</label>
@@ -144,8 +146,16 @@
 
 </body>
 
+<!-- TinyMCE -->
 <script src="/search.js"></script>
+<script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=q4w1ytxm4ft7tl8tg92mbys2kh30beuux061ovviw4oc4pqo"></script>
+<script>
+  tinymce.init({
+    selector: '#editor'
+  });
+</script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 
 </html>
