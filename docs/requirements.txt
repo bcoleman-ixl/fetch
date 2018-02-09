@@ -44,4 +44,5 @@ Each box contains a title, text, type(template, note, instructions), category, c
 Attach keywords that are similar to users search ('outdated' may be written as 'expired')
 Link words/phrases to master doc (Score chart, Diagnostic) and make updating easy by changing them to Score grid, IXL Continuous diagnostic, etc. in one location
 Add last updated date to each template
+Add check box so users can have the option to search by tag (searches by tag by default)
 Each draft has 'approval-status' field. Options: public, private, review. Review status sends to admin to review who can make it public or send it back as private.
