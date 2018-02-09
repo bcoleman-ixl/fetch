@@ -9,6 +9,8 @@ var bodyParser = require('body-parser');
 
 app.use(express.static(__dirname + '/css'));
 app.use(express.static(__dirname + '/js'));
+app.use(express.static(__dirname + '/squire/build'));
+app.use(express.static(__dirname + '/squire/source'));
 app.use(bodyParser());
 
 var db;
