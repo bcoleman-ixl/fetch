@@ -2,19 +2,19 @@ const express = require('express');
 const app = express();
 
 
+var db;
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html')
 })
+
 var bodyParser = require('body-parser');
 
 app.use(express.static(__dirname + '/css'));
 app.use(express.static(__dirname + '/js'));
-app.use(express.static(__dirname + '/squire/build'));
-app.use(express.static(__dirname + '/squire/source'));
 app.use(bodyParser());
 
-var db;
-
+// Sets up Mongo Client
 const MongoClient = require('mongodb').MongoClient
 MongoClient.connect('mongodb://helios-user:helios-user@ds125628.mlab.com:25628/templates', (err, client) => {
   if (err) return console.log(err)
@@ -24,6 +24,7 @@ MongoClient.connect('mongodb://helios-user:helios-user@ds125628.mlab.com:25628/t
   })
 })
 
+// Posts form data to Mongo Client
 app.post('/templates', (req, res) => {
   db.collection('templates').save(req.body, (err, result) => {
     if (err) return console.log(err)
