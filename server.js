@@ -1,18 +1,45 @@
 const express = require('express');
 const app = express();
 
-
 var db;
+var bodyParser = require('body-parser');
+app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html')
+  db.collection('templates').find().toArray((err, result) => {
+    if (err) return console.log(err)
+    // renders index.ejs
+    res.render('index.ejs', {
+      templates: result
+    })
+  })
 })
 
-var bodyParser = require('body-parser');
+app.put('/template-update', (req, res) => {
+  db.collection('templates')
+    .findOneAndUpdate({
+      name: req.body.name
+    }, {
+      $set: {
+        name: 'Updated Name!!!',
+      }
+    }, {
+      sort: {
+        _id: -1
+      },
+      upsert: true
+    }, (err, result) => {
+      if (err) return res.send(err)
+      res.send(result)
+    })
+})
+
+app.set('view engine', 'ejs')
 
 app.use(express.static(__dirname + '/css'));
 app.use(express.static(__dirname + '/js'));
-app.use(bodyParser());
+app.use(express.static(__dirname + '/public/'));
+
 
 // Sets up Mongo Client
 const MongoClient = require('mongodb').MongoClient
