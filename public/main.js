@@ -8,7 +8,6 @@ tinymce.init({
 });
 
 var update = document.getElementById('update');
-
 var findName = document.getElementById('findName').value;
 var newName = document.getElementById('newName').value;
 
@@ -25,8 +24,10 @@ update.addEventListener('click', function() {
   })
 })
 
+
 var dataTable = document.querySelector('#data-table');
 dataTable.addEventListener('click', handle, false);
+console.log(dataTable);
 
 function handle(e) {
   if ((e.target !== e.currentTarget && e.target.id == 'copy') || (e.target.parentNode.id == 'copy')) {
@@ -34,10 +35,13 @@ function handle(e) {
     id = e.target.parentNode.id;
     li = document.getElementById(id);
     template = li.querySelector('#template');
-    html = template.outerHTML;
-    copy(html);
+    // Removing all p tags is not a long term solution
+    content = template.outerHTML.replace('<p>', '<br>').replace('</p>', '<br>');
+
+    copy(buildTemplate(content));
     console.log('copied');
   } else if (e.target !== e.currentTarget && e.target.id == 'delete' || e.target.parentNode.id == 'delete') {
+
     var id = e.target.parentNode.id;
     deleteTemplate(id);
     console.log('deleted');
@@ -45,7 +49,17 @@ function handle(e) {
     e.stopPropagation();
     console.log(e.target);
   }
+}
 
+function buildTemplate(content) {
+  user = '<b>Bryce</b> </br>';
+  email = 'E-mail: help@ixl.com<br>'
+  program = 'IXL Support<br>'
+  phone = 'Phone: 855.255.6676<br>'
+  website = 'Website: www.ixl.com<br>';
+  greeting = 'Dear NAME,<br><br>Thank you for reaching out to us.<br>';
+  signature = 'Sincerely, <br>' + user + program + '<br>' + email + phone + website + '<img src=\'https://c.na57.content.force.com/servlet/servlet.ImageServer?id=0150b0000027zq8&oid=00D300000001FBU&lastMod=1495736864000\' alt=\'ixl-logo\'>';
+  return html = greeting + content + signature;
 }
 
 

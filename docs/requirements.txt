@@ -34,11 +34,19 @@ Once user sees desired information, they click the tile to copy the template
 Each draft/template has the following fields:
 lastModifiedDate, tags (as an array), category, approvalStatus(public, private, approved, etc), type (note, instructions, code), Template #
 
+Milestones:
+Google SSO
+Sort by Category
+Add greeting and Signature
+Correct search errors
+Improve new template form
+
 
 Ideas:
 Learns what you use the most within a specific search
 Symbols and colors for easier identification?
-Add your own custom templates (required Google sign in) '-' signs for removing templates
+Add your own custom templates (required Google sign in)
+'-' signs for removing templates
 Settings (Select your greeting, Dear NAME, or Hello, or Hello NAME)
 Each box contains a title, text, type(template, note, instructions), category, creation date, last edit date
 Attach keywords that are similar to users search ('outdated' may be written as 'expired')

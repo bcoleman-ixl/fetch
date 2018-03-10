@@ -13,29 +13,37 @@ body {
   margin: 0;
   padding: 0;
 }
+
 a {
   outline: none !important;
 }
+
 p {
   font-family: var(--font);
 }
+
 h3 {
   font-family: var(--font);
   font-weight: bold !important;
+  font-size: 17px !important;
 }
+
 h5 {
   font-family: var(--font);
   font-style: italic !important;
   color: #B8B8B8 !important;
 }
+
 #header {
   text-align: center;
   font-family: var(--font);
   padding: 1% 3% 1% 3%;
 }
+
 #title, #sub-title, #author {
   margin: 0;
 }
+
 #title {
   font-family: var(--font);
   font-size: 50px;
@@ -43,25 +51,30 @@ h5 {
   text-align: center;
   letter-spacing: 5px;
 }
+
 #author {
   font-size: 18px;
   letter-spacing: 2px;
   font-style: italic;
   padding-top: 5px;
 }
+
 #add-template {
   font-family: var(--font);
   font-size: 18px;
 }
+
 #data-table {
   font-family: var(--font);
   color: gray;
   font-size: 15px;
 }
+
 #search-bar {
   width: 100%;
 }
-#element {
+
+.element {
   display: inline-block;
   width: var(--element-w);
   height: var(--element-h);
@@ -71,6 +84,7 @@ h5 {
   border-radius: 8px;
   box-shadow: 2px 2px 15px lightgrey;
 }
+
 #template {
   overflow: auto;
   width: auto;
@@ -78,29 +92,37 @@ h5 {
   width: auto;
   color: #686868 !important;
 }
+
 .options {
   display: inline-block;
 }
+
 .space {
   padding: 1.5em;
   width: 100vw;
 }
+
 .skills {
   color: var(--skills);
 }
+
 .signingIn {
   color: var(--signing-in);
 }
+
 .smartScore {
   color: var(--smart-score);
 }
+
 .analytics {
   color: var(--analytics);
 }
+
 .center {
   text-align: center;
   display: block;
 }
+
 .key {
   font-family: var(--font);
   font-style: italic;
@@ -111,12 +133,16 @@ h5 {
   padding: 0.5em;
 }
 
+
 /* NOTE: Change glow of search box */
+
 .form-control:focus {
   border-color: #00aeef;
 }
 
+
 /* NOTE: Creates space between links at bottom */
+
 .links a {
   font-size: 18px;
   color: #00aeef;
@@ -124,6 +150,7 @@ h5 {
   font-family: var(--font);
   padding: 3em;
 }
+
 .tags {
   font-size: 14px;
   font-weight: 100 !important;
@@ -131,31 +158,39 @@ h5 {
   color: #B8B8B8;
   margin-top: 15px !important;
 }
+
 .glyphicon {
   font-size: 20px;
 }
+
 .navbar {
   background-color: white !important;
   border-color: white !important;
   padding: 1.5em;
   margin: 0 !important;
 }
+
 .new-template {
   padding: 1em;
 }
+
 .editor {
   width: 100%;
   min-height: 400px;
 }
 
+
 /* Customize scroll bar */
+
 ::-webkit-scrollbar {
   width: 5px;
 }
+
 ::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 }
+
 ::-webkit-scrollbar-thumb {
   border-radius: 5px;
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
