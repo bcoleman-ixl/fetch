@@ -5,7 +5,7 @@
   <meta charset='utf-8'>
   <link rel='stylesheet' href='/styles.css'>
   <!-- Bootstrap minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
   <!-- Google Fonts -->
   <link href='https://fonts.googleapis.com/css?family=Open+Sans|Roboto|Rubik+Mono+One' rel='stylesheet'>
   <title>Lxicon</title>
@@ -13,98 +13,81 @@
 
 <body>
 
-  <!-- 'Add new template' modal -->
-  <div class='modal fade' id='add-template' tabindex='-1' role='dialog' aria-labelledby='Add template' aria-hidden='true'>
+  <!-- 'Add new item modal -->
+  <div class='modal fade' id='manageItems' tabindex='-1' role='dialog' aria-labelledby='Manage Items' aria-hidden='true'>
     <div class='modal-dialog' role='document'>
       <div class='modal-content'>
         <div class='modal-header'>
+          <span id="manageItemsTitle">Add new item</span>
           <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
           <span aria-hidden='true'>&times;</span>
         </button>
         </div>
-
-        <div class='new-template'>
-          <form action='/add-template' method='POST'>
-            <div class='form-group'>
-              <label for='name'>Template Name</label>
-              <input type='text' class='form-control' id='name' name='name' required='true'>
+        <div class='new-item'>
+          <form id='itemsForm' action='/add' method='POST' autocomplete='off' id='itemsForm'>
+            <div class='row'>
+              <div class='col-lg-12'>
+                <div class='form-group' style='padding-right: 0px;'>
+                  <input type='text' class='form-control' id='name' name='name' required='true' placeholder='Item Name' maxlength="40">
+                </div>
+              </div>
             </div>
             <div class='form-group'>
-              <textarea name='editor' rows='10' cols='80' id='editor'></textarea>
+              <textarea rows='0' cols='80' id='body' name='body'></textarea>
+            </div>
+            <div class='row'>
+              <div class='form-group col-lg-6 col-md-6'>
+                <label for='type'>Category</label>
+                <select class='form-control' id='category' name='category' required='true'>
+                  <option disabled selected value> --Select-- </option>
+                  <option>Skills</option>
+                  <option>Signing In</option>
+                  <option>SmartScore</option>
+                  <option>Analytics</option>
+                  <option>Roster</option>
+                  <option>Error Messages</option>
+                </select>
+              </div>
+              <div class='form-group col-lg-6 col-md-6'>
+                <label for='type'>Type</label>
+                <select class='form-control' id='type' name='type' required='true'>
+                  <option disabled selected value> --Select-- </option>
+                  <option>Template</option>
+                  <option>Note</option>
+                </select>
+              </div>
+              <div class='form-group'>
+                <input type='hidden' class='form-control' id='id' name='id' required='true'>
+                <input type='hidden' id='creationDate' name='creationDate' value='error'>
+              </div>
             </div>
             <div class='form-group'>
-              <label for='type'>Category</label>
-              <select class='form-control' id='category' name='category'>
-                <option disabled selected value> -- Select category -- </option>
-                <option>Skills</option>
-                <option>Signing In</option>
-                <option>SmartScore</option>
-                <option>Analytics</option>
-               </select>
+              <input type='text' class='form-control' id='tags' name='tags' required='true' placeholder='Tags'>
             </div>
-            <div class='form-group'>
-              <label for='type'>Type</label>
-              <select class='form-control' id='type' name='type'>
-                <option disabled selected value> -- Select type -- </option>
-                <option>Template</option>
-                <option>Note</option>
-                <option>Instruction</option>
-                <option>Code</option>
-               </select>
-            </div>
-            <div class='form-group'>
-              <label for='name'>Tags</label>
-              <input type="text" value="" data-role="tagsinput" placeholder="Add tags" />
-            </div>
-            <button type='submit' class='btn btn-primary'>Submit</button>
+            <button type='submit' class='btn btn-primary' id='submitBtn'>Submit</button>
           </form>
         </div>
       </div>
     </div>
   </div>
-  <!-- End modal -->
-
-  <!-- 'Update template' modal -->
-  <div class='modal fade' id='update-template' tabindex='-1' role='dialog' aria-labelledby='Update template' aria-hidden='true'>
-    <div class='modal-dialog' role='document'>
-      <div class='modal-content'>
-        <div class='modal-header'>
-          <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
-          <span aria-hidden='true'>&times;</span>
-        </button>
-        </div>
-
-        <div class='update-template'>
-          <form>
-            <div class='form-group'>
-              <label for='name'>Template Name</label>
-              <input type='text' class='form-control' id='findName' name='findName' required='true'>
-              <input type='text' class='form-control' id='newName' name='newName' required='true'>
-              <button type='submit' class='btn btn-primary' id="update">Update</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- End update modal -->
+  <!-- End 'Add new item modal -->
 
   <!-- Confirm delete modal -->
-  <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  Are you sure you want to delete this template?
-              </div>
-              <div class="modal-body">
-                  ...
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                  <a class="btn btn-danger btn-ok">Delete</a>
-              </div>
-          </div>
+  <div class='modal fade' id='confirm-delete' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+    <div class='modal-dialog'>
+      <div class='modal-content'>
+        <div class='modal-header'>
+          Are you sure you want to delete this item?
+        </div>
+        <div class='modal-body'>
+          ...
+        </div>
+        <div class='modal-footer'>
+          <button type='button' class='btn btn-default' data-dismiss='modal'>Cancel</button>
+          <a class='btn btn-danger btn-ok'>Delete</a>
+        </div>
       </div>
+    </div>
   </div>
   <!-- End modal -->
 
@@ -112,11 +95,8 @@
   <nav class='navbar navbar-default'>
     <div class='container-fluid navbar-right'>
       <ul class='nav navbar-nav'>
-        <li><a id='' href='http://localhost:3000/templates'>Templates</a></li>
-        <li><a id='' href='http://localhost:3001/users'><i class="fas fa-user-plus fa-lg"></i></a></li>
-        <li><a id='' href='#add-template' data-toggle='modal' data-target='#add-template'><i class="fas fa-plus fa-lg"></i></a></li>
-        <li><a id='' href='#add-template' data-toggle='modal' data-target='#add-template'><i class="fas fa-sign-in-alt fa-lg"></i></a></li>
-        <li><a href="#"><i class="fas fa-cog fa-lg"></i></a>
+        <li><a id='' href='#manageItems' data-toggle='modal' data-target='#manageItems' onclick='setItemId()'><i class='fas fa-plus fa-lg'></i></a></li>
+        <li><a href='#'><i class='fas fa-cog fa-lg'></i></a>
       </ul>
     </div>
   </nav>
@@ -124,7 +104,7 @@
 
   <!-- Header -->
   <div id='header'>
-    <p id='title'>QR Search</p>
+    <p id='title'>-</p>
     <p id='author'>By Bryce Coleman</p>
   </div>
   <!-- End header -->
@@ -145,7 +125,7 @@
     <div class='col-lg-3'></div>
     <div class='col-lg-6'>
       <div>
-        <input type='text' class='form-control input-lg' id='search-bar' placeholder='Search' onkeyup='filter()'>
+        <input type='text' class='form-control input-lg' id='search-bar' placeholder='Search' onkeyup='search()' spellcheck='false'>
       </div>
     </div>
     <div class='col-lg-3'></div>
@@ -162,7 +142,7 @@
       <p class='signingIn key'>Signing in</p>
     </div>
     <div class='col-lg-2'>
-      <p class='smartScore key'>SmartScore</p>
+      <p class='smartscore key'>SmartScore</p>
     </div>
     <div class='col-lg-2'>
       <p class='analytics key'>Analytics</p>
@@ -171,27 +151,31 @@
   </div>
   <!-- End key -->
 
-  <!-- Templates -->
+  <!-- Items -->
   <div class='row space'>
     <div class='col-lg-1'></div>
     <div class='col-lg-12'>
       <ul id='data-table' class='center'>
-        <% for(var i=0; i<templates.length; i++) { %>
-          <li id='<%= templates[i].name %>' class="element">
-            <h3 class='<%= templates[i].category.toLowerCase() %>'><%= templates[i].name %></h3>
-            <button class="btn btn-secondary" id="delete">del</button>
-            <button class="btn btn-secondary" id="copy">cpy</button>
-            <h5>Last updated <%= templates[i].date %></h5>
-            <div class='<%= templates[i].category.toLowerCase() %>' id='template'>
-              <%- templates[i].editor %>
-            </div>
-            <div class="row">
-              <div class="col-lg-9">
-
-                <h3 class='tags'>Tags: { <%= templates[i].tags %>  }</h3>
+        <% var items = templates; for(var i = 0; i < items.length; i++) { %>
+          <li id='<%= items[i].id %>' class='item'>
+            <h2 class='<%= items[i].category.toLowerCase() %>' id='itemName'><%= items[i].name %></h2>
+              <div class="details">
+                <h3 class="line"><%=items[i].id %> <i><%= items[i].creationDate %></i></h3>
+                <div class="line" id="remove">
+                  <button class='btn line'><i class="far fa-trash-alt fa-lg"></i></button>
+                </div>
+                <div class="line" id="edit">
+                  <button class='btn line'><i class="fas fa-pencil-alt fa-lg"></i></button>
+                </div>
               </div>
-              <div class="col-lg-3" align="right">
-                <h3><%=(i + 1) + '.' + Math.floor(Math.random() * 10)%></h3>
+            <div class='<%= items[i].category.toLowerCase() %>' id='itemBody'>
+              <%- items[i].body %>
+            </div>
+            <div class='row'>
+              <div class='col-lg-7 col-md-7'>
+                <h3 class='tags' id='itemTags'><%= items[i].tags %></h3>
+                <h3 class='category' id='itemCategory' hidden><%= items[i].category %></h3>
+                <h3 class='type' id='itemType' hidden><%= items[i].type %></h3>
               </div>
             </div>
           </li>
@@ -200,30 +184,14 @@
     </div>
     <div class='col-lg-1'></div>
   </div>
-  <!-- End templates -->
-
-
-  <div class='row space'>
-    <div class='col-lg-2'>
-    </div>
-    <div class='col-lg-8 links'>
-      <!--
-      <a href='https://docs.google.com/document/d/11XnhG0ywpeDQPjFAI0Wm1xUtm4sfUr512Z3IUxVEBvg/edit' target='_blank'>Customer teams guide</a>
-      <a href='https://docs.google.com/document/d/15SC3K91UwTW0LjIT0-TWJXQhhdui4rTPncY0gHFSHdE/edit?pli=1' target='_blank'>Diagnostic messsaging/FAQ</a>
-      <a href='https://docs.google.com/document/d/1liT7q372fOdvatqDgOhG51iTGCaJ9IsmghnHmaQMjLQ/edit?ts=5983787c' target='_blank'>GoTo Assist guide</a>
-      <a href='https://docs.google.com/document/d/1ZBXw5CccjHA9oHRHr8H_8DZNNT1k_eTp98HBcODPtTg/edit' target='_blank'>Bug logging guide</a>
-    -->
-    </div>
-    <div class='col-lg-2'>
-    </div>
-  </div>
-
+  <!-- End Items -->
 
 </body>
+
 <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
 <script src='https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=q4w1ytxm4ft7tl8tg92mbys2kh30beuux061ovviw4oc4pqo'></script>
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
-<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+<script defer src='https://use.fontawesome.com/releases/v5.0.6/js/all.js'></script>
 <script src='main.js'></script>
 <script src='search.js'></script>
 
