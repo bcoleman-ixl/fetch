@@ -43,7 +43,8 @@ Improve new template form
 
 
 Ideas:
-Learns what you use the most within a specific search
+Learns what you use the most within a specific search (increases popularityField by 1 each time copy is clicked)
+Create multiple versions of one item (account expired - student, account expired - parent, etc)
 Symbols and colors for easier identification?
 Add your own custom templates (required Google sign in)
 '-' signs for removing templates
@@ -51,6 +52,6 @@ Settings (Select your greeting, Dear NAME, or Hello, or Hello NAME)
 Each box contains a title, text, type(template, note, instructions), category, creation date, last edit date
 Attach keywords that are similar to users search ('outdated' may be written as 'expired')
 Link words/phrases to master doc (Score chart, Diagnostic) and make updating easy by changing them to Score grid, IXL Continuous diagnostic, etc. in one location
-Add last updated date to each template
 Add check box so users can have the option to search by tag (searches by tag by default)
 Each draft has 'approval-status' field. Options: public, private, review. Review status sends to admin to review who can make it public or send it back as private.
+When specified (by stating item as a snippet, or refer template) first line changes. Or header and signature are ignored (i.e., )
