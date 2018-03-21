@@ -2,10 +2,10 @@
   --smart-score: #ffcb0a;
   --signing-in: #686868;
   --analytics: #7dbb02;
-  --skills: #00aeef;
+  --blue: #00aeef;
   --font: 'Open Sans', sans-serif;
   --element-w: 425px;
-  --element-h: 475px;
+  --element-h: 450px;
 }
 
 body {
@@ -22,10 +22,17 @@ p {
   font-family: var(--font);
 }
 
-h3 {
+h2 {
   font-family: var(--font);
-  font-weight: bold !important;
-  font-size: 17px !important;
+  font-size: 18px !important;
+  vertical-align: middle;
+
+}
+
+h3 {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px !important;
+  margin: 0px 0px 10px 0px !important;
 }
 
 h5 {
@@ -59,7 +66,7 @@ h5 {
   padding-top: 5px;
 }
 
-#add-template {
+#add-item {
   font-family: var(--font);
   font-size: 18px;
 }
@@ -70,11 +77,17 @@ h5 {
   font-size: 15px;
 }
 
+#data-table .details {
+  font-family: 'Roboto';
+  color: gray;
+  font-size: 15px;
+}
+
 #search-bar {
   width: 100%;
 }
 
-.element {
+.item {
   display: inline-block;
   width: var(--element-w);
   height: var(--element-h);
@@ -82,16 +95,64 @@ h5 {
   margin: 0.75em;
   text-align: left;
   border-radius: 8px;
-  box-shadow: 2px 2px 15px lightgrey;
+  box-shadow: 0px 0px 15px gainsboro;
 }
 
-#template {
+.btn {
+  background-color: white;
+}
+
+.btn:focus, .btn:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: none !important;
+}
+
+.item:hover {
+  box-shadow: 0px 0px 20px 2px lightgray;
+}
+
+.item:active {
+  box-shadow: 0px 0px 25px 10px gainsboro;
+}
+
+#itemBody {
   overflow: auto;
   width: auto;
-  height: 275px;
-  width: auto;
+  height: 300px;
   color: #686868 !important;
+  cursor: pointer;
+  padding: 0px 10px 10px 0px;
+  margin-top: 5px;
 }
+
+.line {
+  display: inline-block !important;
+  vertical-align: middle;
+  margin: 0 !important;
+}
+
+.details {
+  padding: 0px;
+}
+
+.details #remove {
+  color: #ff7f7f;
+}
+
+#edit > .btn {
+  padding-left: 2px !important;
+}
+
+#remove > .btn {
+  padding-right: 2px !important;
+}
+
+.details #edit {
+  color: #519DCC;
+}
+
+
 
 .options {
   display: inline-block;
@@ -103,14 +164,14 @@ h5 {
 }
 
 .skills {
-  color: var(--skills);
+  color: var(--blue);
 }
 
-.signingIn {
+.signingin {
   color: var(--signing-in);
 }
 
-.smartScore {
+.smartscore {
   color: var(--smart-score);
 }
 
@@ -152,12 +213,10 @@ h5 {
 }
 
 .tags {
-  font-size: 14px;
-  font-weight: 100 !important;
-  font-family: var(--font);
   color: #B8B8B8;
-  margin-top: 15px !important;
+  margin-top: 15px;
 }
+
 
 .glyphicon {
   font-size: 20px;
@@ -170,13 +229,13 @@ h5 {
   margin: 0 !important;
 }
 
-.new-template {
+.new-item {
   padding: 1em;
 }
 
 .editor {
   width: 100%;
-  min-height: 400px;
+  height: 600px !important;
 }
 
 
