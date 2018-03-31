@@ -16,7 +16,7 @@ the quick reference for personalized use. Uses Java, HTML, CSS, Javascript
 
 Model, View, Controller Design:
 
-Model: Data storage, integrity, consistency, quieries, and mutations.
+Model: Data storage, integrity, consistency, queries, and mutations.
 Controller: Receive, interpret and validate input; create and update views; query and modify models.
 
 Use Case #1
@@ -29,29 +29,25 @@ User begins typing a keyword in the search box
 Grid of quick reference items updates to show only items that match the keyword or phrase
 
 Use Case #3
-Once user sees desired information, they click the tile to copy the template
+Once user sees desired information, they click the body to copy the template
+
+Use Case #4
+Admin clicks plus symbol to add new template, all fields are entered and admin clicks submit. Tempalte is added and page is refreshed to show new templates
+
+Use Case #5
+User clicks template to copy, ranking is increased by one, unordered list is updated to sort templates by rank.
+
+Use case #6
+edit and delete
 
 Each draft/template has the following fields:
 lastModifiedDate, tags (as an array), category, approvalStatus(public, private, approved, etc), type (note, instructions, code), Template #
 
 Milestones:
 Google SSO
-Sort by Category
-Add greeting and Signature
-Correct search errors
-Improve new template form
-
 
 Ideas:
-Learns what you use the most within a specific search (increases popularityField by 1 each time copy is clicked)
 Create multiple versions of one item (account expired - student, account expired - parent, etc)
-Symbols and colors for easier identification?
 Add your own custom templates (required Google sign in)
-'-' signs for removing templates
-Settings (Select your greeting, Dear NAME, or Hello, or Hello NAME)
-Each box contains a title, text, type(template, note, instructions), category, creation date, last edit date
-Attach keywords that are similar to users search ('outdated' may be written as 'expired')
-Link words/phrases to master doc (Score chart, Diagnostic) and make updating easy by changing them to Score grid, IXL Continuous diagnostic, etc. in one location
-Add check box so users can have the option to search by tag (searches by tag by default)
-Each draft has 'approval-status' field. Options: public, private, review. Review status sends to admin to review who can make it public or send it back as private.
-When specified (by stating item as a snippet, or refer template) first line changes. Or header and signature are ignored (i.e., )
+User (name, googleID, team, imageLocation, type (admin, user, etc.), preferredClosing)
+When specified (by stating item as a snippet, or template) first line changes. Or header and signature are ignored (i.e., )
