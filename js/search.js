@@ -1,5 +1,5 @@
 function search() {
-  var input, filter, ul, li, a, i;
+  var count, input, filter, ul, li, a, i;
   input = document.getElementById("search-bar");
   filterArr = input.value.toUpperCase().split(' ').clean('');
   ul = document.getElementById("data-table");
