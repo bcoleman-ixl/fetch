@@ -1,8 +1,17 @@
+//Constant for creating date
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
 
+/*
+ * Initializes the document by setting up
+ * fields, initializing componenets, and
+ * adding eventListner to the dataTable
+ */
 function initialize() {
+  // Ranks all items by ranking number
+  rank();
+  // Sets up editor and loads toolbar
   tinymce.init({
     selector: '#body',
     menubar: false,
@@ -14,18 +23,20 @@ function initialize() {
       'undo redo | bold italic underline | alignleft  aligncenter  alignright | numlist  bullist | forecolor | backcolor | removeformat | link'
     ]
   });
-  Date.prototype.toDateInputValue = (function() {
-    var local = new Date(this);
-    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
-    return local;
-  })
-  var date = new Date().toDateInputValue();
-  document.getElementById('creationDate').value = MONTH_NAMES[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
+  // Loads date into updatedDate field
+  let date = new Date().toDateInputValue();
+  document.getElementById('updatedDate').value = MONTH_NAMES[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
 
+  // Adds event listener to the entire dataTable field, sends event to handleClick when caught
+  let dataTable = document.querySelector('#data-table');
+  dataTable.addEventListener('click', handleClick, false);
 }
 
+/**
+ * Generates a unique itemId
+ */
 function setItemId() {
-  var digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  let digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   // TODO: Limit digits to 100-999.
   randNum = Math.floor((Math.random() * (999 - 100) + 1) + 100);
   digit1 = digits.charAt(Math.floor((Math.random() * 25)));
@@ -34,33 +45,59 @@ function setItemId() {
 }
 
 $('#manageItems').on('hidden.bs.modal', function() {
-  console.log('running');
-  $("#itemsForm").trigger('reset');
+  $('#itemsForm').trigger('reset');
   document.getElementById('manageItemsTitle').innerHTML = 'Add new item';
+  form = document.getElementById('itemsForm');
+  document.getElementById('submitBtn').removeEventListener('click', update);
+  form.method = 'POST';
+  form.action = '/add';
+  let updateBtn = document.getElementById('submitBtn');
+  updateBtn.onclick = '';
 })
 
-/* Handle clicks */
-var dataTable = document.querySelector('#data-table');
-dataTable.addEventListener('click', handleClick, false);
+$('#confirmRemoveDialog').on('hidden.bs.modal', function() {
+  $('#confirmRemoveModal').find('a').attr('id', 'confirmRemoveBtn');
+})
 
 function handleClick(e) {
-  var itemId, item, body;
-  itemId = $(e.target).closest('li').attr('id');
-  eventId = $(e.target).closest('div').attr('id');
+  let itemId = $(e.target).closest(`li[class^='item']`).attr('id');
+  let eventId = $(e.target).closest('div').attr('id');
+
+  // TODO:   rewrite code to incolorste all button click here
+
   // Copy
-  if (e.target !== e.currentTarget && eventId == 'itemBody' ) {
+  if (e.target !== e.currentTarget && eventId == 'itemBody') {
     // Removing all p tags is not a long term solution
-    body = document.getElementById(itemId).querySelector('#itemBody').outerHTML.replace('<p>', '<br>').replace('</p>', '<br>');
+    let body = document.getElementById(itemId).querySelector('#itemBody').outerHTML.replace('<p>', '<br>').replace('</p>', '<br>');
     copy(buildItem(body));
-    console.log('copied: ' + itemId);
+    let ranking = document.getElementById(itemId).querySelector('#itemRanking').innerHTML;
+    let currentRanking = parseInt(ranking);
+    updateRanking(itemId, currentRanking + 1);
+
+  } else if (e.target !== e.currentTarget && eventId == 'copyPortion') {
+    body = document.getElementById(itemId).querySelector('#itemBody').outerHTML.replace('<p>', '<br>').replace('</p>', '<br>');
+    copy(body);
+    let ranking = document.getElementById(itemId).querySelector('#itemRanking').innerHTML;
+    let currentRanking = parseInt(ranking);
+    updateRanking(itemId, currentRanking + 1);
+
     // Remove
-  } else if (e.target !== e.currentTarget && eventId == 'remove' ) {
-    remove(itemId);
+  } else if (e.target !== e.currentTarget && eventId == 'removeConfirm') {
+
+    let confirmRemoveName = document.getElementById('confirmRemoveName');
+    let confirmRemoveBtn = document.getElementById('confirmRemoveBtn');
+    let nameToRemove = document.getElementById(itemId).querySelector('#itemName');
+    confirmRemoveName.innerHTML = nameToRemove.innerHTML;
+    confirmRemoveBtn.id = itemId;
+    $('#confirmRemoveDialog').modal('show');
 
     // Edit
   } else if (e.target !== e.currentTarget && eventId == 'edit') {
     $('#manageItems').modal('show');
     editItem(itemId);
+
+  } else if (e.target !== e.currentTarget && eventId == 'clearRank') {
+    updateRanking(itemId, 0);
 
     // Do nothing
   } else {
@@ -70,61 +107,68 @@ function handleClick(e) {
 
 function copy(html) {
   // Create container for the HTML
-  var container = document.createElement('div')
-  container.innerHTML = html
+  let container = document.createElement('div');
+  container.innerHTML = html;
 
   // Hide element
-  container.style.position = 'fixed'
-  container.style.pointerEvents = 'none'
-  container.style.opacity = 0
+  container.style.position = 'fixed';
+  container.style.pointerEvents = 'none';
+  container.style.opacity = 0;
 
   // Detect all style sheets of the page
-  var activeSheets = Array.prototype.slice.call(document.styleSheets)
+  let activeSheets = Array.prototype.slice.call(document.styleSheets)
     .filter(function(sheet) {
-      return !sheet.disabled
-    })
+      return !sheet.disabled;
+    });
 
   // Mount the iframe to the DOM to make `contentWindow` available
-  document.body.appendChild(container)
+  document.body.appendChild(container);
 
   // Copy to clipboard
-  window.getSelection().removeAllRanges()
+  window.getSelection().removeAllRanges();
 
-  var range = document.createRange()
-  range.selectNode(container)
-  window.getSelection().addRange(range)
-  document.execCommand('copy')
+  let range = document.createRange();
+  range.selectNode(container);
+  window.getSelection().addRange(range);
+  document.execCommand('copy');
 
-  for (var i = 0; i < activeSheets.length; i++) activeSheets[i].disabled = true
+  for (let i = 0; i < activeSheets.length; i++){
+    activeSheets[i].disabled = true;
+  }
 
-  document.execCommand('copy')
+  document.execCommand('copy');
 
-  for (var i = 0; i < activeSheets.length; i++) activeSheets[i].disabled = false
+  for (let i = 0; i < activeSheets.length; i++){
+  activeSheets[i].disabled = false;
+  }
 
   // Remove the iframe
-  document.body.removeChild(container)
+  //document.body.removeChild(container)
 }
 
 function buildItem(body) {
   // Update to pull from settings
-  user = '<b>Bryce</b> </br>';
-  email = 'E-mail: help@ixl.com<br>'
-  program = 'IXL Support<br>'
-  phone = 'Phone: 855.255.6676<br>'
+  let user = `<span style='color: blue;'><b>Bryce</b></span></br>`;
+  email = `E-mail: help@ixl.com<br>`;
+  program = 'IXL Support<br>';
+  phone = 'Phone: 855.255.6676<br>';
   website = 'Website: www.ixl.com<br>';
   greeting = 'Dear NAME,<br><br>Thank you for reaching out to us.<br>';
-  signature = 'Sincerely, <br>' + user + program + '<br>' + email + phone + website + '<img src=\'https://c.na57.content.force.com/servlet/servlet.ImageServer?id=0150b0000027zq8&oid=00D300000001FBU&lastMod=1495736864000\' alt=\'ixl-logo\'>';
-  return html = greeting + body + signature;
+  closing = 'Please let me know if you have any questions and I will be happy to help!<br>'
+  logoLocation = `'https://c.na57.content.force.com/servlet/servlet.ImageServer?id=0150b0000027zq8&oid=00D300000001FBU&lastMod=1495736864000'`
+  logo = `<img src= ${logoLocation} alt='ixl-logo'>`;
+  signature = `<br>Sincerely, <br> ${user} ${program} <br> ${email} ${phone} ${website} ${logo}`;
+  return `${greeting} ${body} ${closing} ${signature}`;
 }
 
-function remove(id) {
+function remove(e) {
   fetch('remove', {
       method: 'delete',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        'id': id
+        'id': e.target.id
       })
     })
     .then(res => {
@@ -136,9 +180,10 @@ function remove(id) {
 }
 
 function editItem(itemId) {
-  var form, nameField, bodyField, categoryField, typeField, tagsField, itemAddBtn;
+  let form, idField, nameField, bodyField, categoryField, typeField, tagsField, itemAddBtn;
   // Grab form/fields
   form = document.getElementById('itemsForm');
+  idField = document.getElementById('id');
   nameField = document.getElementById('name');
   bodyField = tinymce.get('body').getBody();
   categoryField = document.getElementById('category');
@@ -146,13 +191,15 @@ function editItem(itemId) {
   tagsField = document.getElementById('tags');
 
   //Grab active item information
-  var name, body, category, type, tags;
+  let today, updatedDate, name, body, category, type, tags;
   name = document.getElementById(itemId).querySelector('#itemName');
   body = document.getElementById(itemId).querySelector('#itemBody');
   category = document.getElementById(itemId).querySelector('#itemCategory');
   type = document.getElementById(itemId).querySelector('#itemType');
   tags = document.getElementById(itemId).querySelector('#itemTags');
+  today = new Date().toDateInputValue();
 
+  idField.value = itemId;
   nameField.value = name.textContent;
   bodyField.innerHTML = body.innerHTML;
   categoryField.value = category.textContent;
@@ -162,33 +209,93 @@ function editItem(itemId) {
   form.method = '';
   form.action = '';
   document.getElementById('manageItemsTitle').innerHTML = 'Edit item';
-  var update = document.getElementById('submitBtn')
+  let updateBtn = document.getElementById('submitBtn');
+  updateBtn.onclick = update;
+}
 
-  update.addEventListener('click', function() {
-    var body = tinymce.get('body').getBody().innerHTML;
-    var name = document.querySelector('#name').value;
-    var tags = document.querySelector('#tags').value;
-    console.log(category);
-    fetch('update', {
-      method: 'put',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        'id': itemId,
-        'name': name,
-        'body': body,
-        'tags': tags
-      })
-    }).then(res => {
-      if (res.ok) return res.json()
-    }).then(data => {
-      console.log(data)
-      window.location.reload(true)
+function update(e) {
+  let id = document.querySelector('#id').value;
+  let updatedDate = document.querySelector('#updatedDate').value;
+  let name = document.querySelector('#name').value;
+  let body = tinymce.get('body').getBody().innerHTML;
+  let category = document.querySelector('#category').value;
+  let type = document.querySelector('#type').value;
+  let tags = document.querySelector('#tags').value;
+  fetch('update', {
+    method: 'put',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      'id': id,
+      'updatedDate': updatedDate,
+      'name': name,
+      'body': body,
+      'category': category,
+      'type': type,
+      'tags': tags
     })
+  }).then(res => {
+    if (res.ok) return res.json()
+  }).then(data => {
+    window.location.reload(true)
   })
 }
 
+function updateRanking(id, newRanking) {
+  let itemRanking = document.getElementById(id).querySelector('#itemRanking');
+  itemRanking.innerHTML = newRanking;
+  rank();
+  fetch('updateRanking', {
+    method: 'put',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      'id': id,
+      'ranking': newRanking
+    })
+  }).then(res => {
+    if (res.ok) return res.json()
+  }).then(data => {})
+}
 
+function rank() {
+  let list, i, switching, li, shouldSwitch;
+  list = document.getElementById('data-table');
+  switching = true;
+  /* Make a loop that will continue until
+  no switching has been done: */
+  while (switching) {
+    // Start by saying: no switching is done:
+    switching = false;
+    li = list.getElementsByTagName('LI');
+    // Loop through all list items:
+    for (k = 0; k < (li.length - 1); k++) {
+      // Start by saying there should be no switching:
+      shouldSwitch = false;
+      /* Check if the next item should
+      switch place with the current item: */
+      if (parseInt(li[k].querySelector('#itemRanking').innerHTML) < parseInt(li[k + 1].querySelector('#itemRanking').innerHTML)) {
+        /* If next item is alphabetically lower than current item,
+        mark as a switch and break the loop: */
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /* If a switch has been marked, make the switch
+      and mark the switch as done: */
+      li[k].parentNode.insertBefore(li[k + 1], li[k]);
+      switching = true;
+    }
+  }
+}
+
+Date.prototype.toDateInputValue = (function() {
+  let local = new Date(this);
+  local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+  return local;
+})
 
 initialize()
