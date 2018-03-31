@@ -1,45 +1,50 @@
 function search() {
-  var count, input, filter, ul, li, a, i;
-  input = document.getElementById("search-bar");
-  filterArr = input.value.toUpperCase().split(' ').clean('');
-  ul = document.getElementById("data-table");
-  li = ul.getElementsByTagName("li");
+  let input = document.getElementById('search-bar');
+  let filterArr = input.value.toUpperCase().split(' ').clean('');
+  let ul = document.getElementById('data-table');
+  let li = ul.getElementsByTagName('li');
   // TODO: Remove Category and Type names from search
-  // Loop through each list element
   for (k = 0; k < li.length; k++) {
-    var listElement = li[k];
-    content = listElement.textContent; // convert element to text
-    // if search bar is blank, display all
+    // Loop through each list item
+    let item = li[k];
+    // convert item to text
+    content = item.textContent;
+    // If search bar is blank, display this element
     if (filterArr.length == 0) {
-      listElement.style.display = '';
-
-    } else if (listElement.style.display == 'none') {
-      if (test(filterArr, listElement)) {
-        listElement.style.display = '';
+      item.style.display = '';
+    // If item is hidden, test to see if its content matches filter
+    } else if (item.style.display == 'none') {
+      if (test(filterArr, item)) {
+        // If item content matches filter, display item
+        item.style.display = '';
       }
-
+    // If item is displayed to user, check to see if its content matches filter
     } else {
-      if (test(filterArr, listElement)) {
-        listElement.style.display = '';
+      if (test(filterArr, item)) {
+        // If item content matches filter, show item
+        item.style.display = '';
       } else {
-        listElement.style.display = 'none';
+        // If item content doesn't match filter, hide item
+        item.style.display = 'none';
       }
     }
   }
 }
 
-function test(filterArr, listElement) {
-  for (var m = 0; m < filterArr.length; m++) {
-    // If content of element doesn't match
+function test(filterArr, item) {
+  for (let m = 0; m < filterArr.length; m++) {
+    // If at any point item content doesn't match the filter, return false
     if (content.toUpperCase().indexOf(filterArr[m]) == -1) {
       return false;
     }
   }
+  // If item content does match filter, return true
   return true;
 }
 
 Array.prototype.clean = function(value) {
-  for (var i = 0; i < this.length; i++) {
+  // Remove trailing and ending white space
+  for (let i = 0; i < this.length; i++) {
     if (this[i] == value) {
       this.splice(i, 1);
       i--;
