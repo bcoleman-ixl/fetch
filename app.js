@@ -1,31 +1,57 @@
-/* */
+// App
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const usersClient = require('mongoose');
+const itemsClient = require('mongodb').MongoClient;
+let itemsDb = null;
+let usersDb = null;
+
+// Authentication
+const User = require('./models/user-model');
+const cookieSession = require('cookie-session');
 const passport = require('passport');
 const keys = require('./config/keys');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const mongoose = require('mongoose');
-const User = require('./models/user-model');
-const usersClient = require('mongoose');
-const itemsClient = require('mongodb').MongoClient;
 
+const authCheck = (req, res, next) => {
+  if (!req.user) {
+    res.redirect('/authenticate');
+  } else {
+    next();
+  }
+}
+const authCheckAdmin = (req, res, next) => {
+  if (req.user == null || req.user.type != 'admin') {
+    res.redirect('/authenticate');
+  } else {
+    next();
+  }
+}
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.json());
-
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
+app.use(cookieSession({
+  maxAge: 24 * 60 * 60 * 1000,
+  keys: [keys.session.cookieKey]
+}));
+
+// intialize passport
+app.use('/favicon.ico', express.static('/favicon.ico'));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(__dirname + '/css'));
 app.use(express.static(__dirname + '/js'));
 app.use(express.static(__dirname + '/public/'));
-app.use(express.static(__dirname + '/img'));
+app.use(express.static(__dirname + '/img/'));
 
 
 // Connects to 'users' and 'items' databases
-var itemsDb;
-var usersDb;
 
 itemsClient.connect(keys.mongoDb.itemsURI, (err, client) => {
   if (err) return console.log(err)
@@ -105,15 +131,18 @@ app.put('/updateRanking', (req, res) => {
     })
 });
 
-app.get('/items', function(req, res, next) {
-  itemsDb.collection('templates').find().toArray((err, result) => {
-    if (err) return console.log(err)
-    // renders index.ejs
-    res.render('index.ejs', {
-      templates: result
-    })
-  })
+// Authenticate
 
+// This happens after done is called below
+passport.serializeUser((user, done) => {
+  //grab info from users to jam into cookie
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findById(id).then((user) => {
+    done(null, user);
+  })
 });
 
 passport.use(new GoogleStrategy({
@@ -122,24 +151,26 @@ passport.use(new GoogleStrategy({
     callbackURL: "http://localhost:3000/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, done) {
-    console.log(profile);
+    console.log(profile.emails[0].value);
     User.findOne({
       googleID: profile.id
     }).then((currentUser) => {
       if (currentUser) {
         // alread have user
-        console.log('user is:' + currentUser);
+        console.log('existing user:' + currentUser);
+        done(null, currentUser);
       } else {
         // create a new user
         new User({
-          name: profile.
-          name.givenName,
+          name: profile.name.givenName,
           googleID: profile.id,
-          profilePicURL: profile.photos.value,
+          img: profile._json.image.url,
           team: 'techSupport',
-          type: 'user'
+          type: 'user',
+          email: profile.emails[0].value
         }).save().then((newUser) => {
           console.log('new user creatd *******' + newUser);
+          done(null, newUser);
         });
       }
     });
@@ -148,14 +179,46 @@ passport.use(new GoogleStrategy({
 
 app.get('/auth/google',
   passport.authenticate('google', {
-    scope: ['profile']
+    scope: ['profile', 'email']
   }));
 
-app.get('/auth/google/callback',
-  passport.authenticate('google', {
-    failureRedirect: '/auth/google'
-  }),
-  function(req, res) {
-    res.red
-    irect('/items');
-  });
+app.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
+  //res.send(req.user);
+  res.redirect('/items');
+});
+
+app.get('/items', authCheck, (req, res) => {
+  itemsDb.collection('templates').find().toArray((err, result) => {
+    if (err) return console.log(err)
+    // renders index.ejs
+    res.render('index.ejs', {
+      templates: result,
+      user: req.user
+    })
+  })
+});
+
+app.get('/admin', authCheckAdmin, (req, res) => {
+  itemsDb.collection('templates').find().toArray((err, result) => {
+    if (err) return console.log(err)
+    // renders index.ejs
+    res.render('admin.ejs', {
+      templates: result,
+      user: req.user
+    })
+  })
+});
+
+app.get('/authenticate', (req, res) => {
+  // renders authenticate.ejs
+  res.render('authenticate.ejs');
+});
+
+app.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/authenticate');
+});
+
+app.get('/', (req, res) => {
+  res.redirect('/items');
+});

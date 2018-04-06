@@ -132,14 +132,14 @@ function copy(html) {
   window.getSelection().addRange(range);
   document.execCommand('copy');
 
-  for (let i = 0; i < activeSheets.length; i++){
+  for (let i = 0; i < activeSheets.length; i++) {
     activeSheets[i].disabled = true;
   }
 
   document.execCommand('copy');
 
-  for (let i = 0; i < activeSheets.length; i++){
-  activeSheets[i].disabled = false;
+  for (let i = 0; i < activeSheets.length; i++) {
+    activeSheets[i].disabled = false;
   }
 
   // Remove the iframe
@@ -148,16 +148,17 @@ function copy(html) {
 
 function buildItem(body) {
   // Update to pull from settings
-  let user = `<span style='color: blue;'><b>Bryce</b></span></br>`;
-  email = `E-mail: help@ixl.com<br>`;
-  program = 'IXL Support<br>';
-  phone = 'Phone: 855.255.6676<br>';
-  website = 'Website: www.ixl.com<br>';
-  greeting = 'Dear NAME,<br><br>Thank you for reaching out to us.<br>';
-  closing = 'Please let me know if you have any questions and I will be happy to help!<br>'
-  logoLocation = `'https://c.na57.content.force.com/servlet/servlet.ImageServer?id=0150b0000027zq8&oid=00D300000001FBU&lastMod=1495736864000'`
-  logo = `<img src= ${logoLocation} alt='ixl-logo'>`;
-  signature = `<br>Sincerely, <br> ${user} ${program} <br> ${email} ${phone} ${website} ${logo}`;
+  let userFirstName = document.getElementById('userFirstName').innerHTML;
+  let user = `<span style='color: blue;'><b> ${userFirstName} </b></span></br>`;
+  let email = `E-mail: help@ixl.com<br>`;
+  let program = 'IXL Support<br>';
+  let phone = 'Phone: 855.255.6676<br>';
+  let website = 'Website: www.ixl.com<br>';
+  let greeting = 'Dear NAME,<br><br>Thank you for reaching out to us.<br>';
+  let closing = 'Please let me know if you have any questions and I will be happy to help!<br>'
+  let logoLocation = `'https://c.na57.content.force.com/servlet/servlet.ImageServer?id=0150b0000027zq8&oid=00D300000001FBU&lastMod=1495736864000'`
+  let logo = `<img src= ${logoLocation} alt='ixl-logo'>`;
+  let signature = `<br>Sincerely, <br> ${user} ${program} <br> ${email} ${phone} ${website} ${logo}`;
   return `${greeting} ${body} ${closing} ${signature}`;
 }
 
@@ -269,7 +270,7 @@ function rank() {
   while (switching) {
     // Start by saying: no switching is done:
     switching = false;
-    li = list.getElementsByTagName('LI');
+    li = list.getElementsByClassName('item');
     // Loop through all list items:
     for (k = 0; k < (li.length - 1); k++) {
       // Start by saying there should be no switching:

@@ -20,6 +20,7 @@ Model: Data storage, integrity, consistency, queries, and mutations.
 Controller: Receive, interpret and validate input; create and update views; query and modify models.
 
 Use Case #1
+User
 User Opens program and cursor is placed in Text Box
 Program shows grid of templates, organized by category/color
 Each entry in the grid shows the element title and a preview of the content
@@ -32,7 +33,7 @@ Use Case #3
 Once user sees desired information, they click the body to copy the template
 
 Use Case #4
-Admin clicks plus symbol to add new template, all fields are entered and admin clicks submit. Tempalte is added and page is refreshed to show new templates
+Admin clicks plus symbol to add new template, all fields are entered and admin clicks submit. Template is added and page is refreshed to show new templates
 
 Use Case #5
 User clicks template to copy, ranking is increased by one, unordered list is updated to sort templates by rank.
@@ -44,7 +45,7 @@ Each draft/template has the following fields:
 lastModifiedDate, tags (as an array), category, approvalStatus(public, private, approved, etc), type (note, instructions, code), Template #
 
 Milestones:
-Google SSO
+Custom templates for each user (w/ Google SSO)
 
 Ideas:
 Create multiple versions of one item (account expired - student, account expired - parent, etc)

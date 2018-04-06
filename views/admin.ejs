@@ -3,7 +3,7 @@
 
 <head>
   <meta charset='utf-8'>
-  <link rel='stylesheet' href='/app-styles.css'>
+  <link rel='stylesheet' href='/admin-styles.css'>
   <!-- Bootstrap minified CSS -->
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
   <!-- Google Fonts -->
@@ -57,9 +57,7 @@
                 <select class='form-control' id='type' name='type' required='true'>
                   <option disabled selected value> --Select-- </option>
                   <option>Template</option>
-                  <% if (user.type == 'admin') { %>
-                    <option>Template-Verified</option>
-                    <% } %>
+                  <option>Template-Verified</option>
                 </select>
               </div>
               <div class='form-group'>
@@ -107,29 +105,23 @@
         <ul class="dropdown-menu">
           <li>
             <% if (user) { %>
-              <li id='greeting'>Hello
+              <li id='greeting'>Hello,
                 <span id="userFirstName"><%= user.name %></span>!
               </li>
               <% } %>
           </li>
           <li class="divider"></li>
-          <li><a id='' href='#manageItems' data-toggle='modal' data-target='#manageItems' onclick='setItemId()'> Add a template</a></li>
-          <% if (user.type == 'admin') { %>
-            <li><a href="/admin">Admin Console</a></li>
-            <% } %>
-              <li class="divider"></li>
-              <li id="logout"> <button class="btn btn-default btn-sm" type="button" name="button" onclick="location.href = '/logout';">Logout</button></li>
+          <li><a id='' href='#manageItems' data-toggle='modal' data-target='#manageItems' onclick='setItemId()'>Add a template</a>
+          </li>
+
+          <li><a href="/items">User Console</a></li>
+          <li class="divider"></li>
+          <li id="logout"><button class="btn btn-default btn-sm" type="button" name="button">Logout</button></li>
         </ul>
       </li>
     </div>
   </nav>
   <!-- End navbar -->
-
-  <!-- Header -->
-  <div id='header'>
-    <h1>----</h1>
-  </div>
-  <!-- End header -->
 
   <!-- Spacing -->
   <div class='row space'>
@@ -142,76 +134,88 @@
   </div>
   <!-- End spacing -->
 
-  <!-- Search bar -->
-  <div class='row space'>
-    <div class='col-lg-4'></div>
-    <div class='col-lg-4'>
-      <div class='form-group has-feedback has-clear'>
-        <input type='text' class='form-control input-lg' id='search-bar' autofocus="autofocus" placeholder='Search' onkeyup='search()' spellcheck='false'>
-        <span class='form-control-clear glyphicon glyphicon-remove form-control-feedback hidden'></span>
-      </div>
-    </div>
-    <div class='col-lg-4'></div>
-  </div>
-  <!-- End search bar -->
+  <!-- TODO: Create an array with what I want to display, loop and display through array -->
 
-
-  <!-- Items -->
+  <!-- Verified Items -->
   <div class='row space'>
     <div class='col-lg-1 col-md-1'>
     </div>
     <div class='col-lg-12 col-md-12'>
-      <ul id='data-table' class='align'>
-        <% var items = templates; for(var i = 0; i < items.length; i++) { %>
-          <% if (items[i].addedByUser == 'bcoleman@ixl.com' || items[i].addedByUser == user.email) { %>
-            <li id='<%= items[i].id %>' class='item' tabindex='0'>
-              <h2 class='<%= items[i].category.toLowerCase() %>' id='itemName'><%= items[i].name %> <i class='fas fa-check' id='<%= items[i].type.toLowerCase() %>'></i></h2>
-              <div class='details'>
-                <h3 class='line'><span id='itemRanking' hidden><%=items[i].ranking %></span><%=items[i].id %> - <i id='itemUpdatedDate'><%= items[i].updatedDate %></i></h3>
-                <!-- TODO: add logic that shows if this is a users template -->
-                <% if (user.type == 'admin' || items[i].addedByUser == user.email) { %>
-                  <div class='line' id='removeConfirm'>
-                    <button id='removeConfirmBtn' class='btn line'><i class='far fa-trash-alt fa-lg' ></i></button>
-                  </div>
-                  <% } %>
-                    <% if (user.type == 'admin' || items[i].addedByUser == user.email) { %>
-                      <div class='line' id='edit'>
-                        <button id='editBtn' class='btn line'><i class='fas fa-pencil-alt fa-lg'></i></button>
-                      </div>
-                      <% } %>
-                        <% if (user.type == 'admin') { %>
-                          <div class='line' id='clearRank'>
-                            <button id='clearRankBtn' class='btn line'><i class='fas fa-ban fa-lg'></i></button>
-                          </div>
-                          <% } %>
-                            <div class='line' id='copyPortion'>
-                              <button id='copyPortionBtn' class='btn line'><i class='fas fa-eye fa-lg'></i></button>
-                            </div>
-              </div>
-              <div class='<%= items[i].category.toLowerCase() %> blur' id='itemBody'>
-                <%- items[i].body %>
-              </div>
-              <div class='row'>
-                <div class='col-lg-9 col-md-9'>
-                  <h3 class='tags' id='itemTags'><%= items[i].tags %></h3>
-                  <h3 class='type' id='itemType' hidden><%= items[i].type %></h3>
-                </div>
-                <div class='col-lg-3 col-md-3'>
-                  <h3 class='<%= items[i].category.toLowerCase() %>' id='itemCategory'><%= items[i].category %></h3>
-                </div>
-              </div>
-            </li>
-            <% } %>
-              <% } %>
+      <ul id='data-table' class='center'>
 
+        <!-- title, filter (if by category then go into or if by tyle then go into )
+      print title and all templates, then loop -->
+
+
+
+        <% let categories = ['Analytics', 'Audio', 'Error Messages', 'Roster', 'Skills', 'Signing_In', 'SmartScore', 'Other']; %>
+
+          <% let items = templates; %>
+
+            <% for(let k = 0; k < categories.length; k++) { %>
+
+              <h1><%- categories[k] %></h1>
+
+              <% for(let i = 0; i < items.length; i++) { %>
+
+                <% if (items[i].category == categories[k]) { %>
+                  <li id='<%= items[i].id %>' class='item' tabindex='0'>
+                    <h2 class='<%= items[i].category.toLowerCase() %>' id='itemName'><%= items[i].name %> <i class='fas fa-check' id='<%= items[i].type.toLowerCase() %>'></i></h2>
+                    <div class='details'>
+                      <h3 class='line'><span id='itemRanking' hidden><%=items[i].ranking %></span><%=items[i].id %> - <i id='itemUpdatedDate'><%= items[i].updatedDate %></i></h3>
+                      <!-- TODO: add logic that shows if this is a users template -->
+                      <% if (user.type == 'admin' || items[i].addedByUser == user.email) { %>
+                        <div class='line' id='removeConfirm'>
+                          <button class='btn line'><i class='far fa-trash-alt fa-lg' ></i></button>
+                        </div>
+                        <% } %>
+                          <% if (user.type == 'admin' || items[i].addedByUser == user.email) { %>
+                            <div class='line' id='edit'>
+                              <button class='btn line'><i class='fas fa-pencil-alt fa-lg'></i></button>
+                            </div>
+                            <% } %>
+                              <% if (user.type == 'admin') { %>
+                                <div class='line' id='clearRank'>
+                                  <button class='btn line'><i class='fas fa-ban fa-lg'></i></button>
+                                </div>
+                                <% } %>
+                                  <div class='line' id='copyPortion'>
+                                    <button class='btn line'><i class='fas fa-eye fa-lg'></i></button>
+                                  </div>
+                    </div>
+                    <div class='<%= items[i].category.toLowerCase() %> blur' id='itemBody'>
+                      <%- items[i].body %>
+                    </div>
+                    <div class='row'>
+                      <div class='col-lg-9 col-md-9'>
+                        <h3 class='tags' id='itemTags'><%= items[i].tags %></h3>
+                        <h3 class='type' id='itemType'><b>Type: </b><%= items[i].type %></h3>
+                        <h3 class='type' id='itemType'><b>Added by: </b><%= items[i].addedByUser %></h3>
+                      </div>
+                      <div class='col-lg-3 col-md-3'>
+                        <h3 class='<%= items[i].category.toLowerCase() %>' id='itemCategory'><%= items[i].category %></h3>
+                      </div>
+                    </div>
+                  </li>
+                  <% } %>
+                    <% } %>
+                      <% } %>
       </ul>
     </div>
     <div class='col-lg-1'></div>
   </div>
-  <!-- End Items -->
+  <!-- End Verified Items -->
 
   <!-- Logout -->
-
+  <div class="row space">
+    <div class="col-lg-3">
+    </div>
+    <div class="col-lg-6">
+      <a href="/logout">Log out</a>
+    </div>
+    <div class="col-lg-3">
+    </div>
+  </div>
   <!-- End Logout -->
 
 
@@ -221,7 +225,6 @@
 <script src='https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=q4w1ytxm4ft7tl8tg92mbys2kh30beuux061ovviw4oc4pqo'></script>
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
 <script defer src='https://use.fontawesome.com/releases/v5.0.6/js/all.js'></script>
-<script src='app-main.js'></script>
-<script src='search.js'></script>
+<script src='admin-main.js'></script>
 
 </html>

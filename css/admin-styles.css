@@ -11,7 +11,7 @@
   --cyan: #0bc1b6;
   --font: 'Open Sans', sans-serif;
   --element-w: 425px;
-  --element-h: 465px;
+  --element-h: 515px;
 }
 
 body {
@@ -26,6 +26,10 @@ a {
 
 p {
   font-family: var(--font);
+}
+
+h1 {
+  text-align: left;
 }
 
 h2 {
@@ -81,6 +85,9 @@ h5 {
 
 #search-bar {
   width: 100%;
+  height: 60px;
+  font-size: 25px;
+  font-family: 'Roboto';
 }
 
 .item {
@@ -150,14 +157,6 @@ h5 {
 
 .actions {}
 
-.profileImage {
-  width: 20%;
-  height: 20%;
-  border-radius: 50%;
-  display: block !important;
-  float: left;
-}
-
 #edit>.btn {
   padding-left: 4px !important;
   padding-right: 2px !important;
@@ -187,6 +186,10 @@ h5 {
   height: 60px;
   f width: 60px;
   padding: 15px;
+}
+
+#signout {
+  text-align: center !important;
 }
 
 .options {
@@ -228,7 +231,7 @@ h5 {
 }
 
 .center {
-  text-align: center;
+  text-align: left;
   display: block;
 }
 
@@ -246,13 +249,11 @@ h5 {
   padding: 0.5em;
 }
 
-
 /* NOTE: Change glow of search box */
 
 .form-control:focus {
   border-color: #00aeef;
 }
-
 
 /* NOTE: Creates space between links at bottom */
 
@@ -286,12 +287,57 @@ h5 {
   font-size: 20px;
 }
 
+/* START Navbar styling */
+
+#greeting {
+  text-align: center;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 15px 10px 10px 10px;
+}
+
+#logout {
+  text-align: center;
+  font-weight: bold;
+  font-size: 15px;
+  padding-bottom: 5px;
+  margin: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .navbar {
   background-color: white !important;
   border-color: white !important;
-  padding: 1.5em;
-  margin: 0 !important;
+  margin: 0px !important;
 }
+
+.profile-img {
+  border-radius: 50%;
+  margin: 20px 10px 5px 20px;
+}
+
+.profile-img:hover, .profile-img:focus, .profile-img:active {
+  border-radius: 50%;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, .1);
+}
+
+.dropdown-menu {
+  margin: 0px 0px 0px 20px !important;
+  padding: 0px !important;
+  min-width: 180px !important;
+}
+
+.dropdown-toggle {
+  padding: 0px !important;
+}
+
+.dropdown-toggle:hover, .dropdown-toggle:focus, .dropdown-toggle:active, .dropdown-toggle:enabled {
+  background-color: white !important;
+}
+
+/* END Navbar styling  */
 
 .new-item {
   padding: 1em;
@@ -301,7 +347,6 @@ h5 {
   width: 100%;
   height: 600px !important;
 }
-
 
 /* Customize scroll bar */
 
@@ -316,5 +361,5 @@ h5 {
 
 ::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }

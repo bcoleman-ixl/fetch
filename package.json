@@ -4,7 +4,7 @@
   "description": "Draft search app for IXL",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon server.js"
+    "dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/BryceColeman/helios-templates#readme",
   "dependencies": {
+    "cookie-session": "^2.0.0-beta.3",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
     "mongodb": "^3.0.2",
@@ -30,6 +31,7 @@
     "npm": "^5.8.0",
     "passport": "^0.4.0",
     "passport-google-oauth": "^1.0.0",
+    "serve-favicon": "^2.5.0",
     "session": "^0.1.0"
   }
 }

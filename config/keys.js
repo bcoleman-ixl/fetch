@@ -9,6 +9,10 @@ module.exports = {
   mongoDb: {
     itemsURI: 'mongodb://templates-admin:templates-admin@ds125628.mlab.com:25628/templates',
     usersURI: 'mongodb://users-admin:users-admin@ds257858.mlab.com:57858/users'
+  },
+
+  session: {
+    cookieKey: '8811596819652791308'
   }
 
 }
