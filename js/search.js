@@ -1,4 +1,5 @@
 function search() {
+  rank();
   let input = document.getElementById('search-bar');
   let filterArr = input.value.toUpperCase().split(' ').clean('');
   let ul = document.getElementById('data-table');
@@ -12,13 +13,13 @@ function search() {
     // If search bar is blank, display this element
     if (filterArr.length == 0) {
       item.style.display = '';
-    // If item is hidden, test to see if its content matches filter
+      // If item is hidden, test to see if its content matches filter
     } else if (item.style.display == 'none') {
       if (test(filterArr, item)) {
         // If item content matches filter, display item
         item.style.display = '';
       }
-    // If item is displayed to user, check to see if its content matches filter
+      // If item is displayed to user, check to see if its content matches filter
     } else {
       if (test(filterArr, item)) {
         // If item content matches filter, show item
@@ -53,4 +54,4 @@ Array.prototype.clean = function(value) {
   return this;
 };
 
-search();
+//search();
