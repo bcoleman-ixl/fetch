@@ -1,7 +1,7 @@
 {
-  "name": "helios-templates",
+  "name": "template-search",
   "version": "1.0.0",
-  "description": "Draft search app for IXL",
+  "description": "Template search for IXL",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon app.js"
