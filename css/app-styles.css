@@ -1,15 +1,18 @@
 :root {
   --yellow: #ffcb0a;
   --orange: #f39317;
-  --green: #00b971;
   --blue: #00a1de;
+  --drkblue: #0090c7;
   --green: #52b700;
+  --drkgreen: #49a400;
   --red: #d74726;
-  --blue: #00a1de;
+  --drkred: #c13f22;
   --yellow: #eabc00;
+  --drkyellow: #d2a900;
   --purple: #8d33aa;
+  --drkpurple: #702888;
   --cyan: #0bc1b6;
-  --font: 'Open Sans', sans-serif;
+  --font: 'Roboto', sans-serif;
   --element-w: 425px;
   --element-h: 465px;
 }
@@ -86,6 +89,30 @@ h5 {
   font-family: 'Roboto';
 }
 
+#clear-search {
+  position: absolute;
+  right: 18px;
+  top: 0;
+  bottom: 0;
+  height: 20px;
+  margin: auto;
+  font-size: 22px;
+  cursor: pointer;
+  color: gainsboro;
+}
+
+#clear-search:hover {
+  font-size: 22px;
+  color: #B8B8B8;
+}
+
+#clear-search:active {
+  right: 19px;
+  height: 18px;
+  font-size: 20px;
+  color: #B8B8B8;
+}
+
 .item {
   display: inline-block;
   width: var(--element-w);
@@ -95,6 +122,10 @@ h5 {
   text-align: left;
   border-radius: 8px;
   box-shadow: 0px 0px 15px gainsboro;
+}
+
+.item:focus {
+  outline: none;
 }
 
 .btn {
@@ -107,28 +138,52 @@ h5 {
   border-color: none !important;
 }
 
-#removeConfirmBtn:focus, #removeConfirmBtn:hover {
-  color: var(--red);
+#copyFullBtn:focus, #copyFullBtn:hover {
+  color: var(--purple);
 }
 
-#editBtn:focus, #editBtn:hover {
-  color: var(--blue);
+#copyFullBtn:active {
+  color: var(--drkpurple);
 }
 
 #copyPortionBtn:focus, #copyPortionBtn:hover {
   color: var(--green);
 }
 
+#copyPortionBtn:active {
+  color: var(--drkgreen);
+}
+
+#editBtn:focus, #editBtn:hover {
+  color: var(--blue);
+}
+
+#editBtn:active {
+  color: var(--drkblue);
+}
+
 #clearRankBtn:focus, #clearRankBtn:hover {
   color: var(--yellow);
+}
+
+#clearRankBtn:active {
+  color: var(--drkyellow);
+}
+
+#removeConfirmBtn:focus, #removeConfirmBtn:hover {
+  color: var(--red);
+}
+
+#removeConfirmBtn:active {
+  color: var(--drkred);
 }
 
 .item:hover {
   box-shadow: 0px 0px 20px 2px lightgray;
 }
 
-.item:active {
-  box-shadow: 0px 0px 25px 10px #D3D3D3;
+#copiedAlert {
+  color: var(--red);
 }
 
 #itemBody {
@@ -154,12 +209,17 @@ h5 {
 .actions {}
 
 #edit>.btn {
-  padding-left: 4px !important;
+  padding-left: 2px !important;
   padding-right: 2px !important;
 }
 
 #copyPortion>.btn {
   padding-left: 2px !important;
+  padding-right: 2px !important;
+}
+
+#copyFull>.btn {
+  padding-left: 6px !important;
   padding-right: 2px !important;
 }
 
@@ -170,6 +230,7 @@ h5 {
 }
 
 #removeConfirm>.btn {
+  padding-left: 2px !important;
   padding-right: 2px !important;
   border: 0 !important;
 }
@@ -304,13 +365,16 @@ h5 {
 
 #logout {
   text-align: center;
-  font-weight: bold;
-  font-size: 15px;
   padding-bottom: 5px;
   margin: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+#logout button {
+  font-style: 'Roboto';
+  font-size: 15px;
 }
 
 .navbar {
