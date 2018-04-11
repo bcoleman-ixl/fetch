@@ -1,20 +1,32 @@
-// App
+/**
+ * Node.js app for curating and copying
+ * tempaltes for customer facing e-mails.
+ *
+ * By Bryce Coleman
+ *
+ */
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+
+/* Connecting to Mongo database */
 const mongoose = require('mongoose');
 const usersClient = require('mongoose');
-const itemsClient = require('mongodb').MongoClient;
-let itemsDb = null;
+const templatesClient = require('mongodb').MongoClient;
+let templatesDb = null;
 let usersDb = null;
 
-// Authentication
+/* User authentication */
 const User = require('./models/user-model');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
 const keys = require('./config/keys');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
+/**
+ * Checking if users have been authenticated
+ * Redirect to authenticate if user is null
+ */
 const authCheck = (req, res, next) => {
   if (!req.user) {
     res.redirect('/authenticate');
@@ -22,6 +34,8 @@ const authCheck = (req, res, next) => {
     next();
   }
 }
+
+/* Checking if user is admin, redirect if not */
 const authCheckAdmin = (req, res, next) => {
   if (req.user == null || req.user.type != 'admin') {
     res.redirect('/authenticate');
@@ -30,52 +44,58 @@ const authCheckAdmin = (req, res, next) => {
   }
 }
 
+/**
+ * Use embedded Javascript as the view engine
+ * Use JSON to store object data
+ */
 app.set('view engine', 'ejs');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+/* Use cookies with max age of 20 hours */
 app.use(cookieSession({
-  maxAge: 24 * 60 * 60 * 1000,
+  maxAge: 20 * 60 * 60 * 1000,
   keys: [keys.session.cookieKey]
 }));
 
-// intialize passport
-app.use('/favicon.ico', express.static('/favicon.ico'));
+/* Use passport for user authentication */
 app.use(passport.initialize());
 app.use(passport.session());
+
+/* Use directories*/
 app.use(express.static(__dirname + '/css'));
 app.use(express.static(__dirname + '/js'));
 app.use(express.static(__dirname + '/public/'));
 app.use(express.static(__dirname + '/img/'));
 
-
-// Connects to 'users' and 'items' databases
-
-itemsClient.connect(keys.mongoDb.itemsURI, (err, client) => {
-  if (err) return console.log(err)
-  itemsDb = client.db('templates')
-  app.listen(3000, function() {
-    console.log('itemsDb connected on 3000')
-  })
+/* Connect to templates database and grab template list for displaying in index.ejs */
+templatesClient.connect(keys.mongoDb.templatesURI, (err, client) => {
+  if (err) return console.log(err);
+  templatesDb = client.db('templates');
+  // Listen on port 3000
+  app.listen(3000);
 });
 
-mongoose.connect(keys.mongoDb.usersURI, () => {
-  console.log('connected to users');
-});
+/* Connects to users database*/
+mongoose.connect(keys.mongoDb.usersURI, () => {});
 
-// Posts form data to Mongo Client
+/* Adds the template to the database */
 app.post('/add', (req, res) => {
-  itemsDb.collection('templates').save(req.body, (err, result) => {
+  templatesDb.collection('templates').save(req.body, (err, result) => {
     if (err) return console.log(err)
     console.log('saved to database')
-    res.redirect('/items')
+    res.redirect('/templates')
   })
 });
 
+/**
+ * Finds template by ID and removes
+ * it from the database.
+ */
 app.delete('/remove', (req, res) => {
-  itemsDb.collection('templates').findOneAndDelete({
+  templatesDb.collection('templates').findOneAndDelete({
       id: req.body.id
     },
     (err, result) => {
@@ -86,8 +106,13 @@ app.delete('/remove', (req, res) => {
     })
 });
 
+/**
+ * Finds template by ID and updates
+ * it in the database. Updated date will
+ * always be todays date.
+ */
 app.put('/update', (req, res) => {
-  itemsDb.collection('templates')
+  templatesDb.collection('templates')
     .findOneAndUpdate({
       id: req.body.id
     }, {
@@ -111,8 +136,13 @@ app.put('/update', (req, res) => {
     })
 });
 
+/**
+ * Finds template by ID and
+ * updates ranking. Fires each
+ * time the template is copied.
+ */
 app.put('/updateRanking', (req, res) => {
-  itemsDb.collection('templates')
+  templatesDb.collection('templates')
     .findOneAndUpdate({
       id: req.body.id
     }, {
@@ -131,11 +161,9 @@ app.put('/updateRanking', (req, res) => {
     })
 });
 
-// Authenticate
-
-// This happens after done is called below
+/* Authentication */
+// TODO: Add comments
 passport.serializeUser((user, done) => {
-  //grab info from users to jam into cookie
   done(null, user.id);
 });
 
@@ -156,11 +184,11 @@ passport.use(new GoogleStrategy({
       googleID: profile.id
     }).then((currentUser) => {
       if (currentUser) {
-        // alread have user
+        // Already have user
         console.log('existing user:' + currentUser);
         done(null, currentUser);
       } else {
-        // create a new user
+        // Create a new user
         new User({
           name: profile.name.givenName,
           googleID: profile.id,
@@ -169,7 +197,7 @@ passport.use(new GoogleStrategy({
           type: 'user',
           email: profile.emails[0].value
         }).save().then((newUser) => {
-          console.log('new user creatd *******' + newUser);
+          console.log('new user created *******' + newUser);
           done(null, newUser);
         });
       }
@@ -183,14 +211,13 @@ app.get('/auth/google',
   }));
 
 app.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
-  //res.send(req.user);
-  res.redirect('/items');
+  res.redirect('/templates');
 });
 
-app.get('/items', authCheck, (req, res) => {
-  itemsDb.collection('templates').find().toArray((err, result) => {
+app.get('/templates', authCheck, (req, res) => {
+  templatesDb.collection('templates').find().toArray((err, result) => {
     if (err) return console.log(err)
-    // renders index.ejs
+    // Renders index.ejs and loads templates and user profile
     res.render('index.ejs', {
       templates: result,
       user: req.user
@@ -199,9 +226,9 @@ app.get('/items', authCheck, (req, res) => {
 });
 
 app.get('/admin', authCheckAdmin, (req, res) => {
-  itemsDb.collection('templates').find().toArray((err, result) => {
+  templatesDb.collection('templates').find().toArray((err, result) => {
     if (err) return console.log(err)
-    // renders index.ejs
+    // Renders admin.ejs and loads tempaltes and user profile
     res.render('admin.ejs', {
       templates: result,
       user: req.user
@@ -220,5 +247,5 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.redirect('/items');
+  res.redirect('/templates');
 });
