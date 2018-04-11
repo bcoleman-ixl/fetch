@@ -1,4 +1,5 @@
 function search() {
+  // Sort each time search is initiated
   rank();
   let input = document.getElementById('search-bar');
   let filterArr = input.value.toUpperCase().split(' ').clean('');
