@@ -1,9 +1,7 @@
 -------------------------------------------------------------------------------
 *                                                                             *
 *                                                                             *
-*                                                                             *
 *                     Helios - Quick Reference Search                         *
-*                                                                             *
 *                                                                             *
 *                                                                             *
 -------------------------------------------------------------------------------
@@ -17,20 +15,34 @@ that template first for a user. Uses Java, HTML, CSS, Javascript
 Admin users can add, remove, or edit existing elements to customize
 the quick reference for personalized use.
 
-Model, View, Controller Design:
-
-Model: Data storage, integrity, consistency, queries, and mutations.
-Controller: Receive, interpret and validate input; create and update views; query and modify models.
-
 Use Case #1
-User
-User Opens program and cursor is placed in Text Box
-Program shows grid of templates, organized by category/color
-Each template in the grid shows the title and a preview of the content
+User opens the site and is redirected to sign in with their Google account if they have not authenticated previously. Once the user has been authenticated, they will be redirected to the main page at index.ejs.
+
+When the page loads, the text cursor is focused in the search field and a list of templates are ranked in order from highest to lowest and displayed for the user.
+
+For a user, each template will show:
+- Title
+- Alphanumeric ID
+- Last updated date
+- Copy all, Copy portion
+- Template body
+- Tag
+- Category
+
+If the user has added a template, then the template will have Edit and Remove access.
 
 Use Case #2
-User begins typing a keyword in the search box
-Grid of quick reference items updates to show only items that match the keyword or phrase
+Administrator signs in to their account, clicks on their profile, and selects Admin console from their account menu.
+
+For the administrator, each template will show:
+- Title (Verified templates will have a green check mark)
+- Alphanumeric ID
+- Last updated date
+- Copy all, Copy portion, Edit, Clear rank, and Remove buttons
+- Template body
+- Tag
+- Category
+
 
 Use Case #3
 Once user sees desired information, they click the body to copy the template
@@ -43,15 +55,3 @@ User clicks template to copy, ranking is increased by one, unordered list is upd
 
 Use case #6
 edit and delete
-
-Each draft/template has the following fields:
-lastModifiedDate, tags (as an array), category, approvalStatus(public, private, approved, etc), type (note, instructions, code), Template #
-
-Milestones:
-Custom templates for each user (w/ Google SSO)
-
-Ideas:
-Create multiple versions of one item (account expired - student, account expired - parent, etc)
-Add your own custom templates (required Google sign in)
-User (name, googleID, team, imageLocation, type (admin, user, etc.), preferredClosing)
-When specified (by stating item as a snippet, or template) first line changes. Or header and signature are ignored (i.e., )
