@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BryceColeman/helios-templates.git"
+    "url": "git+https://github.com/BryceColeman/template-search"
   },
   "keywords": [
     "Drafts",
@@ -18,9 +18,9 @@
   "author": "Bryce Coleman",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/BryceColeman/helios-templates/issues"
+    "url": "https://github.com/BryceColeman/template-search/issues"
   },
-  "homepage": "https://github.com/BryceColeman/helios-templates#readme",
+  "homepage": "https://github.com/BryceColeman/template-search#readme",
   "dependencies": {
     "cookie-session": "^2.0.0-beta.3",
     "ejs": "^2.5.7",
