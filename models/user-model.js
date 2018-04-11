@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+//  Model for adding a new user
 const userSchema = new Schema({
   name: String,
   googleID: String,
