@@ -123,6 +123,8 @@ app.put('/update', (req, res) => {
         body: req.body.body,
         category: req.body.category,
         type: req.body.type,
+        team: req.body.team,
+        public: req.body.public,
         tags: req.body.tags
       }
     }, {

@@ -69,6 +69,8 @@
                 <input type='hidden' id='updatedDate' name='updatedDate' value='error'>
                 <input type='hidden' id='addedByUser' name='addedByUser' value='<%= user.email %>'>
                 <input type='hidden' id='ranking' name='ranking' value=0>
+                <input type='hidden' id='team' name='team' value='<%= user.team %>'>
+                <input type='hidden' id='public' name='public' value=false>
               </div>
             </div>
             <div class='form-group'>
@@ -166,6 +168,7 @@
     </div>
     <div class='col-lg-12 col-md-12'>
       <ul id='data-table' class='align'>
+
         <!-- Loop through all templates -->
         <% for(var i = 0; i < templates.length; i++) { %>
           <!-- If template was added by an admin (bcoleman@ixl.com OR template was added by current user, then display) -->
@@ -185,28 +188,29 @@
                 <div class='line' id='copyPortion'>
                   <button id='copyPortionBtn' class='btn line'><i class='fas fa-eye fa-lg'></i></button>
                 </div>
-                <!-- If user is admin OR template was added by user, show edit button -->
-                <% if (user.type == 'admin' || templates[i].addedByUser == user.email) { %>
-                  <div class='line' id='edit'>
-                    <button id='editBtn' class='btn line'><i class='fas fa-pencil-alt fa-lg'></i></button>
-                  </div>
-                  <% } %>
-                    <!-- If user is admin, display clear rank and remove button -->
-                    <% if (user.type == 'admin') { %>
-                      <!-- Clear the rank of this template -->
+                <!-- If public is false (meaning this template is for private use) then show these buttons which allows the user to edit, and remove the template -->
+                <% if (templates[i].public == 'false') { %>
+                  <!-- If template was added by user, show edit button -->
+                  <% if (templates[i].addedByUser == user.email) { %>
+                    <div class='line' id='edit'>
+                      <button id='editBtn' class='btn line'><i class='fas fa-pencil-alt fa-lg'></i></button>
+                    </div>
+                    <% } %>
+                      <!-- Clear the rank of this template (will add back in later if needed)
                       <div class='line' id='clearRank'>
                         <button id='clearRankBtn' class='btn line'><i class='fas fa-ban fa-lg'></i></button>
                       </div>
-                      <% } %>
-                        <!-- If user is admin OR this template was added by current usser, show remove button -->
-                        <% if (user.type == 'admin' || templates[i].addedByUser == user.email) { %>
-                          <div class='line' id='removeConfirm'>
-                            <button id='removeConfirmBtn' class='btn line'><i class='far fa-trash-alt fa-lg' ></i></button>
+                      -->
+                      <!-- If user is admin OR this template was added by current usser, show remove button -->
+                      <% if (templates[i].addedByUser == user.email) { %>
+                        <div class='line' id='removeConfirm'>
+                          <button id='removeConfirmBtn' class='btn line'><i class='far fa-trash-alt fa-lg' ></i></button>
+                        </div>
+                        <% } %>
+                          <div class="line">
+                            <span id="copiedAlert"></span>
                           </div>
                           <% } %>
-                            <div class="line">
-                              <span id="copiedAlert"></span>
-                            </div>
               </div>
               <div class='<%= templates[i].category.toLowerCase() %> blur' id='templateBody'>
                 <!-- Show the template -->
