@@ -11,8 +11,11 @@
 Helios stores a database of elements that can be quickly
 searched using a key word or phrase. The application shows, in real-time, the
 results of the search and allows users to copy the content for use in customer
-e-mails. Admin users can add, remove, or edit existing elements to customize
-the quick reference for personalized use. Uses Java, HTML, CSS, Javascript
+e-mails. As users copy content, the app learns what is used the most and displays
+that template first for a user. Uses Java, HTML, CSS, Javascript
+
+Admin users can add, remove, or edit existing elements to customize
+the quick reference for personalized use.
 
 Model, View, Controller Design:
 
@@ -23,7 +26,7 @@ Use Case #1
 User
 User Opens program and cursor is placed in Text Box
 Program shows grid of templates, organized by category/color
-Each entry in the grid shows the element title and a preview of the content
+Each template in the grid shows the title and a preview of the content
 
 Use Case #2
 User begins typing a keyword in the search box
