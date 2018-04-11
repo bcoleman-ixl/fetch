@@ -1,4 +1,7 @@
+/* TODO: Need to remove !important and minify */
+
 :root {
+  /* Colors START */
   --yellow: #ffcb0a;
   --orange: #f39317;
   --green: #00b971;
@@ -9,7 +12,10 @@
   --yellow: #eabc00;
   --purple: #8d33aa;
   --cyan: #0bc1b6;
+  /* Colors END*/
+  /* Font */
   --font: 'Open Sans', sans-serif;
+  /* Template width and height */
   --element-w: 425px;
   --element-h: 515px;
 }
@@ -23,6 +29,8 @@ body {
 a {
   outline: none !important;
 }
+
+/* Font sytling START */
 
 p {
   font-family: var(--font);
@@ -66,7 +74,9 @@ h5 {
   margin: 0;
 }
 
-#add-item {
+/* Font sytling END */
+
+#add-template {
   font-family: var(--font);
   font-size: 18px;
 }
@@ -83,14 +93,7 @@ h5 {
   font-size: 15px;
 }
 
-#search-bar {
-  width: 100%;
-  height: 60px;
-  font-size: 25px;
-  font-family: 'Roboto';
-}
-
-.item {
+.template {
   display: inline-block;
   width: var(--element-w);
   height: var(--element-h);
@@ -111,6 +114,8 @@ h5 {
   border-color: none !important;
 }
 
+/* Button styling START */
+
 #removeConfirm>button:hover {
   color: var(--red);
 }
@@ -127,35 +132,11 @@ h5 {
   color: var(--yellow);
 }
 
-.item:hover {
-  box-shadow: 0px 0px 20px 2px lightgray;
-}
-
-.item:active {
-  box-shadow: 0px 0px 25px 10px #D3D3D3;
-}
-
-#itemBody {
-  overflow: auto;
-  width: auto;
-  height: 300px;
-  color: #686868 !important;
-  cursor: pointer;
-  padding: 0px 10px 10px 0px;
-  margin-top: 5px;
-}
-
 .line {
   display: inline-block !important;
   vertical-align: middle;
   margin: 0 !important;
 }
-
-.details {
-  padding: 0px;
-}
-
-.actions {}
 
 #edit>.btn {
   padding-left: 4px !important;
@@ -177,29 +158,32 @@ h5 {
   border: 0 !important;
 }
 
-#signedIn {
-  width: 50%;
-}
-
-#signedIn img {
-  border-radius: 50%;
-  height: 60px;
-  f width: 60px;
-  padding: 15px;
-}
-
-#signout {
-  text-align: center !important;
-}
-
-.options {
-  display: inline-block;
-}
+/* Button styling END */
 
 .space {
   padding: 1em;
   width: 100vw;
   text-align: center;
+}
+
+/* Template stying START */
+
+.template:hover {
+  box-shadow: 0px 0px 20px 2px lightgray;
+}
+
+#templateBody {
+  overflow: auto;
+  width: auto;
+  height: 300px;
+  color: #686868 !important;
+  cursor: pointer;
+  padding: 0px 10px 10px 0px;
+  margin-top: 5px;
+}
+
+.details {
+  padding: 0px;
 }
 
 .analytics {
@@ -230,47 +214,7 @@ h5 {
   color: var(--purple);
 }
 
-.center {
-  text-align: left;
-  display: block;
-}
-
-.nameStyle {
-  color: blue;
-}
-
-.key {
-  font-family: var(--font);
-  font-style: italic;
-  font-weight: bold;
-  font-size: 20px;
-  text-align: center;
-  display: block;
-  padding: 0.5em;
-}
-
-/* NOTE: Change glow of search box */
-
-.form-control:focus {
-  border-color: #00aeef;
-}
-
-/* NOTE: Creates space between links at bottom */
-
-.links a {
-  font-size: 18px;
-  color: #00aeef;
-  text-decoration: underline;
-  font-family: var(--font);
-  padding: 3em;
-}
-
-.tags {
-  color: #B8B8B8;
-  margin-top: 15px !important;
-}
-
-#itemCategory {
+#templateCategory {
   margin-top: 15px !important;
   float: right;
 }
@@ -283,11 +227,55 @@ h5 {
   color: green;
 }
 
+.tags {
+  color: #B8B8B8;
+  margin-top: 15px !important;
+}
+
 .glyphicon {
   font-size: 20px;
 }
 
-/* START Navbar styling */
+/* Styling template titles END */
+
+.center {
+  text-align: left;
+  display: block;
+}
+
+/* NOTE: Change glow of search box */
+
+.form-control:focus {
+  border-color: #00aeef;
+}
+
+.new-template {
+  padding: 1em;
+}
+
+.editor {
+  width: 100%;
+  height: 600px !important;
+}
+
+/* Navbar profile styling START */
+
+/* TODO: Rename to logged in and logout */
+
+#signedIn {
+  width: 50%;
+}
+
+#signedIn img {
+  border-radius: 50%;
+  height: 60px;
+  f width: 60px;
+  padding: 15px;
+}
+
+#signout {
+  text-align: center !important;
+}
 
 #greeting {
   text-align: center;
@@ -306,6 +294,10 @@ h5 {
   align-items: center;
   justify-content: center;
 }
+
+/* Navbar profile styling END */
+
+/* Navbar styling START */
 
 .navbar {
   background-color: white !important;
@@ -337,18 +329,9 @@ h5 {
   background-color: white !important;
 }
 
-/* END Navbar styling  */
+/* Navbar styling END  */
 
-.new-item {
-  padding: 1em;
-}
-
-.editor {
-  width: 100%;
-  height: 600px !important;
-}
-
-/* Customize scroll bar */
+/* Customize scroll bar START */
 
 ::-webkit-scrollbar {
   width: 5px;
@@ -363,3 +346,5 @@ h5 {
   border-radius: 5px;
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
+
+/* Customize scroll bar END */
