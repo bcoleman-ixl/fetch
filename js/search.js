@@ -1,12 +1,16 @@
+var searchLogArr = new Array();
+
 function search() {
   // Sort each time search is initiated
   rank();
   let input = document.getElementById('search-bar');
   let filterArr = input.value.toUpperCase().split(' ').clean('');
   let ul = document.getElementById('data-table');
-  let li = ul.getElementsByTagName('li');
+  let li = ul.getElementsByClassName('template');
   // TODO: Remove Category and Type names from search
   for (k = 0; k < li.length; k++) {
+
+
     // Loop through each list item
     let item = li[k];
     // convert item to text
@@ -30,6 +34,20 @@ function search() {
         item.style.display = 'none';
       }
     }
+  }
+  if ($('#data-table').children(':visible').length == 0) {
+    let searchContents = document.getElementById('search-bar').value;
+
+    if ($.inArray(searchContents, searchLogArr) < 0) {
+      searchLogArr.push(searchContents);
+      console.log(searchLogArr);
+    } else {
+
+    }
+  } else if ($('#data-table').children(':visible').length != 0 && searchLogArr.length > 0) {
+    updateLogs(searchLogArr[searchLogArr.length - 1]);
+    console.log('sending: ' + searchLogArr[searchLogArr.length - 1]);
+    searchLogArr = [];
   }
 }
 
