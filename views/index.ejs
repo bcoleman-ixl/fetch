@@ -28,6 +28,7 @@
         <div class='new-template'>
           <form id='templatesForm' action='/add' method='POST' autocomplete='off' id='templatesForm'>
             <div class='row'>
+
               <div class='col-lg-12'>
                 <div class='form-group' style='padding-right: 0px;'>
                   <input type='text' class='form-control' id='name' name='name' required='true' placeholder='Template Name' maxlength='40'>
@@ -39,7 +40,7 @@
             </div>
             <div class='row'>
               <div class='form-group col-lg-6 col-md-6'>
-                <label for='type'>Category</label>
+                <label for='Category'>Category</label>
                 <select class='form-control' id='category' name='category' required='true'>
                   <option disabled selected value> --Select-- </option>
                   <option>Analytics</option>
@@ -54,10 +55,12 @@
                 </select>
               </div>
               <div class='form-group col-lg-6 col-md-6'>
-                <label for='type'>Type</label>
-                <select class='form-control' id='type' name='type' required='true'>
+                <label for='Program'>Program</label>
+                <select class='form-control' id='program' name='program' required='true'>
                   <option disabled selected value> --Select-- </option>
-                  <option>Template</option>
+                  <option>IXL</option>
+                  <option>QW</option>
+                  <option>QB</option>
                   <!-- Shows template-verified type only if user is admin -->
                   <% if (user.type == 'admin') { %>
                     <option>Template-Verified</option>
@@ -69,8 +72,10 @@
                 <input type='hidden' id='updatedDate' name='updatedDate' value='error'>
                 <input type='hidden' id='addedByUser' name='addedByUser' value='<%= user.email %>'>
                 <input type='hidden' id='ranking' name='ranking' value=0>
+                <input type='hidden' id='copyFull' name='copyFull' value=0>
+                <input type='hidden' id='copyPortion' name='copyPortion' value=0>
                 <input type='hidden' id='team' name='team' value='<%= user.team %>'>
-                <input type='hidden' id='public' name='public' value=false>
+                <input type='hidden' id='publicStatus' name='publicStatus' value=false>
               </div>
             </div>
             <div class='form-group'>
@@ -114,6 +119,7 @@
             <% if (user) { %>
               <li id='greeting'>Hello
                 <span id="userFirstName"><%= user.name %></span>!
+                <h5 id="userEmail"><%= user.email %></h5>
               </li>
               <% } %>
           </li>
@@ -172,64 +178,100 @@
         <!-- Loop through all templates -->
         <% for(var i = 0; i < templates.length; i++) { %>
           <!-- If template was added by an admin (bcoleman@ixl.com OR template was added by current user, then display) -->
-          <% if (templates[i].addedByUser == 'bcoleman@ixl.com' || templates[i].addedByUser == user.email) { %>
-            <li id='<%= templates[i].id %>' class='template'>
-              <!-- Name of the template -->
-              <h2 class='<%= templates[i].category.toLowerCase() %>' id='templateName'><%= templates[i].name %> <i class='fas fa-check' id='<%= templates[i].type.toLowerCase() %>'></i></h2>
-              <div class='details'>
-                <!-- Ranking number (hidden), Template ID, and template last updated date -->
-                <h3 class='line'><span id='templateRanking' hidden><%=templates[i].ranking %></span><%=templates[i].id %> - <i id='templateUpdatedDate'><%= templates[i].updatedDate %></i></h3>
-                <!-- Buttons -->
-                <!-- Copy template, greeting, closing, and signature -->
-                <div class='line' id='copyFull'>
-                  <button id='copyFullBtn' class='btn line'><i class='far fa-copy fa-lg'></i></button>
-                </div>
-                <!-- Copy template only -->
-                <div class='line' id='copyPortion'>
-                  <button id='copyPortionBtn' class='btn line'><i class='fas fa-eye fa-lg'></i></button>
-                </div>
-                <!-- If public is false (meaning this template is for private use) then show these buttons which allows the user to edit, and remove the template -->
-                <% if (templates[i].public == 'false') { %>
-                  <!-- If template was added by user, show edit button -->
-                  <% if (templates[i].addedByUser == user.email) { %>
-                    <div class='line' id='edit'>
-                      <button id='editBtn' class='btn line'><i class='fas fa-pencil-alt fa-lg'></i></button>
-                    </div>
-                    <% } %>
-                      <!-- Clear the rank of this template (will add back in later if needed)
+          <% if (templates[i].addedByUser == 'bcoleman@ixl.com' ||
+          templates[i].addedByUser == 'salesforce@ixl.com' ||
+          templates[i].addedByUser == user.email) { %>
+
+
+            <% if ((templates[i].publicStatus == 'false' && templates[i].addedByUser == user.email) || (templates[i].publicStatus == 'true')) { %>
+
+
+              <li id='<%= templates[i].id %>' class='template'>
+                <!-- Name of the template, check mark shown if id is 'Template-Verified' -->
+                <h2 class='<%= templates[i].category.toLowerCase() %>' id='templateName'>
+                <%= templates[i].name %>
+                <% if(templates[i].addedByUser == 'salesforce@ixl.com'){ %>
+                <i class='fas fa-check' id='<%= templates[i].program.toLowerCase() %>'></i>
+              <% } %>
+            </h2>
+                <div class='details'>
+                  <!-- Ranking number (hidden), Template ID, and template last updated date -->
+                  <h3 class='line'>
+                  <span id='templateRanking' hidden>
+                    <%= templates[i].ranking %>
+                  </span>
+                  <span id='templateCopyFull' hidden>
+                    <%= templates[i].copyFull %>
+                  </span>
+                  <span id='templateCopyPortion' hidden>
+                    <%= templates[i].copyPortion %>
+                  </span>
+                  <i id='templateUpdatedDate'>
+                    <%= templates[i].updatedDate %>
+                  </i>
+                  -
+                  <span id='templateProgram'>
+                    <b><%= templates[i].program.toUpperCase() %></b>
+                  </span>
+
+                </h3>
+                  <!-- Buttons -->
+                  <!-- Copy template, greeting, closing, and signature -->
+                  <div class='line' id='copyFull'>
+                    <button id='copyFullBtn' class='btn line'><i class='far fa-copy fa-lg'></i></button>
+                  </div>
+                  <!-- Copy template only -->
+                  <div class='line' id='copyPortion'>
+                    <button id='copyPortionBtn' class='btn line'><i class='fas fa-eye fa-lg'></i></button>
+                  </div>
+                  <!-- If public is false (meaning this template is for private use) then show these buttons which allows the user to edit, and remove the template -->
+                  <% if (templates[i].publicStatus == 'false') { %>
+                    <!-- If template was added by user, show edit button -->
+                    <% if (templates[i].addedByUser == user.email) { %>
+                      <div class='line' id='edit'>
+                        <button id='editBtn' class='btn line'><i class='fas fa-pencil-alt fa-lg'></i></button>
+                      </div>
+                      <% } %>
+                        <!-- Clear the rank of this template (will add back in later if needed)
                       <div class='line' id='clearRank'>
                         <button id='clearRankBtn' class='btn line'><i class='fas fa-ban fa-lg'></i></button>
                       </div>
                       -->
-                      <!-- If user is admin OR this template was added by current usser, show remove button -->
-                      <% if (templates[i].addedByUser == user.email) { %>
-                        <div class='line' id='removeConfirm'>
-                          <button id='removeConfirmBtn' class='btn line'><i class='far fa-trash-alt fa-lg' ></i></button>
-                        </div>
-                        <% } %>
+                        <!-- If user is admin OR this template was added by current user, show remove button -->
+                        <% if (templates[i].addedByUser == user.email) { %>
+                          <div class='line' id='removeConfirm'>
+                            <button id='removeConfirmBtn' class='btn line'><i class='far fa-trash-alt fa-lg' ></i></button>
+                          </div>
                           <% } %>
-                            <div class="line">
-                              <span id="copiedAlert"></span>
-                            </div>
-              </div>
-              <div class='<%= templates[i].category.toLowerCase() %> blur' id='templateBody'>
-                <!-- Show the template -->
-                <%- templates[i].body %>
-              </div>
-              <div class='row'>
-                <div class='col-lg-9 col-md-9'>
-                  <!-- Template tags and template type (hidden) -->
-                  <h3 class='tags' id='templateTags'><%= templates[i].tags %></h3>
-                  <h3 class='type' id='templateType' hidden><%= templates[i].type %></h3>
+                            <% } %>
+                              <div class="line">
+                                <span id="copiedAlert"></span>
+                              </div>
                 </div>
-                <div class='col-lg-3 col-md-3'>
-                  <!-- Template category -->
-                  <h3 class='<%= templates[i].category.toLowerCase() %>' id='templateCategory'><%= templates[i].category %></h3>
+                <div class='<%= templates[i].category.toLowerCase() %> blur' id='templateBody'>
+                  <%- templates[i].body %>
                 </div>
-              </div>
-            </li>
-            <% } %>
+                <div class='row'>
+                  <div class='col-lg-9 col-md-9'>
+                    <!-- Template tags and template type (hidden) -->
+                    <h3 class='tags' id='templateTags'><%= templates[i].tags %></h3>
+                    <h3 class='type' id='templateTeam' hidden><%= templates[i].team %></h3>
+                    <h3 class='type' id='templatePublicStatus' hidden><%= templates[i].publicStatus %></h3>
+                  </div>
+                  <div class='col-lg-3 col-md-3'>
+                    <!-- Template category -->
+                    <h3 class='<%= templates[i].category.toLowerCase() %> line' id='templateCategory'><%= templates[i].category %></h3>
+                  </div>
+                </div>
+              </li>
+
+
               <% } %>
+                <% } %>
+
+
+                  <% } %>
+                    <!-- End For loop -->
 
       </ul>
     </div>
@@ -256,5 +298,6 @@
 <script src='app-main.js'></script>
 <!-- Script for searching templates -->
 <script src='search.js'></script>
+<script src='jsforce.js'></script>
 
 </html>

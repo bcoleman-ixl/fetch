@@ -83,16 +83,17 @@ $(".btn").mouseup(function() {
 
 // Generates a unique ID for each template
 function setTemplateId() {
+  var templateId = '';
   let digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   // Number 100 - 999
-  let randNum = Math.floor((Math.random() * (999 - 100) + 1) + 100);
-  // First random digit
-  let digit1 = digits.charAt(Math.floor((Math.random() * 25)));
-  // Second random digit
-  let digit2 = digits.charAt(Math.floor((Math.random() * 25)));
-  // Set tempalteId
-  let templateId = digit1 + digit2 + randNum;
-  // Assign newly created ID to the template's ID field
+  for (var k = 0; k < 18; k++) {
+    if (k % 2 > 0) {
+      templateId += Math.floor(Math.random() * 9) + 1;
+
+    } else {
+      templateId += digits.charAt(Math.floor((Math.random() * 25)));
+    }
+  }
   document.getElementById('id').value = templateId;
 }
 
@@ -105,6 +106,9 @@ function handleClick(e) {
   // Grab the id of the element that was clicked
   let eventId = $(e.target).closest('div').attr('id');
 
+  let template = document.getElementById(templateId);
+  let program = template.querySelector('#templateProgram').innerHTML;
+
   /* If copy full button was clicked or template body was clicked */
   if (e.target !== e.currentTarget && (eventId == 'templateBody' || eventId == 'copyFull')) {
     // P tags are removed and replaced with breaks. TODO: Need better solution here.
@@ -116,13 +120,17 @@ function handleClick(e) {
      * to add template components (greeting, closing, signature,
      * etc.). Then copies the full e-mail to the clipboard
      */
-    copy(buildEmail(body));
-
+    copy(buildEmail(body, program));
     // Selects ranking element and currentRanking. Converts to integer and updates ranking number
     let ranking = document.getElementById(templateId).querySelector('#templateRanking').innerHTML;
+    let copyFull = document.getElementById(templateId).querySelector('#templateCopyFull').innerHTML;
+    let copyPortion = document.getElementById(templateId).querySelector('#templateCopyPortion').innerHTML;
+
+    let currentCopyFull = parseInt(copyFull);
+    let currentCopyPortion = parseInt(copyPortion);
     let currentRanking = parseInt(ranking);
     // Updates ranking number for this templateId
-    updateRanking(templateId, currentRanking + 1);
+    updateRanking(templateId, currentRanking + 1, currentCopyFull + 1, currentCopyPortion);
 
     /* If copy portion button was clicked */
   } else if (e.target !== e.currentTarget && eventId == 'copyPortion') {
@@ -134,9 +142,14 @@ function handleClick(e) {
 
     // Selects ranking element and currentRanking. Converts to integer and updates ranking number
     let ranking = document.getElementById(templateId).querySelector('#templateRanking').innerHTML;
+    let copyFull = document.getElementById(templateId).querySelector('#templateCopyFull').innerHTML;
+    let copyPortion = document.getElementById(templateId).querySelector('#templateCopyPortion').innerHTML;
+
+    let currentCopyFull = parseInt(copyFull);
+    let currentCopyPortion = parseInt(copyPortion);
     let currentRanking = parseInt(ranking);
     // Updates ranking number for this templateId
-    updateRanking(templateId, currentRanking + 1);
+    updateRanking(templateId, currentRanking + 1, currentCopyFull, currentCopyPortion + 1);
 
     /* If trash (or remove) button was clicked */
   } else if (e.target !== e.currentTarget && eventId == 'removeConfirm') {
@@ -231,7 +244,7 @@ function copy(html) {
   document.body.removeChild(container)
 }
 
-function buildEmail(body) {
+function buildEmail(body, program) {
   /**
    * Grabs users first name from their account menu (set by Google Profile).
    * Sets e-mail, program, phone number, website, greeting,
@@ -241,17 +254,39 @@ function buildEmail(body) {
    *
    * TODO: Need to update so user can select their own greeting/closing
    */
-  let userFirstName = document.getElementById('userFirstName').innerHTML;
-  let user = `<span style='color: blue;'><b> ${userFirstName} </b></span></br>`;
-  let email = `E-mail: help@ixl.com<br>`;
-  let program = 'IXL Support<br>';
-  let phone = 'Phone: 855.255.6676<br>';
-  let website = 'Website: www.ixl.com<br>';
-  let greeting = 'Dear NAME,<br><br>Thank you for reaching out to us.<br>';
-  let closing = 'Please let me know if you have any questions and I will be happy to help!<br>'
-  let logoLocation = `'https://c.na57.content.force.com/servlet/servlet.ImageServer?id=0150b0000027zq8&oid=00D300000001FBU&lastMod=1495736864000'`
-  let logo = `<img src= ${logoLocation} alt='ixl-logo'>`;
-  let signature = `<br>Sincerely, <br> ${user} ${program} <br> ${email} ${phone} ${website} ${logo}`;
+
+  console.log(program);
+  var userFirstName = document.getElementById('userFirstName').innerHTML;
+
+  var greeting = 'Dear NAME,<br><br>Thank you for reaching out to us.<br>';
+  var closing = '<br> Please let me know if you have any questions and I will be happy to help!<br>'
+  var user = `<span style='color: blue;'><b> ${userFirstName} </b></span></br>`;
+  var program = 'IXL';
+  var signature = 'error';
+  var email = 'error';
+
+  if (program == 'IXL') {
+    program = 'IXL Support<br>';
+    email = `E-mail: help@ixl.com<br>`;
+    var phone = 'Phone: 855.255.6676<br>';
+    var website = 'Website: www.ixl.com<br>';
+    var logoLocation = `'https://c.na57.content.force.com/servlet/servlet.ImageServer?id=0150b0000027zq8&oid=00D300000001FBU&lastMod=1495736864000'`
+    var logo = `<img src= ${logoLocation} alt='ixl-logo'>`;
+    signature = `<br>Sincerely, <br> ${user} ${program} <br> ${email} ${phone} ${website} ${logo}`;
+  } else if (type == 'QW') {
+    user = `<b> ${userFirstName} </b>`;
+    closing = 'Please let me know if you have any questions and I will be happy to help!<br>'
+    program = 'Quia Support';
+    email = `nse@quia.com`;
+    signature = `<br>Sincerely,<br>${user}<br>${program}<br>${email}`
+  } else if (type == 'QB') {
+    user = `<b> ${userFirstName} </b>`;
+    closing = 'Please let me know if you have any questions and I will be happy to help!<br>'
+    program = 'Quia Support';
+    email = `bookhelp@quia.com`;
+    signature = `<br>Sincerely,<br>${user}<br>${program}<br>${email}`
+  }
+
   return `${greeting} ${body} ${closing} ${signature}`;
 }
 
@@ -287,25 +322,26 @@ function editTemplate(templateId) {
   let nameField = document.getElementById('name');
   let bodyField = tinymce.get('body').getBody();
   let categoryField = document.getElementById('category');
-  let typeField = document.getElementById('type');
+  let programField = document.getElementById('program');
   let tagsField = document.getElementById('tags');
 
   // Grab this templates information
   let name = document.getElementById(templateId).querySelector('#templateName');
   let body = document.getElementById(templateId).querySelector('#templateBody');
   let category = document.getElementById(templateId).querySelector('#templateCategory');
-  let type = document.getElementById(templateId).querySelector('#templateType');
+  let program = document.getElementById(templateId).querySelector('#templateProgram');
   let tags = document.getElementById(templateId).querySelector('#templateTags');
+  let team = document.getElementById(templateId).querySelector('#team');
+  let publicStatus = document.getElementById(templateId).querySelector('#publicStatus');
   let today = new Date().toDateInputValue();
 
   // Set all form fields equal to this templates fields
   idField.value = templateId;
-  nameField.value = name.textContent;
-  bodyField.innerHTML = body.innerHTML;
-  categoryField.value = category.textContent;
-  typeField.value = type.textContent;
+  nameField.value = name.textContent.trim();
+  bodyField.innerHTML = body.innerHTML.trim();
+  categoryField.value = category.textContent.trim();
+  programField.value = program.textContent.trim();
   tagsField.value = tags.textContent;
-
   // Removes forms method and action, form handled by update method (below)
   form.method = '';
   form.action = '';
@@ -323,7 +359,7 @@ function update(e) {
   let name = document.querySelector('#name').value;
   let body = tinymce.get('body').getBody().innerHTML;
   let category = document.querySelector('#category').value;
-  let type = document.querySelector('#type').value;
+  let program = document.querySelector('#program').value;
   let tags = document.querySelector('#tags').value;
   fetch('update', {
     method: 'put',
@@ -336,20 +372,24 @@ function update(e) {
       'name': name,
       'body': body,
       'category': category,
-      'type': type,
-      'tags': tags
+      'program': program,
+      'tags': tags,
     })
   }).then(res => {
     if (res.ok) return res.json()
   }).then(data => {
-    window.location.reload(true)
+    window.location.reload()
   })
 }
 
-function updateRanking(id, newRanking) {
+function updateRanking(id, newRanking, copyFullNumUpdate, copyPortionNumUpdate) {
   // Get ranking element and update it with new rank number
   let templateRanking = document.getElementById(id).querySelector('#templateRanking');
+  let copyFullElement = document.getElementById(id).querySelector('#templateCopyFull');
+  let copyPortionElement = document.getElementById(id).querySelector('#templateCopyPortion');
   templateRanking.innerHTML = newRanking;
+  copyFullElement.innerHTML = copyFullNumUpdate;
+  copyPortionElement.innerHTML = copyPortionNumUpdate;
   // Send update to database, do not reload page
   fetch('updateRanking', {
     method: 'put',
@@ -358,7 +398,9 @@ function updateRanking(id, newRanking) {
     },
     body: JSON.stringify({
       'id': id,
-      'ranking': newRanking
+      'ranking': newRanking,
+      'copyFull': copyFullNumUpdate,
+      'copyPortion': copyPortionNumUpdate
     })
   }).then(res => {
     if (res.ok) return res.json()
@@ -402,5 +444,20 @@ function rank() {
   }
 }
 
+function updateLogs(userSearch) {
+  let userEmail = document.getElementById('userEmail').innerHTML.toLowerCase();
+  fetch('updateLogs', {
+    method: 'put',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      'userEmail': userEmail,
+      'userSearch': userSearch
+    })
+  }).then(res => {
+    if (res.ok) return res.json()
+  }).then(data => {})
+}
 
 initialize()

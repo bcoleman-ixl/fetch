@@ -9,12 +9,18 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
+// Constants and function for creating the updated date
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+];
+
 /* Connecting to Mongo database */
 const mongoose = require('mongoose');
 const usersClient = require('mongoose');
 const templatesClient = require('mongodb').MongoClient;
+const logsClient = require('mongodb').MongoClient;
 let templatesDb = null;
-let usersDb = null;
+let logsDb = null;
 
 /* User authentication */
 const User = require('./models/user-model');
@@ -22,6 +28,34 @@ const cookieSession = require('cookie-session');
 const passport = require('passport');
 const keys = require('./config/keys');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+
+const jsforce = require('jsforce');
+
+/* IXL Folders */
+const tsixl = 'Folder.Name = \'TS IXL\' OR ';
+const tsixlreports = 'Folder.Name = \'TS IXL Reports, SS, emails\' OR ';
+const tsixlsignin = 'Folder.Name = \'TS IXL Sign in issues\' OR ';
+const tsixlskill = 'Folder.Name = \'TS IXL Skill issues\' OR ';
+const tsixltemp = 'Folder.Name = \'TS IXL Temp\' OR ';
+const tsl1ixl = 'Folder.Name = \'TS L1 IXL\' OR ';
+
+/* Quia Folders */
+const tsnge = 'Folder.Name = \'TS NGE\' OR ';
+const tsnie = 'Folder.Name = \'TS NIE\' OR ';
+const tsnjcl = 'Folder.Name = \'TS NJCL\' OR ';
+const tsnje = 'Folder.Name = \'TS NJE\' OR ';
+const tsnpe = 'Folder.Name = \'TS NSE\' OR ';
+const tsqb = 'Folder.Name = \'TS QB\' OR ';
+const tsqbstolen = 'Folder.Name = \'TS QB Stolen book keys\' OR ';
+const tsqw = 'Folder.Name = \'TS QW\' OR ';
+const tsqwaccounts = 'Folder.Name = \'TS QW Accounts\' OR ';
+const tsqwclasses = 'Folder.Name = \'TS QW Classes\' OR ';
+const tsqworg = 'Folder.Name = \'TS QW Other Organizations\' OR ';
+const end = 'Folder.Name = \'End of the query\'';
+
+// TODO: Work on adding program
+
+
 
 /**
  * Checking if users have been authenticated
@@ -76,10 +110,20 @@ templatesClient.connect(keys.mongoDb.templatesURI, (err, client) => {
   templatesDb = client.db('templates');
   // Listen on port 3000
   app.listen(3000);
+  console.log('listening on 3000');
+});
+
+logsClient.connect(keys.mongoDb.logsURI, (err, client) => {
+  if (err) return console.log(err);
+  logsDb = client.db('logs');
+  // Listen on port 3000
+  app.listen(4000);
+  console.log('listening on 4000 for logs');
 });
 
 /* Connects to users database*/
-mongoose.connect(keys.mongoDb.usersURI, () => {});
+mongoose.connect(keys.mongoDb.usersURI);
+
 
 /* Adds the template to the database */
 app.post('/add', (req, res) => {
@@ -122,7 +166,7 @@ app.put('/update', (req, res) => {
         name: req.body.name,
         body: req.body.body,
         category: req.body.category,
-        type: req.body.type,
+        program: req.body.program,
         team: req.body.team,
         public: req.body.public,
         tags: req.body.tags
@@ -132,6 +176,8 @@ app.put('/update', (req, res) => {
         _id: -1
       },
       upsert: true
+
+
     }, (err, result) => {
       if (err) return res.send(err)
       res.send(result)
@@ -149,8 +195,9 @@ app.put('/updateRanking', (req, res) => {
       id: req.body.id
     }, {
       $set: {
-        id: req.body.id,
-        ranking: req.body.ranking
+        ranking: req.body.ranking,
+        copyFull: req.body.copyFull,
+        copyPortion: req.body.copyPortion
       }
     }, {
       sort: {
@@ -160,6 +207,18 @@ app.put('/updateRanking', (req, res) => {
     }, (err, result) => {
       if (err) return res.send(err)
       res.send(result)
+    })
+});
+
+app.put('/updateLogs', (req, res) => {
+  console.log('sending: ' + req.body.userSearch);
+  logsDb.collection('logs')
+    .update({
+      userEmail: req.body.userEmail
+    }, {
+      $addToSet: {
+        userSearch: req.body.userSearch
+      }
     })
 });
 
@@ -190,6 +249,11 @@ passport.use(new GoogleStrategy({
         console.log('existing user:' + currentUser);
         done(null, currentUser);
       } else {
+
+        logsDb.collection('logs').insert({
+          userEmail: profile.emails[0].value,
+          userSearch: []
+        });
         // Create a new user
         new User({
           name: profile.name.givenName,
@@ -209,7 +273,8 @@ passport.use(new GoogleStrategy({
 
 app.get('/auth/google',
   passport.authenticate('google', {
-    scope: ['profile', 'email']
+    scope: ['profile', 'email'],
+    prompt: 'select_account'
   }));
 
 app.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
@@ -251,3 +316,211 @@ app.get('/logout', (req, res) => {
 app.get('/', (req, res) => {
   res.redirect('/templates');
 });
+
+/**
+ * Retrieve templates from Salesforce
+ */
+var conn = new jsforce.Connection({
+  oauth2: {
+    // you can change loginUrl to connect to sandbox or prerelease env.
+    loginUrl: 'https://test.salesforce.com',
+    clientId: keys.salesforce.clientId,
+    clientSecret: keys.salesforce.clientSecret,
+    redirectUri: keys.salesforce.redirectUri
+  }
+});
+
+conn.login(keys.salesforce.username, keys.salesforce.password, function(err, userInfo) {
+  if (err) {
+    return console.error(err);
+  }
+  // Now you can get the access token and instance URL information.
+  // Save them to establish connection next time.
+  console.log(conn.accessToken);
+  console.log(conn.instanceUrl);
+
+
+  conn.sobject("EmailTemplate")
+    .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
+    .where(
+      tsixl +
+      tsixlreports +
+      tsixlsignin +
+      tsixlskill +
+      tsixltemp +
+      tsl1ixl +
+      end)
+    .execute(function(err, records) {
+      try {
+        // Select program based on Folder name
+
+        var program = '';
+        var programs = [
+          ['TS IXL', 'IXL'],
+          ['TS IXL Reports, SS, emails', 'IXL'],
+          ['TS IXL Sign in issues', 'IXL'],
+          ['TS IXL Skill issues', 'IXL'],
+          ['TS IXL Temp', 'IXL'],
+          ['TS L1 IXL', 'IXL'],
+          ['TS IXL', 'IXL']
+        ];
+
+
+        for (var i = 0; i < records.length; i++) {
+          // Get individual record
+          var record = records[i];
+
+          for (var k = 0; k < programs.length; k++) {
+            // If folder name == the array at k[0] position, then set program to arry at k[1] position.
+            if (programs[k][0] == record.Folder.Name) {
+              program = programs[k][1];
+            }
+          }
+          // Get and format last modified date
+          var longDate = new Date(record.LastModifiedDate);
+          var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
+
+          // Get the e-mail body in HTML and remove first sentence and after sincerely
+          if (record.HtmlValue == null) {
+            console.log('Body [[null]] for ' + record.Name);
+          } else {
+            var numberRegex = /\d*\.*\d*\s*(.*)/g;
+            var name = numberRegex.exec(record.Name)[1];
+            var body = record.HtmlValue;
+            body = body.replace(/(\r\n|\n|\r)/gm, "");
+
+            function count(str) {
+              var regex = /\s*<\s*br\s*\/>\s*<\s*br\s*\/\s*>/g;
+              return ((str || '').match(regex) || []).length
+            }
+
+            var breakCount = count(body);
+            console.log(breakCount);
+            var regexp = /\s*<\s*br\s*\/>\s*<\s*br\s*\/\s*>/g;
+
+            var start = 0;
+            var result = body.split(regexp).slice(start);
+            var finalBody = [];
+            var greeting = result[1];
+            var closing = result[breakCount - 2];
+            for (var k = 2; k < breakCount - 2; k++) {
+              if (k == breakCount - 3) {
+                finalBody.push(result[k]);
+              } else {
+                finalBody.push(result[k] + '<br /> <br />');
+              }
+            }
+
+            finalBody = finalBody.join('');
+
+          }
+          // fields in Account relationship are fetched
+          if (record.HtmlValue != null) {
+            templatesDb.collection('templates')
+              .update({
+                id: record.DeveloperName
+              }, {
+                id: record.DeveloperName,
+                name: name,
+                body: finalBody,
+                greeting: greeting,
+                closing: closing,
+                updatedDate: date,
+                addedByUser: 'salesforce@ixl.com',
+                category: 'Analytics',
+                ranking: '0',
+                copyFull: '0',
+                copyPortion: '0',
+                team: 'techSupport',
+                publicStatus: 'true',
+                program: program,
+                tags: ''
+              }, {
+                upsert: true
+              }) // End of update statement
+          } // End of if statement
+        } // End of for loop
+      } catch (e) {
+        console.log(e);
+      }
+    }) // End of query
+
+
+
+
+}); // End of conn.login
+
+/*conn.sobject("EmailTemplate")
+  .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
+  .where(
+    tsnge +
+    tsnie +
+    tsnjcl +
+    tsnje +
+    tsnpe +
+    tsqb +
+    tsqbstolen +
+    tsqw +
+    tsqwaccounts +
+    tsqwclasses +
+    tsqworg +
+    end)
+  .execute(function(err, records) {
+    if (err) {
+      return console.error(err);
+    }
+
+
+    var program = '';
+    var programs = [
+      ['TS IXL', 'IXL'],
+      ['TS IXL', 'IXL'],
+      ['TS IXL', 'IXL'],
+      ['TS IXL', 'IXL'],
+      ['TS IXL', 'IXL'],
+      ['TS IXL', 'IXL'],
+      ['TS IXL', 'IXL'],
+      ['TS IXL', 'IXL']
+    ];
+
+    for (var k = 0; k < programs.length; i++) {
+      if (programs[k][0] == Folder.Name) {
+        program = programs[k][1];
+      }
+    }
+
+    for (var i = 0; i < records.length; i++) {
+      var record = records[i];
+      var tempDate = new Date(record.LastModifiedDate);
+      var date = MONTH_NAMES[tempDate.getMonth()] + ' ' + tempDate.getDate() + ', ' + tempDate.getFullYear();
+      var body = record.HtmlValue;
+      body = body.replace(/(\r\n|\n|\r)/gm, "");
+      var introTrimmed = body.match(/(?<=<.*br.*\/>.*<.*br.*\/>).
+);
+var finalBody = introTrimmed[0].match(/^.*(?=<.*br.*\/>.*<.*br.*\/>\s*Sincerely)/);
+var id = record.Id.toUpperCase();
+// fields in Account relationship are fetched
+if (record.HtmlValue != null) {
+templatesDb.collection('templates')
+  .update({
+    id: record.DeveloperName
+  }, {
+    id: record.DeveloperName,
+    name: record.Name,
+    body: finalBody,
+    updatedDate: date,
+    addedByUser: 'salesforce@ixl.com',
+    category: 'Analytics',
+    ranking: '0',
+    copyFull: '0',
+    copyPortion: '0',
+    team: 'techSupport',
+    publicStatus: 'true',
+    program: 'temp',
+    tags: ''
+  }, {
+    upsert: true
+  })
+}
+}
+});*/
