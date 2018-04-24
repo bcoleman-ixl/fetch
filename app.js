@@ -352,30 +352,10 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       end)
     .execute(function(err, records) {
       try {
-        // Select program based on Folder name
-
-        var program = '';
-        var programs = [
-          ['TS IXL', 'IXL'],
-          ['TS IXL Reports, SS, emails', 'IXL'],
-          ['TS IXL Sign in issues', 'IXL'],
-          ['TS IXL Skill issues', 'IXL'],
-          ['TS IXL Temp', 'IXL'],
-          ['TS L1 IXL', 'IXL'],
-          ['TS IXL', 'IXL']
-        ];
-
-
         for (var i = 0; i < records.length; i++) {
           // Get individual record
           var record = records[i];
 
-          for (var k = 0; k < programs.length; k++) {
-            // If folder name == the array at k[0] position, then set program to arry at k[1] position.
-            if (programs[k][0] == record.Folder.Name) {
-              program = programs[k][1];
-            }
-          }
           // Get and format last modified date
           var longDate = new Date(record.LastModifiedDate);
           var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
@@ -395,7 +375,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             }
 
             var breakCount = count(body);
-            console.log(breakCount);
             var regexp = /\s*<\s*br\s*\/>\s*<\s*br\s*\/\s*>/g;
 
             var start = 0;
@@ -420,21 +399,101 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
               .update({
                 id: record.DeveloperName
               }, {
-                id: record.DeveloperName,
-                name: name,
-                body: finalBody,
-                greeting: greeting,
-                closing: closing,
-                updatedDate: date,
-                addedByUser: 'salesforce@ixl.com',
-                category: 'Analytics',
-                ranking: '0',
-                copyFull: '0',
-                copyPortion: '0',
-                team: 'techSupport',
-                publicStatus: 'true',
-                program: program,
-                tags: ''
+                $set: {
+                  body: finalBody,
+                  greeting: greeting,
+                  closing: closing,
+                  updatedDate: date,
+                  addedByUser: 'salesforce@ixl.com',
+                  category: 'Other',
+                  team: 'techSupport',
+                  publicStatus: 'true',
+                  program: 'IXL',
+                }
+              }, {
+                upsert: true
+              }) // End of update statement
+          } // End of if statement
+        } // End of for loop
+      } catch (e) {
+        console.log(e);
+      }
+    }) // End of query
+
+  conn.sobject("EmailTemplate")
+    .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
+    .where(
+      tsnge +
+      tsnie +
+      tsnjcl +
+      tsnje +
+      tsnpe +
+      tsqw +
+      tsqwaccounts +
+      tsqwclasses +
+      tsqworg +
+      end)
+    .execute(function(err, records) {
+      try {
+        // Select program based on Folder name
+
+        for (var i = 0; i < records.length; i++) {
+          // Get individual record
+          var record = records[i];
+
+          // Get and format last modified date
+          var longDate = new Date(record.LastModifiedDate);
+          var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
+
+          // Get the e-mail body in HTML and remove first sentence and after sincerely
+          if (record.Body == null) {
+            console.log('Body [[null]] for ' + record.Name);
+          } else {
+            var numberRegex = /\d*\.*\d*\s*(.*)/g;
+            var name = numberRegex.exec(record.Name)[1];
+            var body = record.Body;
+            body = body.replace(/(\r\n|\n|\r)/gm, "</br>");
+            body = body.toString();
+
+            function count(str) {
+              var regex = /<\/br><\/br>/g;
+              return ((str || '').match(regex) || []).length
+            }
+
+            var breakCount = count(body);
+
+            var result = body.split('</br></br>').slice();
+            var finalBody = [];
+            var greeting = result[1];
+            var closing = result[breakCount - 1];
+            console.log(closing);
+            for (var k = 2; k < breakCount - 1; k++) {
+              if (k == breakCount - 2) {
+                finalBody.push(result[k]);
+              } else {
+                finalBody.push(result[k] + '<br/><br/>');
+              }
+            }
+            finalBody = finalBody.join('');
+
+          }
+          // fields in Account relationship are fetched
+          if (record.Body != null) {
+            templatesDb.collection('templates')
+              .update({
+                id: record.DeveloperName
+              }, {
+                $set: {
+                  body: finalBody,
+                  greeting: greeting,
+                  closing: closing,
+                  updatedDate: date,
+                  addedByUser: 'salesforce@ixl.com',
+                  category: 'Audio',
+                  team: 'techSupport',
+                  publicStatus: 'true',
+                  program: 'QW',
+                }
               }, {
                 upsert: true
               }) // End of update statement
@@ -446,81 +505,80 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
     }) // End of query
 
 
+  conn.sobject("EmailTemplate")
+    .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
+    .where(
+      tsqb +
+      tsqbstolen +
+      end)
+    .execute(function(err, records) {
+      try {
+        // Select program based on Folder name
 
+        for (var i = 0; i < records.length; i++) {
+          // Get individual record
+          var record = records[i];
 
-}); // End of conn.login
+          // Get and format last modified date
+          var longDate = new Date(record.LastModifiedDate);
+          var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
 
-/*conn.sobject("EmailTemplate")
-  .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
-  .where(
-    tsnge +
-    tsnie +
-    tsnjcl +
-    tsnje +
-    tsnpe +
-    tsqb +
-    tsqbstolen +
-    tsqw +
-    tsqwaccounts +
-    tsqwclasses +
-    tsqworg +
-    end)
-  .execute(function(err, records) {
-    if (err) {
-      return console.error(err);
-    }
+          // Get the e-mail body in HTML and remove first sentence and after sincerely
+          if (record.Body == null) {
+            console.log('Body [[null]] for ' + record.Name);
+          } else {
+            var numberRegex = /\d*\.*\d*\s*(.*)/g;
+            var name = numberRegex.exec(record.Name)[1];
+            var body = record.Body;
+            body = body.replace(/(\r\n|\n|\r)/gm, "</br>");
+            body = body.toString();
 
+            function count(str) {
+              var regex = /<\/br><\/br>/g;
+              return ((str || '').match(regex) || []).length
+            }
 
-    var program = '';
-    var programs = [
-      ['TS IXL', 'IXL'],
-      ['TS IXL', 'IXL'],
-      ['TS IXL', 'IXL'],
-      ['TS IXL', 'IXL'],
-      ['TS IXL', 'IXL'],
-      ['TS IXL', 'IXL'],
-      ['TS IXL', 'IXL'],
-      ['TS IXL', 'IXL']
-    ];
+            var breakCount = count(body);
 
-    for (var k = 0; k < programs.length; i++) {
-      if (programs[k][0] == Folder.Name) {
-        program = programs[k][1];
+            var result = body.split('</br></br>').slice();
+            var finalBody = [];
+            var greeting = result[1];
+            var closing = result[breakCount - 2];
+            for (var k = 2; k < breakCount - 1; k++) {
+              if (k == breakCount - 2) {
+                finalBody.push(result[k]);
+              } else {
+                finalBody.push(result[k] + '<br/><br/>');
+              }
+            }
+            finalBody = finalBody.join('');
+
+          }
+          // fields in Account relationship are fetched
+          if (record.Body != null) {
+            templatesDb.collection('templates')
+              .update({
+                id: record.DeveloperName
+              }, {
+                $set: {
+                  body: finalBody,
+                  greeting: greeting,
+                  closing: closing,
+                  updatedDate: date,
+                  addedByUser: 'salesforce@ixl.com',
+                  category: 'Skills',
+                  team: 'techSupport',
+                  publicStatus: 'true',
+                  program: 'QB',
+                }
+              }, {
+                upsert: true
+              }) // End of update statement
+          } // End of if statement
+        } // End of for loop
+      } catch (e) {
+        console.log(e);
       }
-    }
+    }) // End of query
 
-    for (var i = 0; i < records.length; i++) {
-      var record = records[i];
-      var tempDate = new Date(record.LastModifiedDate);
-      var date = MONTH_NAMES[tempDate.getMonth()] + ' ' + tempDate.getDate() + ', ' + tempDate.getFullYear();
-      var body = record.HtmlValue;
-      body = body.replace(/(\r\n|\n|\r)/gm, "");
-      var introTrimmed = body.match(/(?<=<.*br.*\/>.*<.*br.*\/>).
-);
-var finalBody = introTrimmed[0].match(/^.*(?=<.*br.*\/>.*<.*br.*\/>\s*Sincerely)/);
-var id = record.Id.toUpperCase();
-// fields in Account relationship are fetched
-if (record.HtmlValue != null) {
-templatesDb.collection('templates')
-  .update({
-    id: record.DeveloperName
-  }, {
-    id: record.DeveloperName,
-    name: record.Name,
-    body: finalBody,
-    updatedDate: date,
-    addedByUser: 'salesforce@ixl.com',
-    category: 'Analytics',
-    ranking: '0',
-    copyFull: '0',
-    copyPortion: '0',
-    team: 'techSupport',
-    publicStatus: 'true',
-    program: 'temp',
-    tags: ''
-  }, {
-    upsert: true
-  })
-}
-}
-});*/
+}); // End of  conn.login
