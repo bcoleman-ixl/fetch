@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<!-- TODO: Still need to update and add features for sorting templates -->
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <link rel='stylesheet' href='/admin-styles.css'>
+  <!-- Bootstrap minified CSS -->
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+  <!-- Google Fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans|Roboto|Comfortaa' rel='stylesheet'>
+  <title>---</title>
+</head>
+
+<body>
+  <div class='signIn'>
+
+  </div>
+  <!-- Manage templates modal -->
+  <div class='modal fade' id='manageTemplates' tabindex='-1' role='dialog' aria-labelledby='Manage templates' aria-hidden='true'>
+    <div class='modal-dialog' role='document'>
+      <div class='modal-content'>
+        <div class='modal-header'>
+          <span id='manageTemplatesTitle'>Add new template</span>
+          <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+          <span aria-hidden='true'>&times;</span>
+        </button>
+        </div>
+        <div class='new-template'>
+          <form id='templatesForm' action='/add' method='POST' autocomplete='off' id='templatesForm'>
+            <div class='row'>
+
+              <div class='col-lg-12'>
+                <div class='form-group' style='padding-right: 0px;'>
+                  <input type='text' class='form-control' id='name' name='name' required='true' placeholder='Template Name' maxlength='40'>
+                </div>
+              </div>
+            </div>
+            <div class='form-group'>
+              <textarea rows='0' cols='80' id='body' name='body'></textarea>
+            </div>
+            <div class='row'>
+              <div class='form-group col-lg-6 col-md-6'>
+                <label for='Category'>Category</label>
+                <select class='form-control' id='category' name='category' required='true'>
+                  <option disabled selected value> --Select-- </option>
+                  <option>Analytics</option>
+                  <option>Audio</option>
+                  <option>Diagnostic</option>
+                  <option>Error Messages</option>
+                  <option>Roster</option>
+                  <option>Skills</option>
+                  <option>Signing_In</option>
+                  <option>SmartScore</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class='form-group col-lg-6 col-md-6'>
+                <label for='Program'>Program</label>
+                <select class='form-control' id='program' name='program' required='true'>
+                  <option disabled selected value> --Select-- </option>
+                  <option>IXL</option>
+                  <option>QW</option>
+                  <option>QB</option>
+                </select>
+              </div>
+
+              <div class='form-group'>
+                <input type='hidden' class='form-control' id='id' name='id' required='true'>
+                <input type='hidden' id='updatedDate' name='updatedDate' value='error'>
+                <input type='hidden' id='addedByUser' name='addedByUser' value='<%= user.email %>'>
+                <input type='hidden' id='ranking' name='ranking' value=0>
+                <input type='hidden' id='copyFull' name='copyFull' value=0>
+                <input type='hidden' id='copyPortion' name='copyPortion' value=0>
+                <input type='hidden' id='team' name='team' value='<%= user.team %>'>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-lg-6 col-md-6">
+                <label for='publicStatus'>Public?</label>
+                <select class='form-control' id='publicStatus' name='publicStatus' required='true'>
+                  <option disabled selected value> --Select-- </option>
+                  <option>true</option>
+                  <option>false</option>
+                </select>
+              </div>
+            </div>
+            <div class='form-group'>
+              <input type='text' class='form-control' id='tags' name='tags' required='true' placeholder='Tags'>
+            </div>
+            <button type='submit' class='btn btn-primary' id='submitBtn'>Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End manage templates modal -->
+
+  <!-- Confirm remove modal -->
+  <div class='modal fade' id='confirmRemoveDialog' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+    <div class='modal-dialog'>
+      <div class='modal-content'>
+        <div class='modal-header'>
+          <h4>Are you sure you want to remove: <br>
+            <b><span id='confirmRemoveName'>*error*</span></b>?
+          </h4>
+        </div>
+        <div class='modal-footer' id='confirmRemoveModal'>
+          <button type='button' class='btn btn-default' data-dismiss='modal'>Cancel</button>
+          <a class='btn btn-danger btn-ok' id='confirmRemoveBtn' onclick='remove(event)'>Delete</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End modal -->
+
+  <!-- Navbar -->
+  <nav class='navbar navbar-default'>
+    <div class="nav navbar-nav">
+
+      <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          <img class="profile-img" src="<%= user.img %>" alt=""></a>
+        <ul class="dropdown-menu">
+          <li>
+            <!-- Shows Hello and users name if user is signed in -->
+            <% if (user) { %>
+              <li id='greeting'>Hello
+                <span id="userFirstName"><%= user.name %></span>!
+                <h5 id="userEmail"><%= user.email %></h5>
+              </li>
+              <% } %>
+          </li>
+          <li class="divider"></li>
+          <!-- If user is admin, admin console option is shown -->
+          <% if (user.type == 'admin') { %>
+            <li><a href="/templates">User Console</a></li>
+            <li><a href="/admin">Admin Console</a></li>
+            <% } %>
+              <li class="divider"></li>
+              <li id="logout"> <button class="btn btn-danger btn-sm" type="button" name="button" onclick="location.href = '/logout';">Logout</button></li>
+        </ul>
+      </li>
+    </div>
+  </nav>
+  <!-- End navbar -->
+
+
+  <!-- Spacing -->
+  <div class='row space'>
+    <div class='col-lg-3'></div>
+    <div class='col-lg-6'>
+      <div>
+      </div>
+    </div>
+    <div class='col-lg-3'></div>
+  </div>
+  <!-- End spacing -->
+
+
+
+
+  <!-- Templates -->
+  <div class='row space'>
+
+    <div class="logs">
+
+      <h2>Logs</h2>
+      <!-- Loop through all logs -->
+      <% for(var k = 0; k < logs.length; k++) { %>
+
+        <p> <b>User:
+          <%= logs[k].userEmail; %></b>
+        </p>
+
+
+        <% for(var m = 0; m < logs[k].userSearch.length; m++) { %>
+
+          <p>
+            <i>
+
+              <%= logs[k].userSearch[m]; %>
+            </i>
+          </p>
+
+          <%  } %>
+
+            <br>
+            <%  } %>
+
+    </div>
+
+
+  </div>
+  <!-- End templates -->
+
+  <!-- Logout -->
+
+  <!-- End Logout -->
+
+
+</body>
+
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script src='https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=q4w1ytxm4ft7tl8tg92mbys2kh30beuux061ovviw4oc4pqo'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+<script defer src='https://use.fontawesome.com/releases/v5.0.6/js/all.js'></script>
+<script src='app-main.js'></script>
+<script src='search.js'></script>
+<script src='jsforce.js'></script>
+
+</html>
