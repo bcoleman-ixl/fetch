@@ -116,9 +116,9 @@ templatesClient.connect(keys.mongoDb.templatesURI, (err, client) => {
 logsClient.connect(keys.mongoDb.logsURI, (err, client) => {
   if (err) return console.log(err);
   logsDb = client.db('logs');
-  // Listen on port 3000
-  app.listen(4000);
-  console.log('listening on 4000 for logs');
+  // Listen on port 3001
+  app.listen(3001);
+  console.log('listening on 3001 for logs');
 });
 
 /* Connects to users database*/
@@ -130,7 +130,7 @@ app.post('/add', (req, res) => {
   templatesDb.collection('templates').save(req.body, (err, result) => {
     if (err) return console.log(err)
     console.log('saved to database')
-    res.redirect('/templates')
+    res.redirect('back')
   })
 });
 
@@ -237,7 +237,7 @@ passport.deserializeUser((id, done) => {
 passport.use(new GoogleStrategy({
     clientID: keys.google.clientID,
     clientSecret: keys.google.clientSecret,
-    callbackURL: "http://localhost:3000/auth/google/callback"
+    callbackURL: "http://scruffy.quiacorp.com:3000/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     console.log(profile.emails[0].value);
@@ -260,6 +260,7 @@ passport.use(new GoogleStrategy({
           googleID: profile.id,
           img: profile._json.image.url,
           team: 'techSupport',
+          programs: ['IXL'],
           type: 'user',
           email: profile.emails[0].value
         }).save().then((newUser) => {
@@ -298,6 +299,17 @@ app.get('/admin', authCheckAdmin, (req, res) => {
     // Renders admin.ejs and loads tempaltes and user profile
     res.render('admin.ejs', {
       templates: result,
+      user: req.user
+    })
+  })
+});
+
+app.get('/admin/logs', authCheckAdmin, (req, res) => {
+  logsDb.collection('logs').find().toArray((err, result) => {
+    if (err) return console.log(err)
+    // Renders admin.ejs and loads tempaltes and user profile
+    res.render('logs.ejs', {
+      logs: result,
       user: req.user
     })
   })
@@ -368,6 +380,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             var name = numberRegex.exec(record.Name)[1];
             var body = record.HtmlValue;
             body = body.replace(/(\r\n|\n|\r)/gm, "");
+            replyEmail = body.match(/([a-zA-Z0-9._-]+@ixl.com+)/gi)[0];
 
             function count(str) {
               var regex = /\s*<\s*br\s*\/>\s*<\s*br\s*\/\s*>/g;
@@ -409,6 +422,8 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   team: 'techSupport',
                   publicStatus: 'true',
                   program: 'IXL',
+                  tags: 'SC',
+                  replyEmail: replyEmail
                 }
               }, {
                 upsert: true
@@ -454,6 +469,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             var body = record.Body;
             body = body.replace(/(\r\n|\n|\r)/gm, "</br>");
             body = body.toString();
+            replyEmail = body.match(/([a-zA-Z0-9._-]+@quia.com)/gi);
 
             function count(str) {
               var regex = /<\/br><\/br>/g;
@@ -466,7 +482,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             var finalBody = [];
             var greeting = result[1];
             var closing = result[breakCount - 1];
-            console.log(closing);
             for (var k = 2; k < breakCount - 1; k++) {
               if (k == breakCount - 2) {
                 finalBody.push(result[k]);
@@ -489,10 +504,12 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   closing: closing,
                   updatedDate: date,
                   addedByUser: 'salesforce@ixl.com',
-                  category: 'Audio',
+                  category: 'SmartScore',
                   team: 'techSupport',
                   publicStatus: 'true',
                   program: 'QW',
+                  tags: 'SC',
+                  replyEmail: replyEmail
                 }
               }, {
                 upsert: true
@@ -532,6 +549,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             var body = record.Body;
             body = body.replace(/(\r\n|\n|\r)/gm, "</br>");
             body = body.toString();
+            replyEmail = body.match(/([a-zA-Z0-9._-]+@quia.com+)/gi)[0];
 
             function count(str) {
               var regex = /<\/br><\/br>/g;
@@ -541,6 +559,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             var breakCount = count(body);
 
             var result = body.split('</br></br>').slice();
+            // Empty array for the final body
             var finalBody = [];
             var greeting = result[1];
             var closing = result[breakCount - 2];
@@ -570,6 +589,8 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   team: 'techSupport',
                   publicStatus: 'true',
                   program: 'QB',
+                  tags: 'SC',
+                  replyEmail: replyEmail
                 }
               }, {
                 upsert: true
