@@ -8,16 +8,16 @@
   --blue: #00a1de;
   --green: #52b700;
   --red: #d74726;
-  --blue: #00a1de;
   --yellow: #eabc00;
   --purple: #8d33aa;
   --cyan: #0bc1b6;
+  --lightgrey: #f1f1f1;
   /* Colors END*/
   /* Font */
   --font: 'Open Sans', sans-serif;
   /* Template width and height */
-  --element-w: 425px;
-  --element-h: 515px;
+  --element-w: 430px;
+  --element-h: 540px;
 }
 
 body {
@@ -93,6 +93,11 @@ h5 {
   font-size: 15px;
 }
 
+.logs {
+  text-align: left;
+  margin: 3em;
+}
+
 .template {
   display: inline-block;
   width: var(--element-w);
@@ -112,6 +117,38 @@ h5 {
   outline: none !important;
   box-shadow: none !important;
   border-color: none !important;
+}
+
+#clear-search {
+  position: absolute;
+  right: 18px;
+  top: 0;
+  bottom: 0;
+  height: 20px;
+  margin: auto;
+  font-size: 22px;
+  cursor: pointer;
+  color: gainsboro;
+}
+
+#clear-search:hover {
+  font-size: 22px;
+  color: #B8B8B8;
+}
+
+#clear-search:active {
+  right: 19px;
+  height: 18px;
+  font-size: 20px;
+  color: #B8B8B8;
+}
+
+#verified {
+  color: var(--green);
+}
+
+#notVerified {
+  color: var(--yellow);
 }
 
 /* Button styling START */
@@ -150,11 +187,12 @@ h5 {
 
 #clearRank>.btn {
   padding-left: 2px !important;
+  padding-right: 4px !important;
   border: 0 !important;
 }
 
 #removeConfirm>.btn {
-  padding-right: 2px !important;
+  padding-left: 2px !important;
   border: 0 !important;
 }
 
@@ -180,6 +218,7 @@ h5 {
   cursor: pointer;
   padding: 0px 10px 10px 0px;
   margin-top: 5px;
+  word-wrap: break-word;
 }
 
 .details {
@@ -300,7 +339,7 @@ h5 {
 /* Navbar styling START */
 
 .navbar {
-  background-color: white !important;
+  background-color: var(--lightgrey) !important;
   border-color: white !important;
   margin: 0px !important;
 }
@@ -322,11 +361,12 @@ h5 {
 }
 
 .dropdown-toggle {
+  background-color: var(--lightgrey) !important;
   padding: 0px !important;
 }
 
 .dropdown-toggle:hover, .dropdown-toggle:focus, .dropdown-toggle:active, .dropdown-toggle:enabled {
-  background-color: white !important;
+  background-color: var(--lightgrey) !important;
 }
 
 /* Navbar styling END  */

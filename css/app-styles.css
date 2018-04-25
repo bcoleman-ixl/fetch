@@ -198,6 +198,7 @@ h5 {
   cursor: pointer;
   padding: 0px 10px 10px 0px;
   margin-top: 5px;
+  word-wrap: break-word;
 }
 
 .line {
@@ -292,6 +293,14 @@ h5 {
   color: var(--purple);
 }
 
+#verified {
+  color: var(--green);
+}
+
+#notVerified {
+  color: var(--yellow);
+}
+
 .align {
   text-align: center;
   display: block;
@@ -335,10 +344,6 @@ h5 {
 #templateCategory {
   margin-top: 15px !important;
   float: right;
-}
-
-#IXL {
-  color: green;
 }
 
 .glyphicon {
