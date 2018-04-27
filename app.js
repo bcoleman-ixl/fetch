@@ -167,9 +167,12 @@ app.put('/update', (req, res) => {
         body: req.body.body,
         category: req.body.category,
         program: req.body.program,
+        greeting: req.body.greeting,
+        closing: req.body.closing,
         team: req.body.team,
-        public: req.body.public,
-        tags: req.body.tags
+        publicStatus: req.body.publicStatus,
+        tags: req.body.tags,
+
       }
     }, {
       sort: {
@@ -237,7 +240,7 @@ passport.deserializeUser((id, done) => {
 passport.use(new GoogleStrategy({
     clientID: keys.google.clientID,
     clientSecret: keys.google.clientSecret,
-    callbackURL: "http://scruffy.quiacorp.com:3000/auth/google/callback"
+    callbackURL: keys.google.callbackURL
   },
   function(accessToken, refreshToken, profile, done) {
     console.log(profile.emails[0].value);
@@ -272,6 +275,7 @@ passport.use(new GoogleStrategy({
   }
 ));
 
+
 app.get('/auth/google',
   passport.authenticate('google', {
     scope: ['profile', 'email'],
@@ -283,21 +287,27 @@ app.get('/auth/google/callback', passport.authenticate('google'), (req, res) => 
 });
 
 app.get('/templates', authCheck, (req, res) => {
+  var formCode = `<h2>Testing</h2>`;
   templatesDb.collection('templates').find().toArray((err, result) => {
     if (err) return console.log(err)
     // Renders index.ejs and loads templates and user profile
     res.render('index.ejs', {
       templates: result,
-      user: req.user
+      user: req.user,
+      form: formCode
     })
   })
 });
 
+
 app.get('/admin', authCheckAdmin, (req, res) => {
   templatesDb.collection('templates').find().toArray((err, result) => {
-    if (err) return console.log(err)
+    if (err) return console.log(err);
+    var myVar = 1;
+    console.log(myVar);
     // Renders admin.ejs and loads tempaltes and user profile
     res.render('admin.ejs', {
+      myVar: myVar,
       templates: result,
       user: req.user
     })
@@ -348,7 +358,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
   }
   // Now you can get the access token and instance URL information.
   // Save them to establish connection next time.
-  console.log(conn.accessToken);
+  console.log('Token: ' + conn.accessToken);
   console.log(conn.instanceUrl);
 
 
@@ -367,6 +377,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
         for (var i = 0; i < records.length; i++) {
           // Get individual record
           var record = records[i];
+          var folder = record.Folder.Name;
 
           // Get and format last modified date
           var longDate = new Date(record.LastModifiedDate);
@@ -423,7 +434,8 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   publicStatus: 'true',
                   program: 'IXL',
                   tags: 'SC',
-                  replyEmail: replyEmail
+                  replyEmail: replyEmail,
+                  folder: folder
                 }
               }, {
                 upsert: true
@@ -455,7 +467,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
         for (var i = 0; i < records.length; i++) {
           // Get individual record
           var record = records[i];
-
+          var folder = record.Folder.Name;
           // Get and format last modified date
           var longDate = new Date(record.LastModifiedDate);
           var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
@@ -482,7 +494,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             var finalBody = [];
             var greeting = result[1];
             var closing = result[breakCount - 1];
-            for (var k = 2; k < breakCount - 1; k++) {
+            for (var k = 1; k < breakCount - 1; k++) {
               if (k == breakCount - 2) {
                 finalBody.push(result[k]);
               } else {
@@ -509,7 +521,8 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   publicStatus: 'true',
                   program: 'QW',
                   tags: 'SC',
-                  replyEmail: replyEmail
+                  replyEmail: replyEmail,
+                  folder: folder
                 }
               }, {
                 upsert: true
@@ -535,7 +548,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
         for (var i = 0; i < records.length; i++) {
           // Get individual record
           var record = records[i];
-
+          var folder = record.Folder.Name;
           // Get and format last modified date
           var longDate = new Date(record.LastModifiedDate);
           var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
@@ -559,11 +572,12 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             var breakCount = count(body);
 
             var result = body.split('</br></br>').slice();
+
             // Empty array for the final body
             var finalBody = [];
             var greeting = result[1];
-            var closing = result[breakCount - 2];
-            for (var k = 2; k < breakCount - 1; k++) {
+            var closing = result[breakCount - 1];
+            for (var k = 1; k < breakCount - 1; k++) {
               if (k == breakCount - 2) {
                 finalBody.push(result[k]);
               } else {
@@ -590,7 +604,8 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   publicStatus: 'true',
                   program: 'QB',
                   tags: 'SC',
-                  replyEmail: replyEmail
+                  replyEmail: replyEmail,
+                  folder: folder
                 }
               }, {
                 upsert: true

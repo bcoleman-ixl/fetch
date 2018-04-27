@@ -17,7 +17,7 @@
 
   </div>
   <!-- Manage templates modal -->
-  <div class='modal fade' id='manageTemplates' tabindex='-1' role='dialog' aria-labelledby='Manage Templates' aria-hidden='true'>
+  <div class='modal fade' id='manageTemplates' tabindex='-1' role='dialog' aria-labelledby='Manage templates' aria-hidden='true'>
     <div class='modal-dialog' role='document'>
       <div class='modal-content'>
         <div class='modal-header'>
@@ -29,9 +29,10 @@
         <div class='new-template'>
           <form id='templatesForm' action='/add' method='POST' autocomplete='off' id='templatesForm'>
             <div class='row'>
+
               <div class='col-lg-12'>
                 <div class='form-group' style='padding-right: 0px;'>
-                  <input type='text' class='form-control' id='name' name='name' required='true' placeholder='Item Name' maxlength='40'>
+                  <input type='text' class='form-control' id='name' name='name' required='true' placeholder='Template Name' maxlength='40'>
                 </div>
               </div>
             </div>
@@ -40,11 +41,12 @@
             </div>
             <div class='row'>
               <div class='form-group col-lg-6 col-md-6'>
-                <label for='type'>Category</label>
+                <label for='Category'>Category</label>
                 <select class='form-control' id='category' name='category' required='true'>
                   <option disabled selected value> --Select-- </option>
                   <option>Analytics</option>
                   <option>Audio</option>
+                  <option>Diagnostic</option>
                   <option>Error Messages</option>
                   <option>Roster</option>
                   <option>Skills</option>
@@ -54,18 +56,35 @@
                 </select>
               </div>
               <div class='form-group col-lg-6 col-md-6'>
-                <label for='type'>Type</label>
-                <select class='form-control' id='type' name='type' required='true'>
+                <label for='Program'>Program</label>
+                <select class='form-control' id='program' name='program' required='true'>
                   <option disabled selected value> --Select-- </option>
-                  <option>Template</option>
-                  <option>Template-Verified</option>
+                  <option>IXL</option>
+                  <option>QW</option>
+                  <option>QB</option>
                 </select>
               </div>
+
               <div class='form-group'>
                 <input type='hidden' class='form-control' id='id' name='id' required='true'>
                 <input type='hidden' id='updatedDate' name='updatedDate' value='error'>
                 <input type='hidden' id='addedByUser' name='addedByUser' value='<%= user.email %>'>
                 <input type='hidden' id='ranking' name='ranking' value=0>
+                <input type='hidden' id='copyFull' name='copyFull' value=0>
+                <input type='hidden' id='copyPortion' name='copyPortion' value=0>
+                <input type='hidden' id='team' name='team' value='<%= user.team %>'>
+                <input type='hidden' id='greeting' name='greeting' value='default'>
+                <input type='hidden' id='closing' name='closing' value='default'>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-lg-6 col-md-6">
+                <label for='publicStatus'>Public?</label>
+                <select class='form-control' id='publicStatus' name='publicStatus' required='true'>
+                  <option disabled selected value> --Select-- </option>
+                  <option>true</option>
+                  <option>false</option>
+                </select>
               </div>
             </div>
             <div class='form-group'>
@@ -100,29 +119,35 @@
   <!-- Navbar -->
   <nav class='navbar navbar-default'>
     <div class="nav navbar-nav">
+
       <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
           <img class="profile-img" src="<%= user.img %>" alt=""></a>
         <ul class="dropdown-menu">
           <li>
+            <!-- Shows Hello and users name if user is signed in -->
             <% if (user) { %>
-              <li id='greeting'>Hello,
+              <li id='greeting'>Hello
                 <span id="userFirstName"><%= user.name %></span>!
+                <h5 id="userEmail"><%= user.email %></h5>
               </li>
               <% } %>
           </li>
           <li class="divider"></li>
-          <li><a id='' href='#manageTemplates' data-toggle='modal' data-target='#manageTemplates' onclick='setItemId()'>Add a template</a>
-          </li>
-
-          <li><a href="/templates">User Console</a></li>
-          <li class="divider"></li>
-          <li id="logout"><button class="btn btn-default btn-sm" type="button" name="button">Logout</button></li>
+          <li><a id='' href='#manageTemplates' data-toggle='modal' data-target='#manageTemplates' onclick='setTemplateId()'> Add a template</a></li>
+          <!-- If user is admin, admin console option is shown -->
+          <% if (user.type == 'admin') { %>
+            <li><a href="/templates">User Console</a></li>
+            <li><a href="/admin/logs">Logs</a></li>
+            <% } %>
+              <li class="divider"></li>
+              <li id="logout"> <button class="btn btn-danger btn-sm" type="button" name="button" onclick="location.href = '/logout';">Logout</button></li>
         </ul>
       </li>
     </div>
   </nav>
   <!-- End navbar -->
+
 
   <!-- Spacing -->
   <div class='row space'>
@@ -135,75 +160,179 @@
   </div>
   <!-- End spacing -->
 
-  <!-- Verified Templates Start -->
+  <!-- Search bar -->
+  <div class='row space'>
+    <div class='col-lg-4 col-md-4'></div>
+    <div class='col-lg-4 col-md-4'>
+      <div class='form-group has-feedback has-clear'>
+        <input type='text' class='form-control input-lg' id='search-bar' autofocus="autofocus" placeholder='Search' onkeyup='search()' spellcheck='false'>
+        <span id="clear-search" class="glyphicon glyphicon-remove-circle"></span>
+      </div>
+    </div>
+    <div class='col-lg-4 col-md-4'></div>
+  </div>
+  <!-- End search bar -->
+
+
+  <!-- Templates -->
   <div class='row space'>
     <div class='col-lg-1 col-md-1'>
     </div>
     <div class='col-lg-12 col-md-12'>
-      <ul id='data-table' class='center'>
+      <ul id='data-table' class='align'>
 
-        <% let categories = ['Analytics', 'Audio', 'Error Messages', 'Roster', 'Skills', 'Signing_In', 'SmartScore', 'Other']; %>
-          <% for(let k = 0; k < categories.length; k++) { %>
-            <h1><%- categories[k] %></h1>
-            <% for(let i = 0; i < templates.length; i++) { %>
-              <% if (templates[i].category == categories[k]) { %>
-                <li id='<%= templates[i].id %>' class='template' tabindex='0'>
-                  <h2 class='<%= templates[i].category.toLowerCase() %>' id='templateName'><%= templates[i].name %> <i class='fas fa-check' id='<%= templates[i].type.toLowerCase() %>'></i></h2>
-                  <div class='details'>
-                    <h3 class='line'><span id='templateRanking' hidden><%=templates[i].ranking %></span><%=templates[i].id %> - <i id='templateUpdatedDate'><%= templates[i].updatedDate %></i></h3>
-                    <!-- TODO: add logic that shows if this is a users template -->
-                    <% if (user.type == 'admin' || templates[i].addedByUser == user.email) { %>
-                      <div class='line' id='removeConfirm'>
-                        <button class='btn line'><i class='far fa-trash-alt fa-lg' ></i></button>
-                      </div>
-                      <% } %>
-                        <% if (user.type == 'admin' || templates[i].addedByUser == user.email) { %>
-                          <div class='line' id='edit'>
-                            <button class='btn line'><i class='fas fa-pencil-alt fa-lg'></i></button>
-                          </div>
-                          <% } %>
-                            <% if (user.type == 'admin') { %>
-                              <div class='line' id='clearRank'>
-                                <button class='btn line'><i class='fas fa-ban fa-lg'></i></button>
-                              </div>
-                              <% } %>
-                                <div class='line' id='copyPortion'>
-                                  <button class='btn line'><i class='fas fa-eye fa-lg'></i></button>
-                                </div>
-                  </div>
-                  <div class='<%= templates[i].category.toLowerCase() %> blur' id='templateBody'>
-                    <%- templates[i].body %>
-                  </div>
-                  <div class='row'>
-                    <div class='col-lg-9 col-md-9'>
-                      <h3 class='tags' id='templateTags'><%= templates[i].tags %></h3>
-                      <h3 class='type' id='templateType'><b>Type: </b><%= templates[i].type %></h3>
-                      <h3 class='type' id='templateType'><b>Added by: </b><%= templates[i].addedByUser %></h3>
-                    </div>
-                    <div class='col-lg-3 col-md-3'>
-                      <h3 class='<%= templates[i].category.toLowerCase() %>' id='templateCategory'><%= templates[i].category %></h3>
-                    </div>
-                  </div>
-                </li>
-                <% } %>
+        <!-- Loop through all templates -->
+        <% for(var i = 0; i < templates.length; i++) { %>
+
+
+
+          <% if ((templates[i].publicStatus == 'true' && templates[i].addedByUser == 'salesforce@ixl.com') || (templates[i].publicStatus == 'false' && templates[i].addedByUser == 'salesforce@ixl.com')) { %>
+
+
+            <li id='<%= templates[i].id %>' class='template'>
+              <!-- Name of the template, check mark shown if id is 'Template-Verified' -->
+              <h2 class='<%= templates[i].category.toLowerCase() %>' id='templateName'>
+                <%= templates[i].name %>
+                <% if(templates[i].addedByUser == 'salesforce@ixl.com'){ %>
+                  <i class='fas fa-check' id='verified'></i>
+                  <% } else { %>
+
+                    <i class="fas fa-exclamation-triangle" id="notVerified"></i>
+
                   <% } %>
-                    <% } %>
+            </h2>
+              <div class='details'>
+                <!-- Ranking number (hidden), Template ID, and template last updated date -->
+                <h3 class='line'>
+                  <span id='templateRanking' hidden>
+                    <%= templates[i].ranking %>
+                  </span>
+                  <span id='templateCopyFull' hidden>
+                    <%= templates[i].copyFull %>
+                  </span>
+                  <span id='templateCopyPortion' hidden>
+                    <%= templates[i].copyPortion %>
+                  </span>
+                  <i id='templateUpdatedDate'>
+                    <%= templates[i].updatedDate %>
+                  </i>
+                  -
+                  <span id='templateProgram'>
+                    <b><%= templates[i].program.toUpperCase() %></b>
+                  </span>
+
+                </h3>
+                <!-- Buttons -->
+                <!-- If public is false (meaning this template is for private use) then show these buttons which allows the user to edit, and remove the template -->
+
+
+                <!-- If template was added by user, show edit button -->
+                <div class='line' id='edit'>
+                  <button id='editBtn' class='btn line'><i class='fas fa-pencil-alt fa-lg'></i></button>
+                </div>
+                <!-- Clear the rank of this template (will add back in later if needed)
+              -->
+                <div class='line' id='clearRank'>
+                  <button id='clearRankBtn' class='btn line'><i class='fas fa-ban fa-lg'></i></button>
+                </div>
+                <!-- If user is admin OR this template was added by current user, show remove button -->
+                <div class='line' id='removeConfirm'>
+                  <button id='removeConfirmBtn' class='btn line'><i class='far fa-trash-alt fa-lg' ></i></button>
+                </div>
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+              <div class='details'>
+                <!-- Ranking number (hidden), Template ID, and template last updated date -->
+                <h3 class='line'>
+                  Total:
+                  <span id='templateRanking'>
+                    <%= templates[i].ranking %>
+                  </span>
+                  Full:
+                  <span id='templateCopyFull'>
+                   <%= templates[i].copyFull %>
+                  </span>
+                    Portion:
+                  <span id='templateCopyPortion'>
+            <%= templates[i].copyPortion %>
+                  </span>
+                <h3 id='templateUpdatedDate'>
+                   <%= templates[i].id %>
+                  </h3>
+
+                </h3>
+                <!-- Buttons -->
+                <!-- Copy template, greeting, closing, and signature -->
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+              <div class='<%= templates[i].category.toLowerCase() %> blur' id='templateBody'>
+                <%- templates[i].body %>
+              </div>
+              <div class='row'>
+                <div class='col-lg-9 col-md-9'>
+                  <!-- Template tags and template type (hidden) -->
+                  <h3 class='tags' id='templateTags'><%= templates[i].tags %></h3>
+                  <h3 class='type' id='templateTeam' hidden><%= templates[i].team %></h3>
+                  <h3 class='type' id='templatePublicStatus' hidden><%= templates[i].publicStatus %></h3>
+                  <h3 class='type' id='templateReplyEmail' hidden><%= templates[i].replyEmail %></h3>
+                </div>
+                <div class='col-lg-3 col-md-3'>
+                  <!-- Template category -->
+                  <h3 class='<%= templates[i].category.toLowerCase() %> line' id='templateCategory'><%= templates[i].category %></h3>
+                </div>
+
+              </div>
+              <div class='row'>
+                <div class='col-lg-12 col-md-12'>
+
+                  <h3 id='addedByUser'>
+                    Added by: <%= templates[i].addedByUser %>
+                  </h3>
+                  <h3 class='type' id='templateFolder'><%= templates[i].folder %></h3>
+                  <h3 class='type' id='templateGreeting'><%= templates[i].greeting %></h3>
+                  <h3 class='type' id='templateClosing'><%= templates[i].closing %></h3>
+                </div>
+
+
+              </div>
+            </li>
+
+
+            <% } else {%>
+              <% } %>
+
+                <% } %>
+                  <!-- End For loop -->
+
       </ul>
+      Under Construction
     </div>
     <div class='col-lg-1'></div>
   </div>
-  <!-- End Verified Templates -->
+  <!-- End templates -->
 
   <!-- Logout -->
-  <div class="row space">
-    <div class="col-lg-3">
-    </div>
-    <div class="col-lg-6">
-      <a href="/logout">Log out</a>
-    </div>
-    <div class="col-lg-3">
-    </div>
-  </div>
+
   <!-- End Logout -->
 
 
@@ -214,5 +343,7 @@
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
 <script defer src='https://use.fontawesome.com/releases/v5.0.6/js/all.js'></script>
 <script src='app-main.js'></script>
+<script src='search.js'></script>
+<script src='jsforce.js'></script>
 
 </html>

@@ -14,6 +14,7 @@
  * @return {[type]} [description]
  */
 function initialize() {
+  $('#LoadingImage').show();
   // Sorts all templates by rank number
   rank();
   // Sets up editor and loads toolbar
@@ -106,21 +107,27 @@ function handleClick(e) {
   // Grab the id of the element that was clicked
   let eventId = $(e.target).closest('div').attr('id');
 
-  let template = document.getElementById(templateId);
-  let program = template.querySelector('#templateProgram').innerHTML;
+  let template = $(e.target).closest(`li[class^='template']`);
+
+  let program = $(e.target).closest(`.template`).find(`#templateProgram`).text().trim();
+  let replyEmail = $(e.target).closest(`.template`).find(`#templateReplyEmail`).text();
+  let greeting = $(e.target).closest(`.template`).find(`#templateGreeting`).text();
+  let closing = $(e.target).closest(`.template`).find(`#templateClosing`).text();
 
   /* If copy full button was clicked or template body was clicked */
   if (e.target !== e.currentTarget && (eventId == 'templateBody' || eventId == 'copyFull')) {
     // P tags are removed and replaced with breaks. TODO: Need better solution here.
-    let body = document.getElementById(templateId).querySelector('#templateBody').outerHTML.replace('<p>', '<br>').replace('</p>', '<br>');
+    let body = $(e.target).closest(`.template`).find(`#templateBody`).html();
     // Sends message to user that the item has been copied
-    alertUser(templateId);
+    alertUser(template);
     /**
      * Sends template body to buildEmail function
      * to add template components (greeting, closing, signature,
      * etc.). Then copies the full e-mail to the clipboard
      */
-    copy(buildEmail(body, program));
+    console.log(program);
+    copy(buildEmail(body, program, replyEmail, greeting, closing));
+
     // Selects ranking element and currentRanking. Converts to integer and updates ranking number
     let ranking = document.getElementById(templateId).querySelector('#templateRanking').innerHTML;
     let copyFull = document.getElementById(templateId).querySelector('#templateCopyFull').innerHTML;
@@ -135,7 +142,7 @@ function handleClick(e) {
     /* If copy portion button was clicked */
   } else if (e.target !== e.currentTarget && eventId == 'copyPortion') {
     // Sends message to user that the item has been copied
-    alertUser(templateId);
+    alertUser(template);
     // Grabs template body and copies it to the clipboard
     body = document.getElementById(templateId).querySelector('#templateBody').outerHTML.replace('<p>', '<br>').replace('</p>', '<br>');
     copy(body);
@@ -175,7 +182,7 @@ function handleClick(e) {
     /* If clear rank button was clicked */
   } else if (e.target !== e.currentTarget && eventId == 'clearRank') {
     // Use update ranking to set template Id to 0
-    updateRanking(templateId, 0);
+    updateRanking(templateId, 0, 0, 0);
 
     // Do nothing
   } else {
@@ -188,18 +195,25 @@ function handleClick(e) {
  * been copied by displayin the word
  * 'copied' on the template
  */
-function alertUser(templateId) {
+function alertUser(template) {
   // Grab the span element
-  let span = document.getElementById(templateId).querySelector('#copiedAlert');
+  let span = $(template).find(`#copiedAlert`);
+  $(span).fadeIn(400).fadeOut(1000);
+
+
   // Show span and text 'Copied'
-  span.style.transition = 'none';
-  span.style.opacity = 1;
-  span.textContent = 'Copied';
-  void span.offsetWidth;
+  /**$(span).css('transition', 'none');
+  $(span).css('opacity', 1);
+  console.log(span);
+  $(span).text('Copied');
+  $(span).css('transition', 'opacity 1.5s');
+  $(span).css('opacity', 0);
+  */
+
+
+  //void span.offsetWidth;
   // Make transition last 1.5 seconds
-  span.style.transition = 'opacity 1.5s';
   // Set opacity to 0 and hide element
-  span.style.opacity = '0';
 }
 
 function copy(html) {
@@ -230,21 +244,22 @@ function copy(html) {
   window.getSelection().addRange(range);
   document.execCommand('copy');
 
-  for (let i = 0; i < activeSheets.length; i++) {
-    activeSheets[i].disabled = true;
-  }
+  //for (let i = 0; i < activeSheets.length; i++) {
+  //  activeSheets[i].disabled = true;
+  //  }
 
   document.execCommand('copy');
+  //console.log(activeSheets.length);
+  //for (let i = 0; i < activeSheets.length; i++) {
 
-  for (let i = 0; i < activeSheets.length; i++) {
-    activeSheets[i].disabled = false;
-  }
+  //  activeSheets[i].disabled = false;
+  //  }
 
   // Remove the iframe
   document.body.removeChild(container)
 }
 
-function buildEmail(body, program) {
+function buildEmail(body, program, replyEmail, greeting, closing) {
   /**
    * Grabs users first name from their account menu (set by Google Profile).
    * Sets e-mail, program, phone number, website, greeting,
@@ -255,39 +270,33 @@ function buildEmail(body, program) {
    * TODO: Need to update so user can select their own greeting/closing
    */
 
-  console.log(program);
   var userFirstName = document.getElementById('userFirstName').innerHTML;
 
-  var greeting = 'Dear NAME,<br><br>Thank you for reaching out to us.<br>';
+  var salutation = 'Dear NAME,<br/><br/>';
   var closing = '<br> Please let me know if you have any questions and I will be happy to help!<br>'
   var user = `<span style='color: blue;'><b> ${userFirstName} </b></span></br>`;
-  var program = 'IXL';
   var signature = 'error';
-  var email = 'error';
-
   if (program == 'IXL') {
     program = 'IXL Support<br>';
-    email = `E-mail: help@ixl.com<br>`;
+    email = `${replyEmail}<br>`;
     var phone = 'Phone: 855.255.6676<br>';
     var website = 'Website: www.ixl.com<br>';
     var logoLocation = `'https://c.na57.content.force.com/servlet/servlet.ImageServer?id=0150b0000027zq8&oid=00D300000001FBU&lastMod=1495736864000'`
     var logo = `<img src= ${logoLocation} alt='ixl-logo'>`;
     signature = `<br>Sincerely, <br> ${user} ${program} <br> ${email} ${phone} ${website} ${logo}`;
-  } else if (type == 'QW') {
+  } else if (program == 'QW') {
     user = `<b> ${userFirstName} </b>`;
     closing = 'Please let me know if you have any questions and I will be happy to help!<br>'
     program = 'Quia Support';
-    email = `nse@quia.com`;
-    signature = `<br>Sincerely,<br>${user}<br>${program}<br>${email}`
-  } else if (type == 'QB') {
+    signature = `<br>Sincerely,<br>${user}<br>${program}<br>${replyEmail}`
+  } else if (program == 'QB') {
     user = `<b> ${userFirstName} </b>`;
     closing = 'Please let me know if you have any questions and I will be happy to help!<br>'
     program = 'Quia Support';
-    email = `bookhelp@quia.com`;
-    signature = `<br>Sincerely,<br>${user}<br>${program}<br>${email}`
+    signature = `<br>Sincerely,<br>${user}<br>${program}<br>${replyEmail}`
   }
 
-  return `${greeting} ${body} ${closing} ${signature}`;
+  return `${salutation}${greeting}<br/><br/>${body} ${closing} ${signature}`;
 }
 
 /**
@@ -316,25 +325,32 @@ function remove(e) {
 function editTemplate(templateId) {
   // Grab the maange templates form
   let form = document.getElementById('templatesForm');
+  let idField = document.getElementById('id');
 
   // Grab form fields
-  let idField = document.getElementById('id');
   let nameField = document.getElementById('name');
   let bodyField = tinymce.get('body').getBody();
   let categoryField = document.getElementById('category');
   let programField = document.getElementById('program');
   let tagsField = document.getElementById('tags');
+  let teamField = document.getElementById('team');
+  let publicStatusField = document.getElementById('publicStatus');
+  let greetingField = document.getElementById('greeting');
+  let closingField = document.getElementById('closing');
 
-  // Grab this templates information
+  // Grab this templates information // TODO: Update to use jquery (it's faster!!)
   let name = document.getElementById(templateId).querySelector('#templateName');
   let body = document.getElementById(templateId).querySelector('#templateBody');
   let category = document.getElementById(templateId).querySelector('#templateCategory');
   let program = document.getElementById(templateId).querySelector('#templateProgram');
   let tags = document.getElementById(templateId).querySelector('#templateTags');
-  let team = document.getElementById(templateId).querySelector('#team');
-  let publicStatus = document.getElementById(templateId).querySelector('#publicStatus');
+  let team = document.getElementById(templateId).querySelector('#templateTeam');
+  let publicStatus = document.getElementById(templateId).querySelector('#templatePublicStatus');
+  let greeting = document.getElementById(templateId).querySelector('#templateGreeting');
+  let closing = document.getElementById(templateId).querySelector('#templateClosing');
   let today = new Date().toDateInputValue();
-
+  console.log('team field:' + teamField);
+  console.log('current team:' + team.textContent);
   // Set all form fields equal to this templates fields
   idField.value = templateId;
   nameField.value = name.textContent.trim();
@@ -342,6 +358,12 @@ function editTemplate(templateId) {
   categoryField.value = category.textContent.trim();
   programField.value = program.textContent.trim();
   tagsField.value = tags.textContent;
+  teamField.value = team.textContent;
+  publicStatusField.value = publicStatus.textContent;
+
+  greetingField.value = greeting.textContent;
+  closingField.value = closing.textContent;
+
   // Removes forms method and action, form handled by update method (below)
   form.method = '';
   form.action = '';
@@ -361,6 +383,12 @@ function update(e) {
   let category = document.querySelector('#category').value;
   let program = document.querySelector('#program').value;
   let tags = document.querySelector('#tags').value;
+  let team = document.querySelector('#team').value;
+  let publicStatus = document.querySelector('#publicStatus').value;
+  let greeting = document.querySelector('#greeting').value;
+  let closing = document.querySelector('#closing').value;
+
+
   fetch('update', {
     method: 'put',
     headers: {
@@ -374,6 +402,9 @@ function update(e) {
       'category': category,
       'program': program,
       'tags': tags,
+      'publicStatus': publicStatus,
+      'greeting': greeting,
+      'closing': closing
     })
   }).then(res => {
     if (res.ok) return res.json()
@@ -412,6 +443,9 @@ function updateRanking(id, newRanking, copyFullNumUpdate, copyPortionNumUpdate) 
  * from highest rank number to lowest.
  */
 function rank() {
+  $(document).ready(function() {
+    console.log("ready!");
+  });
   let list = document.getElementById('data-table');
   let li = null;
   let shouldSwitch = false;

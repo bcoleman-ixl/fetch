@@ -7,6 +7,7 @@ const userSchema = new Schema({
   googleID: String,
   img: String,
   team: String,
+  programs: [String],
   type: String,
   email: String
 })
