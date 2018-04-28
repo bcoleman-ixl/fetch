@@ -5,6 +5,8 @@
 <head>
   <meta charset='utf-8'>
   <link rel='stylesheet' href='/admin-styles.css'>
+  <link href="/fa/css/fontawesome-all.css" rel="stylesheet">
+
   <!-- Bootstrap minified CSS -->
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
   <!-- Google Fonts -->
@@ -186,7 +188,7 @@
 
 
 
-          <% if ((templates[i].publicStatus == 'true' && templates[i].addedByUser == 'salesforce@ixl.com') || (templates[i].publicStatus == 'false' && templates[i].addedByUser == 'salesforce@ixl.com')) { %>
+          <% if ((templates[i].publicStatus == 'true' && templates[i].addedByUser != 'salesforce@ixl.com') || (templates[i].publicStatus == 'false' && templates[i].addedByUser != 'salesforce@ixl.com')) { %>
 
 
             <li id='<%= templates[i].id %>' class='template'>
@@ -341,7 +343,6 @@
 <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
 <script src='https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=q4w1ytxm4ft7tl8tg92mbys2kh30beuux061ovviw4oc4pqo'></script>
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
-<script defer src='https://use.fontawesome.com/releases/v5.0.6/js/all.js'></script>
 <script src='app-main.js'></script>
 <script src='search.js'></script>
 <script src='jsforce.js'></script>
