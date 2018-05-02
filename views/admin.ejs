@@ -10,8 +10,8 @@
   <!-- Bootstrap minified CSS -->
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
   <!-- Google Fonts -->
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans|Roboto|Comfortaa' rel='stylesheet'>
-  <title>---</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans|Roboto|Black+Han+Sans' rel='stylesheet'>
+  <title>Jibu - Admin Console</title>
 </head>
 
 <body>
@@ -34,7 +34,7 @@
 
               <div class='col-lg-12'>
                 <div class='form-group' style='padding-right: 0px;'>
-                  <input type='text' class='form-control' id='name' name='name' required='true' placeholder='Template Name' maxlength='40'>
+                  <input type='text' class='form-control' id='name' name='name' required='true' placeholder='Template Name' maxlength='39'>
                 </div>
               </div>
             </div>
@@ -43,13 +43,12 @@
             </div>
             <div class='row'>
               <div class='form-group col-lg-6 col-md-6'>
-                <label for='Category'>Category</label>
                 <select class='form-control' id='category' name='category' required='true'>
-                  <option disabled selected value> --Select-- </option>
+                  <option disabled selected value> --Select category-- </option>
                   <option>Analytics</option>
                   <option>Audio</option>
                   <option>Diagnostic</option>
-                  <option>Error Messages</option>
+                  <option>Network</option>
                   <option>Roster</option>
                   <option>Skills</option>
                   <option>Signing_In</option>
@@ -58,14 +57,14 @@
                 </select>
               </div>
               <div class='form-group col-lg-6 col-md-6'>
-                <label for='Program'>Program</label>
                 <select class='form-control' id='program' name='program' required='true'>
-                  <option disabled selected value> --Select-- </option>
+                  <option disabled selected value> --Select program-- </option>
                   <option>IXL</option>
                   <option>QW</option>
                   <option>QB</option>
                 </select>
               </div>
+
 
               <div class='form-group'>
                 <input type='hidden' class='form-control' id='id' name='id' required='true'>
@@ -81,17 +80,21 @@
             </div>
             <div class="row">
               <div class="form-group col-lg-6 col-md-6">
-                <label for='publicStatus'>Public?</label>
                 <select class='form-control' id='publicStatus' name='publicStatus' required='true'>
-                  <option disabled selected value> --Select-- </option>
+                  <option disabled selected value> --Select public status-- </option>
                   <option>true</option>
                   <option>false</option>
                 </select>
+              </div>
+
+              <div class='form-group col-lg-6 col-md-6'>
+                <input type='text' class='form-control' id='replyEmail' name='replyEmail' required='true' placeholder='Reply E-mail'>
               </div>
             </div>
             <div class='form-group'>
               <input type='text' class='form-control' id='tags' name='tags' required='true' placeholder='Tags'>
             </div>
+
             <button type='submit' class='btn btn-primary' id='submitBtn'>Submit</button>
           </form>
         </div>
@@ -140,7 +143,7 @@
           <!-- If user is admin, admin console option is shown -->
           <% if (user.type == 'admin') { %>
             <li><a href="/templates">User Console</a></li>
-            <li><a href="/admin/logs">Logs</a></li>
+            <li><a href="/admin/logs">Search logs</a></li>
             <% } %>
               <li class="divider"></li>
               <li id="logout"> <button class="btn btn-danger btn-sm" type="button" name="button" onclick="location.href = '/logout';">Logout</button></li>
@@ -155,7 +158,9 @@
   <div class='row space'>
     <div class='col-lg-3'></div>
     <div class='col-lg-6'>
-      <div>
+      <div id='header'>
+        <h1>Jibu</h1>
+        <h4>Admin Console</h4>
       </div>
     </div>
     <div class='col-lg-3'></div>
@@ -181,6 +186,7 @@
     <div class='col-lg-1 col-md-1'>
     </div>
     <div class='col-lg-12 col-md-12'>
+      <h2><i class="fas fa-wrench"></i> Under construction. Template count: <%= templates.length %></h2>
       <ul id='data-table' class='align'>
 
         <!-- Loop through all templates -->
@@ -188,14 +194,14 @@
 
 
 
-          <% if ((templates[i].publicStatus == 'true' && templates[i].addedByUser != 'salesforce@ixl.com') || (templates[i].publicStatus == 'false' && templates[i].addedByUser != 'salesforce@ixl.com')) { %>
+          <% if ((templates[i].publicStatus == 'true' || templates[i].addedByUser == 'salesforce@salesforce.com')) { %>
 
 
             <li id='<%= templates[i].id %>' class='template'>
               <!-- Name of the template, check mark shown if id is 'Template-Verified' -->
               <h2 class='<%= templates[i].category.toLowerCase() %>' id='templateName'>
                 <%= templates[i].name %>
-                <% if(templates[i].addedByUser == 'salesforce@ixl.com'){ %>
+                <% if(templates[i].addedByUser == 'salesforce@salesforce.com'){ %>
                   <i class='fas fa-check' id='verified'></i>
                   <% } else { %>
 
@@ -244,15 +250,6 @@
 
               </div>
 
-
-
-
-
-
-
-
-
-
               <div class='details'>
                 <!-- Ranking number (hidden), Template ID, and template last updated date -->
                 <h3 class='line'>
@@ -275,17 +272,7 @@
                 </h3>
                 <!-- Buttons -->
                 <!-- Copy template, greeting, closing, and signature -->
-
               </div>
-
-
-
-
-
-
-
-
-
 
               <div class='<%= templates[i].category.toLowerCase() %> blur' id='templateBody'>
                 <%- templates[i].body %>
@@ -294,9 +281,6 @@
                 <div class='col-lg-9 col-md-9'>
                   <!-- Template tags and template type (hidden) -->
                   <h3 class='tags' id='templateTags'><%= templates[i].tags %></h3>
-                  <h3 class='type' id='templateTeam' hidden><%= templates[i].team %></h3>
-                  <h3 class='type' id='templatePublicStatus' hidden><%= templates[i].publicStatus %></h3>
-                  <h3 class='type' id='templateReplyEmail' hidden><%= templates[i].replyEmail %></h3>
                 </div>
                 <div class='col-lg-3 col-md-3'>
                   <!-- Template category -->
@@ -311,14 +295,20 @@
                     Added by: <%= templates[i].addedByUser %>
                   </h3>
                   <h3 class='type' id='templateFolder'><%= templates[i].folder %></h3>
+                  <h3 class='type' id='templateTeam'><%= templates[i].team %></h3>
+                  <h3 class='type' id='templateReplyEmail'><%= templates[i].replyEmail %></h3>
+                  <h3 class='type' id='templatePublicStatus'><%= templates[i].publicStatus %></h3>
+                  <!-- NOTE:
+
                   <h3 class='type' id='templateGreeting'><%= templates[i].greeting %></h3>
                   <h3 class='type' id='templateClosing'><%= templates[i].closing %></h3>
+
+                 -->
                 </div>
 
 
               </div>
             </li>
-
 
             <% } else {%>
               <% } %>
@@ -327,7 +317,7 @@
                   <!-- End For loop -->
 
       </ul>
-      Under Construction
+
     </div>
     <div class='col-lg-1'></div>
   </div>
@@ -345,6 +335,5 @@
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
 <script src='app-main.js'></script>
 <script src='search.js'></script>
-<script src='jsforce.js'></script>
 
 </html>

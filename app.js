@@ -8,6 +8,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const favicon = require('serve-favicon');
 
 // Constants and function for creating the updated date
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -103,7 +104,7 @@ app.use(express.static(__dirname + '/css'));
 app.use(express.static(__dirname + '/js'));
 app.use(express.static(__dirname + '/public/'));
 app.use(express.static(__dirname + '/img/'));
-
+app.use(favicon(__dirname + '/img/favicon.ico'));
 /* Connect to templates database and grab template list for displaying in index.ejs */
 templatesClient.connect(keys.mongoDb.templatesURI, (err, client) => {
   if (err) return console.log(err);
@@ -156,6 +157,7 @@ app.delete('/remove', (req, res) => {
  * always be todays date.
  */
 app.put('/update', (req, res) => {
+  console.log(req.body.replyEmail);
   templatesDb.collection('templates')
     .findOneAndUpdate({
       id: req.body.id
@@ -167,11 +169,12 @@ app.put('/update', (req, res) => {
         body: req.body.body,
         category: req.body.category,
         program: req.body.program,
+        team: req.body.team,
         greeting: req.body.greeting,
         closing: req.body.closing,
-        team: req.body.team,
         publicStatus: req.body.publicStatus,
-        tags: req.body.tags,
+        replyEmail: [req.body.replyEmail],
+        tags: req.body.tags
 
       }
     }, {
@@ -213,6 +216,10 @@ app.put('/updateRanking', (req, res) => {
     })
 });
 
+/**
+ * Adds users search logs to the Database
+ * @type {String}
+ */
 app.put('/updateLogs', (req, res) => {
   console.log('sending: ' + req.body.userSearch);
   logsDb.collection('logs')
@@ -418,7 +425,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
 
           }
           // fields in Account relationship are fetched
-          if (record.HtmlValue != null) {
+          if (record.HtmlValue != null && record.IsActive == true) {
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
@@ -428,12 +435,10 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   greeting: greeting,
                   closing: closing,
                   updatedDate: date,
-                  addedByUser: 'salesforce@ixl.com',
-                  category: 'Other',
+                  addedByUser: 'salesforce@salesforce.com',
                   team: 'techSupport',
                   publicStatus: 'true',
                   program: 'IXL',
-                  tags: 'SC',
                   replyEmail: replyEmail,
                   folder: folder
                 }
@@ -487,14 +492,12 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
               var regex = /<\/br><\/br>/g;
               return ((str || '').match(regex) || []).length
             }
-
             var breakCount = count(body);
-
             var result = body.split('</br></br>').slice();
             var finalBody = [];
             var greeting = result[1];
             var closing = result[breakCount - 1];
-            for (var k = 1; k < breakCount - 1; k++) {
+            for (var k = 2; k < breakCount - 1; k++) {
               if (k == breakCount - 2) {
                 finalBody.push(result[k]);
               } else {
@@ -505,7 +508,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
 
           }
           // fields in Account relationship are fetched
-          if (record.Body != null) {
+          if (record.Body != null && record.IsActive == true) {
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
@@ -515,12 +518,10 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   greeting: greeting,
                   closing: closing,
                   updatedDate: date,
-                  addedByUser: 'salesforce@ixl.com',
-                  category: 'SmartScore',
+                  addedByUser: 'salesforce@salesforce.com',
                   team: 'techSupport',
                   publicStatus: 'true',
                   program: 'QW',
-                  tags: 'SC',
                   replyEmail: replyEmail,
                   folder: folder
                 }
@@ -577,7 +578,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             var finalBody = [];
             var greeting = result[1];
             var closing = result[breakCount - 1];
-            for (var k = 1; k < breakCount - 1; k++) {
+            for (var k = 2; k < breakCount - 1; k++) {
               if (k == breakCount - 2) {
                 finalBody.push(result[k]);
               } else {
@@ -588,7 +589,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
 
           }
           // fields in Account relationship are fetched
-          if (record.Body != null) {
+          if (record.Body != null && record.IsActive == true) {
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
@@ -598,12 +599,10 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   greeting: greeting,
                   closing: closing,
                   updatedDate: date,
-                  addedByUser: 'salesforce@ixl.com',
-                  category: 'Skills',
+                  addedByUser: 'salesforce@salesforce.com',
                   team: 'techSupport',
                   publicStatus: 'true',
                   program: 'QB',
-                  tags: 'SC',
                   replyEmail: replyEmail,
                   folder: folder
                 }

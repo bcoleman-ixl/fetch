@@ -13,13 +13,23 @@
  *
  * @return {[type]} [description]
  */
+
+$(document).ready(function() {
+
+  $('#data-table').show();
+
+  // Handler for .ready() called.
+});
+
 function initialize() {
-  $('#LoadingImage').show();
   // Sorts all templates by rank number
-  rank();
   // Sets up editor and loads toolbar
+  rank();
   tinymce.init({
     selector: '#body',
+    force_br_newlines: true,
+    force_p_newlines: false,
+    forced_root_block: '',
     menubar: false,
     statusbar: true,
     height: '350',
@@ -109,15 +119,15 @@ function handleClick(e) {
 
   let template = $(e.target).closest(`li[class^='template']`);
 
-  let program = $(e.target).closest(`.template`).find(`#templateProgram`).text().trim();
-  let replyEmail = $(e.target).closest(`.template`).find(`#templateReplyEmail`).text();
+  let program = $(`#` + templateId + ` #templateProgram`).text().trim();
+  let replyEmail = $(`#` + templateId + ` #templateReplyEmail`).text();
   let greeting = $(e.target).closest(`.template`).find(`#templateGreeting`).text();
   let closing = $(e.target).closest(`.template`).find(`#templateClosing`).text();
 
   /* If copy full button was clicked or template body was clicked */
   if (e.target !== e.currentTarget && (eventId == 'templateBody' || eventId == 'copyFull')) {
     // P tags are removed and replaced with breaks. TODO: Need better solution here.
-    let body = $(e.target).closest(`.template`).find(`#templateBody`).html();
+    let body = $(e.target).closest(`.template`).find(`#templateBody`).html().replace('<p>', '</br>').replace('</p>', '</br>');
     // Sends message to user that the item has been copied
     alertUser(template);
     /**
@@ -125,7 +135,6 @@ function handleClick(e) {
      * to add template components (greeting, closing, signature,
      * etc.). Then copies the full e-mail to the clipboard
      */
-    console.log(program);
     copy(buildEmail(body, program, replyEmail, greeting, closing));
 
     // Selects ranking element and currentRanking. Converts to integer and updates ranking number
@@ -144,7 +153,7 @@ function handleClick(e) {
     // Sends message to user that the item has been copied
     alertUser(template);
     // Grabs template body and copies it to the clipboard
-    body = document.getElementById(templateId).querySelector('#templateBody').outerHTML.replace('<p>', '<br>').replace('</p>', '<br>');
+    body = document.getElementById(templateId).querySelector('#templateBody').outerHTML.replace('<p>', '</br>').replace('</p>', '</br>');
     copy(body);
 
     // Selects ranking element and currentRanking. Converts to integer and updates ranking number
@@ -269,34 +278,41 @@ function buildEmail(body, program, replyEmail, greeting, closing) {
    *
    * TODO: Need to update so user can select their own greeting/closing
    */
-
-  var userFirstName = document.getElementById('userFirstName').innerHTML;
-
-  var salutation = 'Dear NAME,<br/><br/>';
-  var closing = '<br> Please let me know if you have any questions and I will be happy to help!<br>'
-  var user = `<span style='color: blue;'><b> ${userFirstName} </b></span></br>`;
-  var signature = 'error';
-  if (program == 'IXL') {
-    program = 'IXL Support<br>';
-    email = `${replyEmail}<br>`;
-    var phone = 'Phone: 855.255.6676<br>';
-    var website = 'Website: www.ixl.com<br>';
-    var logoLocation = `'https://c.na57.content.force.com/servlet/servlet.ImageServer?id=0150b0000027zq8&oid=00D300000001FBU&lastMod=1495736864000'`
-    var logo = `<img src= ${logoLocation} alt='ixl-logo'>`;
-    signature = `<br>Sincerely, <br> ${user} ${program} <br> ${email} ${phone} ${website} ${logo}`;
-  } else if (program == 'QW') {
-    user = `<b> ${userFirstName} </b>`;
-    closing = 'Please let me know if you have any questions and I will be happy to help!<br>'
-    program = 'Quia Support';
-    signature = `<br>Sincerely,<br>${user}<br>${program}<br>${replyEmail}`
-  } else if (program == 'QB') {
-    user = `<b> ${userFirstName} </b>`;
-    closing = 'Please let me know if you have any questions and I will be happy to help!<br>'
-    program = 'Quia Support';
-    signature = `<br>Sincerely,<br>${user}<br>${program}<br>${replyEmail}`
+  if (greeting == 'default' && closing == 'default') {
+    greeting = 'Thank you for reaching out to us.';
+    closing = 'Please let me know if you have any questions and I will be happy to help!</br></br>';
+    body = `</br>${body}</br>`;
+  } else {
+    body = `</br></br>${body}</br></br>`;
+    closing = `${closing}</br></br>`;
   }
 
-  return `${salutation}${greeting}<br/><br/>${body} ${closing} ${signature}`;
+  var opening = `Dear NAME,<br/><br/>${greeting}`;
+
+  var signature = getProgramSignature(program, replyEmail);
+
+  return `${opening} ${body} ${closing} ${signature}`;
+}
+
+
+
+function getProgramSignature(program, replyEmail) {
+  var user = document.getElementById('userFirstName').innerHTML;
+  var valediction = `Sincerely,</br>`;
+  if (program == 'IXL') {
+    var name = `<b>${user}</b></br>`;
+    var department = 'IXL Support</br></br>';
+    var email = `E-mail: ${replyEmail}</br>`;
+    var phone = 'Phone: 855.255.6676</br>';
+    var website = 'Website: www.ixl.com</br>';
+    var logoLocation = `'https://c.na57.content.force.com/servlet/servlet.ImageServer?id=0150b0000027zq8&oid=00D300000001FBU&lastMod=1495736864000'`
+    var logo = `<img src= ${logoLocation} alt='ixl-logo'>`;
+    return `${valediction} ${name} ${department} ${email} ${phone} ${website} ${logo}`;
+  } else {
+    var name = `${user}</br>`;
+    return `${valediction} ${name} ${replyEmail}`;
+  }
+
 }
 
 /**
@@ -337,6 +353,7 @@ function editTemplate(templateId) {
   let publicStatusField = document.getElementById('publicStatus');
   let greetingField = document.getElementById('greeting');
   let closingField = document.getElementById('closing');
+  let replyEmailField = document.getElementById('replyEmail');
 
   // Grab this templates information // TODO: Update to use jquery (it's faster!!)
   let name = document.getElementById(templateId).querySelector('#templateName');
@@ -348,6 +365,7 @@ function editTemplate(templateId) {
   let publicStatus = document.getElementById(templateId).querySelector('#templatePublicStatus');
   let greeting = document.getElementById(templateId).querySelector('#templateGreeting');
   let closing = document.getElementById(templateId).querySelector('#templateClosing');
+  let replyEmail = document.getElementById(templateId).querySelector('#templateReplyEmail');
   let today = new Date().toDateInputValue();
   console.log('team field:' + teamField);
   console.log('current team:' + team.textContent);
@@ -363,6 +381,7 @@ function editTemplate(templateId) {
 
   greetingField.value = greeting.textContent;
   closingField.value = closing.textContent;
+  replyEmailField.value = replyEmail.textContent;
 
   // Removes forms method and action, form handled by update method (below)
   form.method = '';
@@ -387,6 +406,7 @@ function update(e) {
   let publicStatus = document.querySelector('#publicStatus').value;
   let greeting = document.querySelector('#greeting').value;
   let closing = document.querySelector('#closing').value;
+  let replyEmail = document.querySelector('#replyEmail').value;
 
 
   fetch('update', {
@@ -402,9 +422,11 @@ function update(e) {
       'category': category,
       'program': program,
       'tags': tags,
+      'team': team,
       'publicStatus': publicStatus,
       'greeting': greeting,
-      'closing': closing
+      'closing': closing,
+      'replyEmail': replyEmail
     })
   }).then(res => {
     if (res.ok) return res.json()
@@ -443,9 +465,6 @@ function updateRanking(id, newRanking, copyFullNumUpdate, copyPortionNumUpdate) 
  * from highest rank number to lowest.
  */
 function rank() {
-  $(document).ready(function() {
-    console.log("ready!");
-  });
   let list = document.getElementById('data-table');
   let li = null;
   let shouldSwitch = false;

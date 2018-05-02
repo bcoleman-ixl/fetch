@@ -9,8 +9,8 @@
   <!-- Bootstrap minified CSS -->
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
   <!-- Google Fonts -->
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans|Roboto|Comfortaa' rel='stylesheet'>
-  <title>---</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans|Roboto|Black+Han+Sans' rel='stylesheet'>
+  <title>Jibu</title>
 </head>
 
 <body>
@@ -33,7 +33,7 @@
 
               <div class='col-lg-12'>
                 <div class='form-group' style='padding-right: 0px;'>
-                  <input type='text' class='form-control' id='name' name='name' required='true' placeholder='Template Name' maxlength='40'>
+                  <input type='text' class='form-control' id='name' name='name' autocomplete='off' required='true' placeholder='Template Name' maxlength='39'>
                 </div>
               </div>
             </div>
@@ -42,13 +42,12 @@
             </div>
             <div class='row'>
               <div class='form-group col-lg-6 col-md-6'>
-                <label for='Category'>Category</label>
                 <select class='form-control' id='category' name='category' required='true'>
-                  <option disabled selected value> --Select-- </option>
+                  <option disabled selected value> --Select category-- </option>
                   <option>Analytics</option>
                   <option>Audio</option>
                   <option>Diagnostic</option>
-                  <option>Error Messages</option>
+                  <option>Network</option>
                   <option>Roster</option>
                   <option>Skills</option>
                   <option>Signing_In</option>
@@ -57,14 +56,15 @@
                 </select>
               </div>
               <div class='form-group col-lg-6 col-md-6'>
-                <label for='Program'>Program</label>
                 <select class='form-control' id='program' name='program' required='true'>
-                  <option disabled selected value> --Select-- </option>
+                  <option disabled selected value> --Select program-- </option>
                   <option>IXL</option>
                   <option>QW</option>
                   <option>QB</option>
                 </select>
               </div>
+
+
               <div class='form-group'>
                 <input type='hidden' class='form-control' id='id' name='id' required='true'>
                 <input type='hidden' id='updatedDate' name='updatedDate' value='error'>
@@ -73,19 +73,37 @@
                 <input type='hidden' id='copyFull' name='copyFull' value=0>
                 <input type='hidden' id='copyPortion' name='copyPortion' value=0>
                 <input type='hidden' id='team' name='team' value='<%= user.team %>'>
-                <input type='hidden' id='publicStatus' name='publicStatus' value=false>
                 <input type='hidden' id='greeting' name='greeting' value='default'>
                 <input type='hidden' id='closing' name='closing' value='default'>
               </div>
             </div>
-            <div class='form-group'>
-              <input type='text' class='form-control' id='tags' name='tags' required='true' placeholder='Tags'>
+            <div class="row">
+              <% if (user.type == 'admin') { %>
+                <div class="form-group col-lg-6 col-md-6">
+                  <select class='form-control' id='publicStatus' name='publicStatus' required='true'>
+                    <option disabled selected value> --Select public status-- </option>
+                    <option>true</option>
+                    <option>false</option>
+                  </select>
+                </div>
             </div>
-            <button type='submit' class='btn btn-primary' id='submitBtn'>Submit</button>
-          </form>
+            <% } else { %>
+              <input type='hidden' id='publicStatus' name='publicStatus' value='false'>
+              <% } %>
+
+                <div class='form-group col-lg-6 col-md-6'>
+                  <input type='text' class='form-control' id='replyEmail' autocomplete='off' name='replyEmail' required='true' placeholder='Reply E-mail'>
+                </div>
         </div>
+        <div class='form-group'>
+          <input type='text' class='form-control' id='tags' name='tags' required='true' placeholder='Tags'>
+        </div>
+
+        <button type='submit' class='btn btn-primary' id='submitBtn'>Submit</button>
+        </form>
       </div>
     </div>
+  </div>
   </div>
   <!-- End manage templates modal -->
 
@@ -109,39 +127,60 @@
 
   <!-- Navbar -->
   <nav class='navbar navbar-default'>
-    <div class="nav navbar-nav">
-      <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-          <img class="profile-img" src="<%= user.img %>" alt=""></a>
-        <ul class="dropdown-menu">
-          <li>
-            <!-- Shows Hello and users name if user is signed in -->
-            <% if (user) { %>
-              <li id='greeting'>Hello
-                <span id="userFirstName"><%= user.name %></span>!
-                <h5 id="userEmail"><%= user.email %></h5>
-              </li>
+    <div class="container-fluid">
+
+
+
+      <ul class="nav navbar-nav">
+        <li>
+
+        </li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            <img class="profile-img" src="<%= user.img %>" alt=""></a>
+          <ul class="dropdown-menu">
+            <li>
+              <!-- Shows Hello and users name if user is signed in -->
+              <% if (user) { %>
+                <li id='greeting'>Hello
+                  <span id="userFirstName"><%= user.name %></span>!
+                  <h5 id="userEmail"><%= user.email %></h5>
+                </li>
+                <% } %>
+            </li>
+            <li class="divider"></li>
+            <li><a id='' href='#manageTemplates' data-toggle='modal' data-target='#manageTemplates' onclick='setTemplateId()'> Add a template</a></li>
+            <!-- If user is admin, admin console option is shown -->
+            <% if (user.type == 'admin') { %>
+              <li><a href="/admin">Admin Console</a></li>
+              <li><a href="/admin/logs">Search logs</a></li>
               <% } %>
-          </li>
-          <li class="divider"></li>
-          <li><a id='' href='#manageTemplates' data-toggle='modal' data-target='#manageTemplates' onclick='setTemplateId()'> Add a template</a></li>
-          <!-- If user is admin, admin console option is shown -->
-          <% if (user.type == 'admin') { %>
-            <li><a href="/admin">Admin Console</a></li>
-            <% } %>
-              <li class="divider"></li>
-              <li id="logout"> <button class="btn btn-danger btn-sm" type="button" name="button" onclick="location.href = '/logout';">Logout</button></li>
-        </ul>
-      </li>
+                <li class="divider"></li>
+                <li id="logout"> <button class="btn btn-danger btn-sm" type="button" name="button" onclick="location.href = '/logout';">Logout</button></li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+
+
+      </ul>
     </div>
   </nav>
   <!-- End navbar -->
 
   <!-- Header -->
   <div id='header'>
-    <h1>Template Search</h1>
+    <h1>Jibu</h1>
+    <h4>Your responses, organized.</h4>
   </div>
   <!-- End header -->
+  <div class="row">
+    <div class="col-lg-12 col-md-12">
+
+      <h6 id="description">(Jibu is a Swahili word meaning response or answer)</h6>
+    </div>
+  </div>
 
   <!-- Spacing -->
   <div class='row space'>
@@ -178,14 +217,13 @@
         <!-- Loop through all templates -->
         <% for(var i = 0; i < templates.length; i++) { %>
 
-
           <% for(var m = 0; m < user.programs.length; m++) { %>
 
             <% if(user.programs[m] == templates[i].program){ %>
 
               <!-- If template was added by an admin (bcoleman@ixl.com OR template was added by current user, then display) -->
-              <% if (templates[i].addedByUser == 'bcoleman@ixl.com' ||
-              templates[i].addedByUser == 'salesforce@ixl.com' ||
+              <% if (templates[i].publicStatus == 'true' ||
+              templates[i].addedByUser == 'salesforce@salesforce.com' ||
               templates[i].addedByUser == user.email) { %>
 
 
@@ -196,7 +234,7 @@
                     <!-- Name of the template, check mark shown if id is 'Template-Verified' -->
                     <h2 class='<%= templates[i].category.toLowerCase() %>' id='templateName'>
               <%= templates[i].name %>
-              <% if(templates[i].addedByUser == 'salesforce@ixl.com'){ %>
+              <% if(templates[i].addedByUser == 'salesforce@salesforce.com'){ %>
                 <i class='fas fa-check' id='verified'></i>
                 <% } else { %>
 
@@ -235,18 +273,14 @@
                         <button id='copyPortionBtn' class='btn line'><i class='fas fa-eye fa-lg'></i></button>
                       </div>
                       <!-- If public is false (meaning this template is for private use) then show these buttons which allows the user to edit, and remove the template -->
-                      <% if (templates[i].publicStatus == 'false') { %>
+                      <% if (templates[i].publicStatus == 'false' || user.type == 'admin') { %>
                         <!-- If template was added by user, show edit button -->
-                        <% if (templates[i].addedByUser == user.email) { %>
+                        <% if (templates[i].addedByUser == user.email || user.type == 'admin') { %>
                           <div class='line' id='edit'>
                             <button id='editBtn' class='btn line'><i class='fas fa-pencil-alt fa-lg'></i></button>
                           </div>
                           <% } %>
-                            <!-- Clear the rank of this template (will add back in later if needed)
-                    <div class='line' id='clearRank'>
-                      <button id='clearRankBtn' class='btn line'><i class='fas fa-ban fa-lg'></i></button>
-                    </div>
-                    -->
+
                             <!-- If user is admin OR this template was added by current user, show remove button -->
                             <% if (templates[i].addedByUser == user.email) { %>
                               <div class='line' id='removeConfirm'>
@@ -325,6 +359,5 @@
 <script src='app-main.js'></script>
 <!-- Script for searching templates -->
 <script src='search.js'></script>
-<script src='jsforce.js'></script>
 
 </html>

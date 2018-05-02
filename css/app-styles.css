@@ -1,6 +1,7 @@
 :root {
   --yellow: #ffcb0a;
   --orange: #f39317;
+  --drkorange: #e9681b;
   --blue: #00a1de;
   --drkblue: #0090c7;
   --green: #52b700;
@@ -13,6 +14,7 @@
   --drkpurple: #702888;
   --cyan: #0bc1b6;
   --font: 'Roboto', sans-serif;
+  --titleFont: 'Black Han Sans', sans-serif;
   --element-w: 425px;
   --element-h: 465px;
 }
@@ -59,10 +61,29 @@ h5 {
 #header>h1 {
   text-align: center;
   font-size: 80px;
-  font-family: 'Roboto';
+  font-family: var(--titleFont);
   font-weight: 100;
-  padding: 0 3% 1% 3%;
+  padding: 0 3% 0 3%;
   margin: 0;
+}
+
+#header>h4 {
+  text-align: center;
+  font-size: 15px;
+  font-family: var(--font);
+  font-weight: 100;
+  font-style: italic;
+  padding: 0 3% 5px 3%;
+  margin: 0;
+}
+
+#description {
+  text-align: center;
+  font-size: 12px;
+  font-family: var(--font);
+  font-style: italic;
+  margin: 0;
+  color: gray;
 }
 
 #add-template {
@@ -74,6 +95,7 @@ h5 {
   font-family: var(--font);
   color: gray;
   font-size: 15px;
+  display: none;
 }
 
 #data-table .details {
@@ -122,6 +144,10 @@ h5 {
   text-align: left;
   border-radius: 8px;
   box-shadow: 0px 0px 15px gainsboro;
+}
+
+.template:hover {
+  box-shadow: 0px 0px 20px 2px lightgray;
 }
 
 .template:focus {
@@ -180,10 +206,6 @@ h5 {
 
 #templateProgram {
   color: var(--drkblue);
-}
-
-.template:hover {
-  box-shadow: 0px 0px 20px 2px lightgray;
 }
 
 #copiedAlert {
@@ -260,7 +282,7 @@ h5 {
 }
 
 .space {
-  padding: 1em;
+  padding: 1em 1em 0 1em;
   width: 100vw;
   text-align: center;
 }
@@ -279,6 +301,10 @@ h5 {
 
 .signing_in {
   color: var(--orange);
+}
+
+.network {
+  color: var(--drkorange);
 }
 
 .skills {
