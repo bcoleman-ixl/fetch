@@ -58,16 +58,17 @@ h5 {
   color: #B8B8B8 !important;
 }
 
-#header>h1 {
+#title {
   text-align: center;
   font-size: 80px;
   font-family: var(--titleFont);
   font-weight: 100;
   padding: 0 3% 0 3%;
   margin: 0;
+  cursor: pointer;
 }
 
-#header>h4 {
+#subtitle {
   text-align: center;
   font-size: 15px;
   font-family: var(--font);
