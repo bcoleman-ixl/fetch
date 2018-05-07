@@ -193,37 +193,29 @@
       <ul id='data-table' class='align'>
 
 
-        <% templatesArr.sort(function(a,b){ %>
+        <% function compare(a,b) {  if (a.ranking < b.ranking){ return -1; }%>
+          <% if (a.ranking > b.ranking){ return 1; } %>
+            <% return 0; }%>
 
-          <% return parseInt(a.ranking) > parseInt (b.ranking); %>
+              <% templates = []; %>
 
-
-            <%  }); %>
-
-
-              <% console.log('***************'); %>
-                <% console.log('***************'); %>
-                  <% console.log('***************'); %>
+                <% templatesArr.sort(compare); %>
+                  <% for (var i = 0; i < templatesArr.length; i++) { templates.unshift(templatesArr[i]); } %>
 
 
-
-                    <% templates = templatesArr; %>
+                    <!-- Loop through all templates -->
+                    <% for(var i = 0; i < templates.length; i++) { %>
+                      <% console.log( i + '.' + templatesArr[i].ranking + ' Name: ' + templatesArr[i].name); %>
 
 
 
-                      <!-- Loop through all templates -->
-                      <% for(var i = 0; i < templates.length; i++) { %>
-                        <% console.log( i + '.' + templatesArr[i].ranking + ' Name: ' + templatesArr[i].name); %>
+                        <!-- NOTE: Remove value of reply e-mail Change to || and make != == -->
+                        <% if ((templates[i].publicStatus == 'true' || templates[i].addedByUser == 'salesforce@salesforce.com')) { %>
 
 
-
-                          <!-- NOTE: Remove value of reply e-mail Change to || and make != == -->
-                          <% if ((templates[i].publicStatus == 'true' || templates[i].addedByUser == 'salesforce@salesforce.com')) { %>
-
-
-                            <li id='<%= templates[i].id %>' class='template admin'>
-                              <!-- Name of the template, check mark shown if id is 'Template-Verified' -->
-                              <h2 class='<%= templates[i].category.toLowerCase() %>' id='templateName'>
+                          <li id='<%= templates[i].id %>' class='template admin'>
+                            <!-- Name of the template, check mark shown if id is 'Template-Verified' -->
+                            <h2 class='<%= templates[i].category.toLowerCase() %>' id='templateName'>
                 <%= templates[i].name %>
                 <% if(templates[i].addedByUser == 'salesforce@salesforce.com'){ %>
                   <i class='fas fa-check' id='verified'></i>
@@ -233,9 +225,9 @@
 
                   <% } %>
             </h2>
-                              <div class='details'>
-                                <!-- Ranking number (hidden), Template ID, and template last updated date -->
-                                <h3 class='line'>
+                            <div class='details'>
+                              <!-- Ranking number (hidden), Template ID, and template last updated date -->
+                              <h3 class='line'>
                   <span id='templateRanking' hidden>
                     <%= templates[i].ranking %>
                   </span>
@@ -295,51 +287,46 @@
                    <%= templates[i].id %>
                   </h3>
 
-                                </h3>
-                                <!-- Buttons -->
-                                <!-- Copy template, greeting, closing, and signature -->
+                              </h3>
+                              <!-- Buttons -->
+                              <!-- Copy template, greeting, closing, and signature -->
+                            </div>
+
+                            <div class='<%= templates[i].category.toLowerCase() %> templateBodyAdmin' id='templateBody'>
+                              <%- templates[i].body %>
+                            </div>
+                            <div class='row'>
+                              <div class='col-lg-12 col-md-12'>
+                                <!-- Template tags and template type (hidden) -->
+                                <h3 class='tags' id='templateTags'><%= templates[i].tags %></h3>
                               </div>
 
-                              <div class='<%= templates[i].category.toLowerCase() %> templateBodyAdmin' id='templateBody'>
-                                <%- templates[i].body %>
-                              </div>
-                              <div class='row'>
-                                <div class='col-lg-9 col-md-9'>
-                                  <!-- Template tags and template type (hidden) -->
-                                  <h3 class='tags' id='templateTags'><%= templates[i].tags %></h3>
-                                </div>
-                                <div class='col-lg-3 col-md-3'>
-                                  <!-- Template category -->
-                                  <h3 class='<%= templates[i].category.toLowerCase() %> line' id='templateCategory'><%= templates[i].category %></h3>
-                                </div>
 
-                              </div>
-                              <div class='row'>
-                                <div class='col-lg-12 col-md-12'>
+                            </div>
+                            <div class='row'>
+                              <div class='col-lg-12 col-md-12'>
 
-                                  <h3 id='addedByUser'>
+                                <h3 id='addedByUser'>
                     Added by: <%= templates[i].addedByUser %>
                   </h3>
-                                  <h3 class='type' id='templateFolder'>Folder: <%= templates[i].folder %></h3>
-                                  <h3 class='type' id='templateTeam'><%= templates[i].team %></h3>
-                                  <h3 class='type' id='templateReplyEmail'><%= templates[i].replyEmail %></h3>
-                                  <h3 class='type' id='templatePublicStatus' hidden><%= templates[i].publicStatus %></h3>
-
-
-                                  <h3 class='type' id='templateGreeting' hidden><%= templates[i].greeting %></h3>
-                                  <h3 class='type' id='templateClosing' hidden><%= templates[i].closing %></h3>
-
-                                </div>
-
+                                <h3 class='type' id='templateFolder'>Folder: <%= templates[i].folder %></h3>
+                                <h3 class='type' id='templateTeam'><%= templates[i].team %></h3>
+                                <h3 class='type' id='templateReplyEmail'><%= templates[i].replyEmail %></h3>
+                                <h3 class='type' id='templatePublicStatus' hidden><%= templates[i].publicStatus %></h3>
+                                <h3 class='type' id='templateGreeting' hidden><%= templates[i].greeting %></h3>
+                                <h3 class='type' id='templateClosing' hidden><%= templates[i].closing %></h3>
 
                               </div>
-                            </li>
 
-                            <% } else {%>
+
+                            </div>
+                          </li>
+
+                          <% } else {%>
+                            <% } %>
+
                               <% } %>
-
-                                <% } %>
-                                  <!-- End For loop -->
+                                <!-- End For loop -->
 
       </ul>
 
