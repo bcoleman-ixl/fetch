@@ -24,7 +24,7 @@ $(document).ready(function() {
 function initialize() {
   // Sorts all templates by rank number
   // Sets up editor and loads toolbar
-  rank();
+  // rank();
   tinymce.init({
     selector: '#body',
     force_br_newlines: true,
@@ -135,7 +135,7 @@ function handleClick(e) {
      * to add template components (greeting, closing, signature,
      * etc.). Then copies the full e-mail to the clipboard
      */
-    copy(buildEmail(body, program, replyEmail, greeting, closing));
+    copy(buildEmail(body, program, replyEmail, greeting, closing, templateId));
 
     // Selects ranking element and currentRanking. Converts to integer and updates ranking number
     let ranking = document.getElementById(templateId).querySelector('#templateRanking').innerHTML;
@@ -268,7 +268,7 @@ function copy(html) {
   document.body.removeChild(container)
 }
 
-function buildEmail(body, program, replyEmail, greeting, closing) {
+function buildEmail(body, program, replyEmail, greeting, closing, templateId) {
   /**
    * Grabs users first name from their account menu (set by Google Profile).
    * Sets e-mail, program, phone number, website, greeting,
@@ -286,8 +286,14 @@ function buildEmail(body, program, replyEmail, greeting, closing) {
     body = `</br></br>${body}</br></br>`;
     closing = `${closing}</br></br>`;
   }
-
   var opening = `Dear NAME,<br/><br/>${greeting}`;
+
+  if (templateId == `X00_1_Blank_Signature_only`) {
+    console.log(templateId);
+    console.log(opening);
+    opening = '';
+    console.log(opening + '1');
+  }
 
   var signature = getProgramSignature(program, replyEmail);
 
@@ -367,8 +373,9 @@ function editTemplate(templateId) {
   let closing = document.getElementById(templateId).querySelector('#templateClosing');
   let replyEmail = document.getElementById(templateId).querySelector('#templateReplyEmail');
   let today = new Date().toDateInputValue();
-  console.log('team field:' + teamField);
-  console.log('current team:' + team.textContent);
+
+  console.log(program);
+
   // Set all form fields equal to this templates fields
   idField.value = templateId;
   nameField.value = name.textContent.trim();
@@ -512,5 +519,6 @@ function updateLogs(userSearch) {
     if (res.ok) return res.json()
   }).then(data => {})
 }
+
 
 initialize()
