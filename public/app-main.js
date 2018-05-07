@@ -281,7 +281,7 @@ function buildEmail(body, program, replyEmail, greeting, closing, templateId) {
   if (greeting == 'default' && closing == 'default') {
     greeting = 'Thank you for reaching out to us.';
     closing = 'Please let me know if you have any questions and I will be happy to help!</br></br>';
-    body = `</br>${body}</br>`;
+    body = `</br></br>${body}</br></br>`;
   } else {
     body = `</br></br>${body}</br></br>`;
     closing = `${closing}</br></br>`;
