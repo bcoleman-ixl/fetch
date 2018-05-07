@@ -92,7 +92,7 @@
               </div>
             </div>
             <div class='form-group'>
-              <input type='text' class='form-control' id='tags' name='tags' required='true' placeholder='Tags'>
+              <input type='text' class='form-control' id='tags' name='tags' required='true' placeholder='Tags' maxlength='39'>
             </div>
 
             <button type='submit' class='btn btn-primary' id='submitBtn'>Submit</button>
@@ -245,15 +245,16 @@
                   <span id='templateCopyPortion' hidden>
                     <%= templates[i].copyPortion %>
                   </span>
-                  <i id='templateUpdatedDate'>
+                  <span id='templateUpdatedDate'>
                     <%= templates[i].updatedDate %>
-                  </i>
-                  -
-                  <span id='templateProgram'>
-                    <b><%= templates[i].program.toUpperCase() %></b>
                   </span>
-
-                </h3>
+                  |
+                  <span>
+                    <span id='templateProgram'><%= templates[i].program.toUpperCase() %></span>
+                    <!-- Template category -->
+                    |
+                    <span class='<%= templates[i].category.toLowerCase() %>' id='templateCategory'> <%= templates[i].category %></span>
+                                  </span>
                                 <!-- Buttons -->
                                 <!-- If public is false (meaning this template is for private use) then show these buttons which allows the user to edit, and remove the template -->
 
@@ -299,7 +300,7 @@
                                 <!-- Copy template, greeting, closing, and signature -->
                               </div>
 
-                              <div class='<%= templates[i].category.toLowerCase() %> templateBodyAdmin' id='templateBody' hidden>
+                              <div class='<%= templates[i].category.toLowerCase() %> templateBodyAdmin' id='templateBody'>
                                 <%- templates[i].body %>
                               </div>
                               <div class='row'>
@@ -319,7 +320,7 @@
                                   <h3 id='addedByUser'>
                     Added by: <%= templates[i].addedByUser %>
                   </h3>
-                                  <h3 class='type' id='templateFolder'><%= templates[i].folder %></h3>
+                                  <h3 class='type' id='templateFolder'>Folder: <%= templates[i].folder %></h3>
                                   <h3 class='type' id='templateTeam'><%= templates[i].team %></h3>
                                   <h3 class='type' id='templateReplyEmail'><%= templates[i].replyEmail %></h3>
                                   <h3 class='type' id='templatePublicStatus' hidden><%= templates[i].publicStatus %></h3>
