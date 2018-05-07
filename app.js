@@ -299,7 +299,7 @@ app.get('/templates', authCheck, (req, res) => {
     if (err) return console.log(err)
     // Renders index.ejs and loads templates and user profile
     res.render('index.ejs', {
-      templates: result,
+      templatesArr: result,
       user: req.user,
       form: formCode
     })
@@ -315,7 +315,7 @@ app.get('/admin', authCheckAdmin, (req, res) => {
     // Renders admin.ejs and loads tempaltes and user profile
     res.render('admin.ejs', {
       myVar: myVar,
-      templates: result,
+      templatesArr: result,
       user: req.user
     })
   })
@@ -351,7 +351,7 @@ app.get('/', (req, res) => {
  */
 var conn = new jsforce.Connection({
   oauth2: {
-    // you can change loginUrl to connect to sandbox or prerelease env.
+    // update at config/keys
     loginUrl: 'https://test.salesforce.com',
     clientId: keys.salesforce.clientId,
     clientSecret: keys.salesforce.clientSecret,
