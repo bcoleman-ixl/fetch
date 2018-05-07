@@ -4,7 +4,7 @@
 <head>
   <meta charset='utf-8'>
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
-  <link rel='stylesheet' href='/app-styles.css'>
+  <link rel='stylesheet' href='/styles.css'>
   <link href="/fa/css/fontawesome-all.css" rel="stylesheet">
   <!-- Bootstrap minified CSS -->
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
@@ -173,21 +173,14 @@
   <div class="header">
     <div class="row space">
       <div class="col-lg-5">
-
       </div>
       <div class="col-lg-2">
-
-
         <h1 id="title">Jibu</h1>
-
       </div>
       <div class="col-lg-5">
-
       </div>
     </div>
     <h4 id="subtitle">Your responses, organized.</h4>
-
-
     <h6 id="description">(Jibu is a Swahili word meaning response or answer)</h6>
   </div>
   <!-- End header -->
@@ -251,7 +244,7 @@
                           <% if ((templates[i].publicStatus == 'false' && templates[i].addedByUser == user.email) || (templates[i].publicStatus == 'true')) { %>
 
 
-                            <li id='<%= templates[i].id %>' class='template'>
+                            <li id='<%= templates[i].id %>' class='template user'>
                               <!-- Name of the template, check mark shown if id is 'Template-Verified' -->
                               <h2 class='<%= templates[i].category.toLowerCase() %>' id='templateName'>
               <%= templates[i].name %>
@@ -313,7 +306,7 @@
                                               <span id="copiedAlert" hidden>Copied</span>
                                             </div>
                               </div>
-                              <div class='<%= templates[i].category.toLowerCase() %>' id='templateBody'>
+                              <div class='<%= templates[i].category.toLowerCase() %> templateBodyUser' id='templateBody'>
                                 <%- templates[i].body %>
                               </div>
                               <div class='row'>

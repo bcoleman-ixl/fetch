@@ -4,7 +4,7 @@
 
 <head>
   <meta charset='utf-8'>
-  <link rel='stylesheet' href='/admin-styles.css'>
+  <link rel='stylesheet' href='/styles.css'>
   <link href="/fa/css/fontawesome-all.css" rel="stylesheet">
 
   <!-- Bootstrap minified CSS -->
@@ -154,18 +154,21 @@
   <!-- End navbar -->
 
 
-  <!-- Spacing -->
-  <div class='row space'>
-    <div class='col-lg-3'></div>
-    <div class='col-lg-6'>
-      <div id='header'>
-        <h1>Jibu</h1>
-        <h4>Admin Console</h4>
+  <!-- Header -->
+  <div class="header">
+    <div class="row space">
+      <div class="col-lg-5">
+      </div>
+      <div class="col-lg-2">
+        <h1 id="title">Jibu</h1>
+      </div>
+      <div class="col-lg-5">
       </div>
     </div>
-    <div class='col-lg-3'></div>
+    <h4 id="subtitle">Your responses, organized.</h4>
+    <h6 id="description">(Jibu is a Swahili word meaning response or answer)</h6>
   </div>
-  <!-- End spacing -->
+  <!-- End header -->
 
   <!-- Search bar -->
   <div class='row space'>
@@ -186,20 +189,41 @@
     <div class='col-lg-1 col-md-1'>
     </div>
     <div class='col-lg-12 col-md-12'>
-      <h2><i class="fas fa-wrench"></i> Under construction. Template count: <%= templates.length %></h2>
+      <h2><i class="fas fa-wrench"></i> Under construction. Template count: <%= templatesArr.length %></h2>
       <ul id='data-table' class='align'>
 
-        <!-- Loop through all templates -->
-        <% for(var i = 0; i < templates.length; i++) { %>
+
+        <% templatesArr.sort(function(a,b){ %>
+
+          <% return parseInt(a.ranking) > parseInt (b.ranking); %>
+
+
+            <%  }); %>
+
+
+              <% console.log('***************'); %>
+                <% console.log('***************'); %>
+                  <% console.log('***************'); %>
 
 
 
-          <% if ((templates[i].publicStatus == 'true' || templates[i].addedByUser == 'salesforce@salesforce.com')) { %>
+                    <% templates = templatesArr; %>
 
 
-            <li id='<%= templates[i].id %>' class='template'>
-              <!-- Name of the template, check mark shown if id is 'Template-Verified' -->
-              <h2 class='<%= templates[i].category.toLowerCase() %>' id='templateName'>
+
+                      <!-- Loop through all templates -->
+                      <% for(var i = 0; i < templates.length; i++) { %>
+                        <% console.log( i + '.' + templatesArr[i].ranking + ' Name: ' + templatesArr[i].name); %>
+
+
+
+                          <!-- NOTE: Remove value of reply e-mail Change to || and make != == -->
+                          <% if ((templates[i].publicStatus == 'true' || templates[i].addedByUser == 'salesforce@salesforce.com')) { %>
+
+
+                            <li id='<%= templates[i].id %>' class='template admin'>
+                              <!-- Name of the template, check mark shown if id is 'Template-Verified' -->
+                              <h2 class='<%= templates[i].category.toLowerCase() %>' id='templateName'>
                 <%= templates[i].name %>
                 <% if(templates[i].addedByUser == 'salesforce@salesforce.com'){ %>
                   <i class='fas fa-check' id='verified'></i>
@@ -209,9 +233,9 @@
 
                   <% } %>
             </h2>
-              <div class='details'>
-                <!-- Ranking number (hidden), Template ID, and template last updated date -->
-                <h3 class='line'>
+                              <div class='details'>
+                                <!-- Ranking number (hidden), Template ID, and template last updated date -->
+                                <h3 class='line'>
                   <span id='templateRanking' hidden>
                     <%= templates[i].ranking %>
                   </span>
@@ -230,31 +254,32 @@
                   </span>
 
                 </h3>
-                <!-- Buttons -->
-                <!-- If public is false (meaning this template is for private use) then show these buttons which allows the user to edit, and remove the template -->
+                                <!-- Buttons -->
+                                <!-- If public is false (meaning this template is for private use) then show these buttons which allows the user to edit, and remove the template -->
 
 
-                <!-- If template was added by user, show edit button -->
-                <div class='line' id='edit'>
-                  <button id='editBtn' class='btn line'><i class='fas fa-pencil-alt fa-lg'></i></button>
-                </div>
-                <!-- Clear the rank of this template (will add back in later if needed)
+                                <!-- If template was added by user, show edit button -->
+                                <div class='line' id='edit'>
+                                  <button id='editBtn' class='btn line'><i class='fas fa-pencil-alt fa-lg'></i></button>
+                                </div>
+                                <!-- Clear the rank of this template (will add back in later if needed)
               -->
-                <div class='line' id='clearRank'>
-                  <button id='clearRankBtn' class='btn line'><i class='fas fa-ban fa-lg'></i></button>
-                </div>
-                <!-- If user is admin OR this template was added by current user, show remove button -->
-                <div class='line' id='removeConfirm'>
-                  <button id='removeConfirmBtn' class='btn line'><i class='far fa-trash-alt fa-lg' ></i></button>
-                </div>
+                                <div class='line' id='clearRank'>
+                                  <button id='clearRankBtn' class='btn line'><i class='fas fa-ban fa-lg'></i></button>
+                                </div>
+                                <!-- If user is admin OR this template was added by current user, show remove button -->
+                                <div class='line' id='removeConfirm'>
+                                  <button id='removeConfirmBtn' class='btn line'><i class='far fa-trash-alt fa-lg' ></i></button>
+                                </div>
 
-              </div>
+                              </div>
 
-              <div class='details'>
-                <!-- Ranking number (hidden), Template ID, and template last updated date -->
-                <h3 class='line'>
+                              <div class='details'>
+                                <!-- Ranking number (hidden), Template ID, and template last updated date -->
+                                <h3 class='line'>
                   Total:
                   <span id='templateRanking'>
+
                     <%= templates[i].ranking %>
                   </span>
                   Full:
@@ -269,52 +294,51 @@
                    <%= templates[i].id %>
                   </h3>
 
-                </h3>
-                <!-- Buttons -->
-                <!-- Copy template, greeting, closing, and signature -->
-              </div>
+                                </h3>
+                                <!-- Buttons -->
+                                <!-- Copy template, greeting, closing, and signature -->
+                              </div>
 
-              <div class='<%= templates[i].category.toLowerCase() %> blur' id='templateBody'>
-                <%- templates[i].body %>
-              </div>
-              <div class='row'>
-                <div class='col-lg-9 col-md-9'>
-                  <!-- Template tags and template type (hidden) -->
-                  <h3 class='tags' id='templateTags'><%= templates[i].tags %></h3>
-                </div>
-                <div class='col-lg-3 col-md-3'>
-                  <!-- Template category -->
-                  <h3 class='<%= templates[i].category.toLowerCase() %> line' id='templateCategory'><%= templates[i].category %></h3>
-                </div>
+                              <div class='<%= templates[i].category.toLowerCase() %> templateBodyAdmin' id='templateBody' hidden>
+                                <%- templates[i].body %>
+                              </div>
+                              <div class='row'>
+                                <div class='col-lg-9 col-md-9'>
+                                  <!-- Template tags and template type (hidden) -->
+                                  <h3 class='tags' id='templateTags'><%= templates[i].tags %></h3>
+                                </div>
+                                <div class='col-lg-3 col-md-3'>
+                                  <!-- Template category -->
+                                  <h3 class='<%= templates[i].category.toLowerCase() %> line' id='templateCategory'><%= templates[i].category %></h3>
+                                </div>
 
-              </div>
-              <div class='row'>
-                <div class='col-lg-12 col-md-12'>
+                              </div>
+                              <div class='row'>
+                                <div class='col-lg-12 col-md-12'>
 
-                  <h3 id='addedByUser'>
+                                  <h3 id='addedByUser'>
                     Added by: <%= templates[i].addedByUser %>
                   </h3>
-                  <h3 class='type' id='templateFolder'><%= templates[i].folder %></h3>
-                  <h3 class='type' id='templateTeam'><%= templates[i].team %></h3>
-                  <h3 class='type' id='templateReplyEmail'><%= templates[i].replyEmail %></h3>
-                  <h3 class='type' id='templatePublicStatus'><%= templates[i].publicStatus %></h3>
-                  <!-- NOTE:
-
-                  <h3 class='type' id='templateGreeting'><%= templates[i].greeting %></h3>
-                  <h3 class='type' id='templateClosing'><%= templates[i].closing %></h3>
-
-                 -->
-                </div>
+                                  <h3 class='type' id='templateFolder'><%= templates[i].folder %></h3>
+                                  <h3 class='type' id='templateTeam'><%= templates[i].team %></h3>
+                                  <h3 class='type' id='templateReplyEmail'><%= templates[i].replyEmail %></h3>
+                                  <h3 class='type' id='templatePublicStatus' hidden><%= templates[i].publicStatus %></h3>
 
 
-              </div>
-            </li>
+                                  <h3 class='type' id='templateGreeting' hidden><%= templates[i].greeting %></h3>
+                                  <h3 class='type' id='templateClosing' hidden><%= templates[i].closing %></h3>
 
-            <% } else {%>
-              <% } %>
+                                </div>
 
-                <% } %>
-                  <!-- End For loop -->
+
+                              </div>
+                            </li>
+
+                            <% } else {%>
+                              <% } %>
+
+                                <% } %>
+                                  <!-- End For loop -->
 
       </ul>
 
