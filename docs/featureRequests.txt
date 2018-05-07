@@ -5,3 +5,5 @@
 3. Do  not refresh page after update.
 
 4. Have each EJS do the rank computation, rather than the javascript. (Speed!)
+
+5. Add number next to search bar that shows total number of templates found
