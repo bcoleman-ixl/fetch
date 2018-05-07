@@ -76,6 +76,7 @@
               </div>
             </div>
             <div class="row">
+              <!-- If user is an admin, display public status dropdown -->
               <% if (user.type == 'admin') { %>
                 <div class="form-group col-lg-6 col-md-6">
                   <select class='form-control' id='publicStatus' name='publicStatus' required='true'>
@@ -84,6 +85,7 @@
                     <option>false</option>
                   </select>
                 </div>
+                <!-- If user is not admin, set public status as false -->
                 <% } else { %>
                   <input type='hidden' id='publicStatus' name='publicStatus' value='false'>
                   <% } %>
@@ -202,11 +204,16 @@
       <div class='form-group has-feedback has-clear'>
         <input type='text' class='form-control input-lg' id='search-bar' autofocus="autofocus" placeholder='Search' onkeyup='search()' spellcheck='false'>
         <span id="clear-search" class="glyphicon glyphicon-remove-circle"></span>
+        <span id="templateCount"></span>
       </div>
     </div>
-    <div class='col-lg-4 col-md-4'></div>
+    <div class='col-lg-4 col-md-4'>
+
+    </div>
   </div>
   <!-- End search bar -->
+
+
 
 
   <!-- Templates -->
@@ -223,17 +230,8 @@
 
                 <% templatesArr.sort(compare); %>
                   <% for (var i = 0; i < templatesArr.length; i++) { templates.unshift(templatesArr[i]); } %>
-
-
-
-
-
-
-
                     <!-- Loop through all templates -->
                     <% for(var i = 0; i < templates.length; i++) { %>
-
-
                       <% for(var m = 0; m < user.programs.length; m++) { %>
 
                         <% if(user.programs[m] == templates[i].program){ %>

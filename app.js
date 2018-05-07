@@ -182,8 +182,6 @@ app.put('/update', (req, res) => {
         _id: -1
       },
       upsert: true
-
-
     }, (err, result) => {
       if (err) return res.send(err)
       res.send(result)
@@ -305,7 +303,6 @@ app.get('/templates', authCheck, (req, res) => {
     })
   })
 });
-
 
 app.get('/admin', authCheckAdmin, (req, res) => {
   templatesDb.collection('templates').find().toArray((err, result) => {
