@@ -2,13 +2,14 @@ var searchLogArr = new Array();
 
 function search() {
   // Sort each time search is initiated
-  rank();
+  // rank();
   let input = document.getElementById('search-bar');
   let filterArr = input.value.toUpperCase().split(' ').clean('');
   let ul = document.getElementById('data-table');
   let li = ul.getElementsByClassName('template');
   // TODO: Remove Category and Type names from search
   for (k = 0; k < li.length; k++) {
+
 
 
     // Loop through each list item
@@ -72,5 +73,3 @@ Array.prototype.clean = function(value) {
   }
   return this;
 };
-
-//search();
