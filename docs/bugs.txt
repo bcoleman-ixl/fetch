@@ -1,2 +1,3 @@
 1. Some templates add too many lines while others don't add enough.
 (FIXED) 2. Signatures for Quia don't include `Quia Support`.
+3. Admin view shortens template tile when tags are not present
