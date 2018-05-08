@@ -315,7 +315,7 @@ function getProgramSignature(program, replyEmail) {
     var logo = `<img src= ${logoLocation} alt='ixl-logo'>`;
     return `${valediction} ${name} ${department} ${email} ${phone} ${website} ${logo}`;
   } else {
-    var name = `${user}</br>`;
+    var name = `${user}</br>Quia Support</br>`;
     return `${valediction} ${name} ${replyEmail}`;
   }
 
