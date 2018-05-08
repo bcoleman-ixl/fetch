@@ -1,14 +1,8 @@
-SECRET_WORDS1 in TS NIE needs a greeting
+NIE Issues - reach out to Tom
 Student_Notification in TS QB Stolen book keys needs a greeting
 Secret_Words in TS NGE Greeting? Closing?
 Add line between greeting and e-mail? in National Exam folders?
-Add line between greeting and e-mail? for Suggestions in IXL?
-XX29_IP_whitelisted in TS IXL - space out greeting?
-XX28_2_Audio_issue_home in TS IXL missing signature
-XX24_3_Teacher_clearing_students_site line between closing and end of e-mail
-greeting for XX24_1_Second_Clear_Student_Account_Request
 
-XX26_Account_is_inactive_grey (TS IXL) & XXX7_Account_is_inactive_grey (TS L1) Duplicates
 Remove table from Phones on IXL and Other tablets/phones on IXL (Also, can we consolidate into one?)
 Closing for X24_Purchased_wrong_book_BOOK_KEY2 in TS QB
 Closing for X47_DSC_helps_with_setup_e_mail1 in TS QB
