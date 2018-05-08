@@ -20,7 +20,7 @@
   /* Font for Jibu title */
   --titleFont: 'Black Han Sans', sans-serif;
   /* Dimensions for template for user console */
-  --template-w: 425px;
+  --template-w: 435px;
   /* Dimensions for templates in admin console */
   --templateAdmin-w: 400px;
   --templateBodyUser-h: 250px;
@@ -158,10 +158,10 @@ h5 {
 .template {
   display: inline-block;
   padding: 1em 2em 2em 2em;
-  margin: 0.75em;
+  margin: 10px 5px 5px 5px;
   text-align: left;
   border-radius: 8px;
-  box-shadow: 0px 0px 15px gainsboro;
+  box-shadow: 0px 0px 10px gainsboro;
 }
 
 .template:hover {
