@@ -129,19 +129,13 @@
   <!-- Navbar -->
   <nav class='navbar navbar-default'>
     <div class="container-fluid">
-
-
-
       <ul class="nav navbar-nav">
-        <li>
-
-        </li>
         <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          <a class="dropdown-toggle" data-toggle="dropdown">
             <img class="profile-img" src="<%= user.img %>" alt=""></a>
           <ul class="dropdown-menu">
             <li>
-              <!-- Shows Hello and users name if user is signed in -->
+              <!-- Displays greeting, users name, e-mail if user is signed in -->
               <% if (user) { %>
                 <li id='greeting'>Hello
                   <span id="userFirstName"><%= user.name %></span>!
@@ -151,26 +145,29 @@
             </li>
             <li class="divider"></li>
             <li><a id='' href='#manageTemplates' data-toggle='modal' data-target='#manageTemplates' onclick='setTemplateId()'> Add a template</a></li>
-            <!-- If user is admin, admin console option is shown -->
+            <!-- If user is admin, admin console and Search logs options are shown -->
+            <!-- Start if statement-->
             <% if (user.type == 'admin') { %>
               <li><a href="/admin">Admin Console</a></li>
               <li><a href="/admin/logs">Search logs</a></li>
               <% } %>
+                <!-- End if statement -->
+                <!-- All users will see logout button -->
                 <li class="divider"></li>
                 <li id="logout"> <button class="btn btn-danger btn-sm" type="button" name="button" onclick="location.href = '/logout';">Logout</button></li>
           </ul>
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-
-
+        <!-- Link to online Quick Reference -->
+        <li id="qr-link"> <a href="https://docs.google.com/document/d/19HYG9WQJ3L9I4XI1KtYMnaEYqsFYeYDNBe7zI2tYs2k/edit" target="_blank">QR</a> </li>
       </ul>
     </div>
   </nav>
   <!-- End navbar -->
 
   <!-- Header -->
+  <!-- Displays  -->
   <div class="header">
     <div class="row space">
       <div class="col-lg-5">
