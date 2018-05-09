@@ -21,6 +21,12 @@ $(document).ready(function() {
   // Handler for .ready() called.
 });
 
+$(document).on('focusin', function(e) {
+  if ($(event.target).closest(".mce-window").length) {
+    e.stopImmediatePropagation();
+  }
+});
+
 function initialize() {
   // Sorts all templates by rank number
   // Sets up editor and loads toolbar
@@ -33,8 +39,10 @@ function initialize() {
     valid_elements: 'a,b/strong,br/div,li,ul,u,i',
     menubar: false,
     statusbar: true,
+    anchor_bottom: false,
+    anchor_top: false,
     height: '350',
-    plugins: 'lists, advlist, textcolor, colorpicker',
+    plugins: 'lists, advlist, textcolor, colorpicker, link',
     toolbar: [
       'undo redo | bold italic underline | alignleft  aligncenter  alignright | numlist  bullist | forecolor | backcolor | removeformat | link'
     ]
