@@ -30,6 +30,7 @@ function initialize() {
     force_br_newlines: true,
     force_p_newlines: false,
     forced_root_block: '',
+    valid_elements: 'a,b/strong,br/div,li,ul,u,i',
     menubar: false,
     statusbar: true,
     height: '350',
@@ -124,6 +125,7 @@ function handleClick(e) {
   let greeting = $(e.target).closest(`.template`).find(`#templateGreeting`).text();
   let closing = $(e.target).closest(`.template`).find(`#templateClosing`).text();
 
+  console.log(e.target);
   /* If copy full button was clicked or template body was clicked */
   if (e.target !== e.currentTarget && (eventId == 'templateBody' || eventId == 'copyFull')) {
     // P tags are removed and replaced with breaks. TODO: Need better solution here.
@@ -147,6 +149,8 @@ function handleClick(e) {
     let currentRanking = parseInt(ranking);
     // Updates ranking number for this templateId
     updateRanking(templateId, currentRanking + 1, currentCopyFull + 1, currentCopyPortion);
+    body = document.getElementById(templateId).querySelector('#templateBody').outerHTML.replace(`<\/div>\n<div>`, '</br></br>');
+    console.log(body);
 
     /* If copy portion button was clicked */
   } else if (e.target !== e.currentTarget && eventId == 'copyPortion') {
@@ -208,21 +212,6 @@ function alertUser(template) {
   // Grab the span element
   let span = $(template).find(`#copiedAlert`);
   $(span).fadeIn(400).fadeOut(1000);
-
-
-  // Show span and text 'Copied'
-  /**$(span).css('transition', 'none');
-  $(span).css('opacity', 1);
-  console.log(span);
-  $(span).text('Copied');
-  $(span).css('transition', 'opacity 1.5s');
-  $(span).css('opacity', 0);
-  */
-
-
-  //void span.offsetWidth;
-  // Make transition last 1.5 seconds
-  // Set opacity to 0 and hide element
 }
 
 function copy(html) {

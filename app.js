@@ -389,7 +389,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
 
           // Get the e-mail body in HTML and remove first sentence and after sincerely
           if (record.HtmlValue == null) {
-            console.log('Body [[null]] for ' + record.Name);
+            console.log('Body [[null]] for  ' + record.Name);
           } else {
             var numberRegex = /\d*\.*\d*\s*(.*)/g;
             var name = numberRegex.exec(record.Name)[1];

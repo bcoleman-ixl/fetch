@@ -1,3 +1,3 @@
-1. Some templates add too many lines while others don't add enough.
+(FIXED) 1. Some templates add too many lines while others don't add enough. This is an issue with using div as a return or break tag. Make sure to clear ranking for Individualizing Instruction on IXL when done.
 (FIXED) 2. Signatures for Quia don't include `Quia Support`.
 3. Admin view shortens template tile when tags are not present
