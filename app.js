@@ -121,6 +121,15 @@ logsClient.connect(keys.mongoDb.logsURI, (err, client) => {
   app.listen(3001);
   console.log('listening on 3001 for logs');
 });
+/* Connect to family templates database. Grab template list for displayin gin index.ejs
+templatesClient.connect(keys.mongoDb.templatesURI, (err, client) => {
+  if (err) return console.log(err);
+  templatesDb = client.db('templates');
+  // Listen on port 3000
+  app.listen(3000);
+  console.log('listening on 3000');
+});
+*/
 
 /* Connects to users database*/
 mongoose.connect(keys.mongoDb.usersURI);
@@ -157,7 +166,6 @@ app.delete('/remove', (req, res) => {
  * always be todays date.
  */
 app.put('/update', (req, res) => {
-  console.log(req.body.replyEmail);
   templatesDb.collection('templates')
     .findOneAndUpdate({
       id: req.body.id
@@ -175,7 +183,6 @@ app.put('/update', (req, res) => {
         publicStatus: req.body.publicStatus,
         replyEmail: [req.body.replyEmail],
         tags: req.body.tags
-
       }
     }, {
       sort: {
@@ -248,7 +255,6 @@ passport.use(new GoogleStrategy({
     callbackURL: keys.google.callbackURL
   },
   function(accessToken, refreshToken, profile, done) {
-    console.log(profile.emails[0].value);
     User.findOne({
       googleID: profile.id
     }).then((currentUser) => {
@@ -292,14 +298,12 @@ app.get('/auth/google/callback', passport.authenticate('google'), (req, res) => 
 });
 
 app.get('/templates', authCheck, (req, res) => {
-  var formCode = `<h2>Testing</h2>`;
   templatesDb.collection('templates').find().toArray((err, result) => {
     if (err) return console.log(err)
     // Renders index.ejs and loads templates and user profile
     res.render('index.ejs', {
       templatesArr: result,
-      user: req.user,
-      form: formCode
+      user: req.user
     })
   })
 });
@@ -365,7 +369,9 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
   console.log('Token: ' + conn.accessToken);
   console.log(conn.instanceUrl);
 
-
+  /**
+   * Pulls all IXL template folders
+   */
   conn.sobject("EmailTemplate")
     .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
     .where(
@@ -377,20 +383,24 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       tsl1ixl +
       end)
     .execute(function(err, records) {
+
       try {
+        /**
+         * Loops through each record collecting, formatting, and preparing
+         * information to create a new template or update an existing one.
+         */
         for (var i = 0; i < records.length; i++) {
-          // Get individual record
+
           var record = records[i];
-          var folder = record.Folder.Name;
 
-          // Get and format last modified date
-          var longDate = new Date(record.LastModifiedDate);
-          var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
+          if (record.HtmlValue != null && record.IsActive == true) {
+            var folder = record.Folder.Name;
 
-          // Get the e-mail body in HTML and remove first sentence and after sincerely
-          if (record.HtmlValue == null) {
-            console.log('Body [[null]] for  ' + record.Name);
-          } else {
+            /* Format the date and body of the e-mail */
+            var longDate = new Date(record.LastModifiedDate);
+            var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
+
+
             var numberRegex = /\d*\.*\d*\s*(.*)/g;
             var name = numberRegex.exec(record.Name)[1];
             var body = record.HtmlValue;
@@ -420,9 +430,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
 
             finalBody = finalBody.join('');
 
-          }
-          // fields in Account relationship are fetched
-          if (record.HtmlValue != null && record.IsActive == true) {
+
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
@@ -531,7 +539,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
         console.log(e);
       }
     }) // End of query
-
 
   conn.sobject("EmailTemplate")
     .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
