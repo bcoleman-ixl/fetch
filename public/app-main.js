@@ -6,19 +6,8 @@
  *
  */
 
-/**
- * Fires when document loads, sorts templates,
- * initializes editor, adds updated date, and
- * adds event listener to dataTable filed
- *
- * @return {[type]} [description]
- */
-
 $(document).ready(function() {
-
   $('#data-table').show();
-
-  // Handler for .ready() called.
 });
 
 $(document).on('focusin', function(e) {
@@ -27,10 +16,14 @@ $(document).on('focusin', function(e) {
   }
 });
 
+/**
+ * Fires when document loads,
+ * initializes editor, adds updated date, and
+ * adds event listener to dataTable filed
+ *
+ */
 function initialize() {
-  // Sorts all templates by rank number
   // Sets up editor and loads toolbar
-  // rank();
   tinymce.init({
     selector: '#body',
     force_br_newlines: true,
@@ -67,6 +60,20 @@ Date.prototype.toDateInputValue = (function() {
   return local;
 })
 
+
+$('#confirmRemoveDialog').on('hidden.bs.modal', function() {
+  $('#confirmRemoveModal').find('a').attr('id', 'confirmRemoveBtn');
+})
+
+// CLears search box when x is clicked
+$("#clear-search").click(function() {
+  $("#search-bar").val('');
+  // Places cursor back in search box
+  $("#search-bar").focus();
+});
+
+/* Functions for template modal */
+
 /**
  * When Manage Templates modal is hidden,
  * form fields, method, and action are reset
@@ -82,21 +89,7 @@ $('#manageTemplates').on('hidden.bs.modal', function() {
   updateBtn.innerHTML = 'Submit';
   updateBtn.onclick = '';
 })
-
-$('#confirmRemoveDialog').on('hidden.bs.modal', function() {
-  $('#confirmRemoveModal').find('a').attr('id', 'confirmRemoveBtn');
-})
-
-// CLears search box when x is clicked
-$("#clear-search").click(function() {
-  $("#search-bar").val('');
-  // Runs search function so templates are sorted by rank number
-  search();
-  // Places cursor back in search box
-  $("#search-bar").focus();
-});
-
-// Prevents colors from sticking on button operations
+// Prevents colors from sticking on button operations when clicked
 $(".btn").mouseup(function() {
   $(this).blur();
 })
@@ -121,7 +114,7 @@ function setTemplateId() {
  * Handles all clicks for the dataTable
  */
 function handleClick(e) {
-  // Get templateId from the template where this click origniated
+  // Collect templateId from the template where the  click origniated
   let templateId = $(e.target).closest(`li[class^='template']`).attr('id');
   // Grab the id of the element that was clicked
   let eventId = $(e.target).closest('div').attr('id');
@@ -151,7 +144,6 @@ function handleClick(e) {
     let ranking = document.getElementById(templateId).querySelector('#templateRanking').innerHTML;
     let copyFull = document.getElementById(templateId).querySelector('#templateCopyFull').innerHTML;
     let copyPortion = document.getElementById(templateId).querySelector('#templateCopyPortion').innerHTML;
-
     let currentCopyFull = parseInt(copyFull);
     let currentCopyPortion = parseInt(copyPortion);
     let currentRanking = parseInt(ranking);
@@ -213,7 +205,7 @@ function handleClick(e) {
 
 /**
  * Alerts the user when a template has
- * been copied by displayin the word
+ * been copied by displaying the word
  * 'copied' on the template
  */
 function alertUser(template) {
@@ -223,7 +215,6 @@ function alertUser(template) {
 }
 
 function copy(html) {
-  // TODO: Add more comments
   // Create container for the HTML
   let container = document.createElement('div');
   container.innerHTML = html;
@@ -249,17 +240,7 @@ function copy(html) {
   range.selectNode(container);
   window.getSelection().addRange(range);
   document.execCommand('copy');
-
-  //for (let i = 0; i < activeSheets.length; i++) {
-  //  activeSheets[i].disabled = true;
-  //  }
-
   document.execCommand('copy');
-  //console.log(activeSheets.length);
-  //for (let i = 0; i < activeSheets.length; i++) {
-
-  //  activeSheets[i].disabled = false;
-  //  }
 
   // Remove the iframe
   document.body.removeChild(container)
@@ -298,7 +279,12 @@ function buildEmail(body, program, replyEmail, greeting, closing, templateId) {
 }
 
 
-
+/**
+ * Builds signature
+ * @param  {[type]} program    Name of the program associated with the template
+ * @param  {[type]} replyEmail The reply e-mail that will be included in the signature
+ * @return {[type]}            Return the complete signature
+ */
 function getProgramSignature(program, replyEmail) {
   var user = document.getElementById('userFirstName').innerHTML;
   var valediction = `Sincerely,</br>`;
@@ -322,6 +308,7 @@ function getProgramSignature(program, replyEmail) {
  * Sends the eventId (which is the template Id)
  * to be removed. Reloads window after it
  * has been removed.
+ * @param  {[type]} e the Click event
  */
 function remove(e) {
   fetch('remove', {
@@ -358,7 +345,7 @@ function editTemplate(templateId) {
   let closingField = document.getElementById('closing');
   let replyEmailField = document.getElementById('replyEmail');
 
-  // Grab this templates information // TODO: Update to use jquery (it's faster!!)
+  // Grab this templates information
   let name = document.getElementById(templateId).querySelector('#templateName');
   let body = document.getElementById(templateId).querySelector('#templateBody');
   let category = document.getElementById(templateId).querySelector('#templateCategory');
@@ -398,6 +385,7 @@ function editTemplate(templateId) {
   updateBtn.onclick = update;
 }
 
+// TODO: Remove e from function parameter
 function update(e) {
   let id = document.querySelector('#id').value;
   let updatedDate = document.querySelector('#updatedDate').value;
@@ -411,7 +399,6 @@ function update(e) {
   let greeting = document.querySelector('#greeting').value;
   let closing = document.querySelector('#closing').value;
   let replyEmail = document.querySelector('#replyEmail').value;
-
 
   fetch('update', {
     method: 'put',
@@ -501,6 +488,10 @@ function rank() {
   }
 }
 
+/**
+ * Updates search logs by recording searches where no templates were found
+ * @param  {[type]} userSearch An array of the users search content
+ */
 function updateLogs(userSearch) {
   let userEmail = document.getElementById('userEmail').innerHTML.toLowerCase();
   fetch('updateLogs', {
@@ -516,6 +507,5 @@ function updateLogs(userSearch) {
     if (res.ok) return res.json()
   }).then(data => {})
 }
-
 
 initialize()
