@@ -1,5 +1,7 @@
-1. Debbie suggested adding the template numbers as tags. For example, the skill error template will have a tag `07`. So if you want to look for that template, you could just type `07` in the search bar and it would come up. I'm going to add this to a list of feature requests. Please let me know if you have any other thoughts.
+1. Debbie suggested adding the template numbers as tags. For example, the skill error template will have a tag `07`. So if you want to look for that template, you could just type `07` in the search bar and it would come up. I'm going to add this to a list of feature requests.
 
 2. Check if user still signed in when updating a template in admin Console
 
 3. Do  not refresh page after update.
+
+4. Separate collections (create templates-techSupport, templates-family, templates-accountServices)
