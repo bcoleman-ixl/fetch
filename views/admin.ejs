@@ -177,6 +177,7 @@
       <div class='form-group has-feedback has-clear'>
         <input type='text' class='form-control input-lg' id='search-bar' autofocus="autofocus" placeholder='Search' onkeyup='search()' spellcheck='false'>
         <span id="clear-search" class="glyphicon glyphicon-remove-circle"></span>
+        <span id="templateCount"></span>
       </div>
     </div>
     <div class='col-lg-4 col-md-4'></div>
@@ -201,7 +202,6 @@
                 <% templatesArr.sort(compare); %>
 
                   <% for (var i = 0; i < templatesArr.length; i++) { templates.unshift(templatesArr[i]); } %>
-
 
                     <!-- Loop through all templates -->
                     <% for(var i = 0; i < templates.length; i++) { %>
