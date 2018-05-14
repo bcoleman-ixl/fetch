@@ -32,7 +32,7 @@ const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 const jsforce = require('jsforce');
 
-/* IXL Folders */
+/* IXL folders */
 const tsixl = 'Folder.Name = \'TS IXL\' OR ';
 const tsixlreports = 'Folder.Name = \'TS IXL Reports, SS, emails\' OR ';
 const tsixlsignin = 'Folder.Name = \'TS IXL Sign in issues\' OR ';
@@ -40,7 +40,7 @@ const tsixlskill = 'Folder.Name = \'TS IXL Skill issues\' OR ';
 const tsixltemp = 'Folder.Name = \'TS IXL Temp\' OR ';
 const tsl1ixl = 'Folder.Name = \'TS L1 IXL\' OR ';
 
-/* Quia Folders */
+/* Quia folders */
 const tsnge = 'Folder.Name = \'TS NGE\' OR ';
 const tsnie = 'Folder.Name = \'TS NIE\' OR ';
 const tsnjcl = 'Folder.Name = \'TS NJCL\' OR ';
@@ -52,11 +52,11 @@ const tsqw = 'Folder.Name = \'TS QW\' OR ';
 const tsqwaccounts = 'Folder.Name = \'TS QW Accounts\' OR ';
 const tsqwclasses = 'Folder.Name = \'TS QW Classes\' OR ';
 const tsqworg = 'Folder.Name = \'TS QW Other Organizations\' OR ';
+
+/* Family folders */
+const famte = 'Folder.Name = \'Family Translated Editions\' OR ';
+
 const end = 'Folder.Name = \'End of the query\'';
-
-// TODO: Work on adding program
-
-
 
 /**
  * Checking if users have been authenticated
@@ -111,7 +111,7 @@ templatesClient.connect(keys.mongoDb.templatesURI, (err, client) => {
   templatesDb = client.db('templates');
   // Listen on port 3000
   app.listen(3000);
-  console.log('listening on 3000');
+  console.log('connected to templatesDb');
 });
 
 logsClient.connect(keys.mongoDb.logsURI, (err, client) => {
@@ -119,21 +119,44 @@ logsClient.connect(keys.mongoDb.logsURI, (err, client) => {
   logsDb = client.db('logs');
   // Listen on port 3001
   app.listen(3001);
-  console.log('listening on 3001 for logs');
+  console.log('connected to search logs');
 });
-/* Connect to family templates database. Grab template list for displayin gin index.ejs
-templatesClient.connect(keys.mongoDb.templatesURI, (err, client) => {
-  if (err) return console.log(err);
-  templatesDb = client.db('templates');
-  // Listen on port 3000
-  app.listen(3000);
-  console.log('listening on 3000');
-});
-*/
 
 /* Connects to users database*/
 mongoose.connect(keys.mongoDb.usersURI);
 
+app.get('/templates', authCheck, (req, res) => {
+  templatesDb.collection('templates').find().toArray((err, result) => {
+    if (err) return console.log(err)
+    // Renders index.ejs and loads templates and user profile
+    res.render('index.ejs', {
+      templatesArr: result,
+      user: req.user
+    })
+  })
+});
+
+app.get('/admin', authCheckAdmin, (req, res) => {
+  templatesDb.collection('templates').find().toArray((err, result) => {
+    if (err) return console.log(err);
+    // Renders admin.ejs and loads tempaltes and user profile
+    res.render('admin.ejs', {
+      templatesArr: result,
+      user: req.user
+    })
+  })
+});
+
+app.get('/admin/logs', authCheckAdmin, (req, res) => {
+  logsDb.collection('logs').find().toArray((err, result) => {
+    if (err) return console.log(err)
+    // Renders admin.ejs and loads tempaltes and user profile
+    res.render('logs.ejs', {
+      logs: result,
+      user: req.user
+    })
+  })
+});
 
 /* Adds the template to the database */
 app.post('/add', (req, res) => {
@@ -297,41 +320,6 @@ app.get('/auth/google/callback', passport.authenticate('google'), (req, res) => 
   res.redirect('/templates');
 });
 
-app.get('/templates', authCheck, (req, res) => {
-  templatesDb.collection('templates').find().toArray((err, result) => {
-    if (err) return console.log(err)
-    // Renders index.ejs and loads templates and user profile
-    res.render('index.ejs', {
-      templatesArr: result,
-      user: req.user
-    })
-  })
-});
-
-app.get('/admin', authCheckAdmin, (req, res) => {
-  templatesDb.collection('templates').find().toArray((err, result) => {
-    if (err) return console.log(err);
-    var myVar = 1;
-    console.log(myVar);
-    // Renders admin.ejs and loads tempaltes and user profile
-    res.render('admin.ejs', {
-      myVar: myVar,
-      templatesArr: result,
-      user: req.user
-    })
-  })
-});
-
-app.get('/admin/logs', authCheckAdmin, (req, res) => {
-  logsDb.collection('logs').find().toArray((err, result) => {
-    if (err) return console.log(err)
-    // Renders admin.ejs and loads tempaltes and user profile
-    res.render('logs.ejs', {
-      logs: result,
-      user: req.user
-    })
-  })
-});
 
 app.get('/authenticate', (req, res) => {
   // renders authenticate.ejs
@@ -353,13 +341,26 @@ app.get('/', (req, res) => {
 var conn = new jsforce.Connection({
   oauth2: {
     // update at config/keys
-    loginUrl: 'https://test.salesforce.com',
+    loginUrl: 'https://ixl.my.salesforce.com',
     clientId: keys.salesforce.clientId,
     clientSecret: keys.salesforce.clientSecret,
     redirectUri: keys.salesforce.redirectUri
   }
 });
-
+/**
+ * Structure of the conn.login function:
+ * 1. Log token and instanceURL to the console
+ * 2. Query IXL Template templates
+ * 3. Query Quia Web templates
+ * 4. Query Quia Books templates
+ * 5. Query Family templates
+ *
+ * Each query will loop through each returned record to collect, format,
+ * to create or update an existing one using MongoDb update function.
+ * @param  {[type]} err      [description]
+ * @param  {[type]} userInfo [description]
+ * @return {[type]}          [description]
+ */
 conn.login(keys.salesforce.username, keys.salesforce.password, function(err, userInfo) {
   if (err) {
     return console.error(err);
@@ -369,10 +370,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
   console.log('Token: ' + conn.accessToken);
   console.log(conn.instanceUrl);
 
-  /**
-   * Pulls all IXL template folders
-   */
-  conn.sobject("EmailTemplate")
+  conn.sobject("EmailTemplate") // Start of query for IXL
     .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
     .where(
       tsixl +
@@ -385,10 +383,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
     .execute(function(err, records) {
 
       try {
-        /**
-         * Loops through each record collecting, formatting, and preparing
-         * information to create a new template or update an existing one.
-         */
         for (var i = 0; i < records.length; i++) {
 
           var record = records[i];
@@ -455,9 +449,9 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       } catch (e) {
         console.log(e);
       }
-    }) // End of query
+    }) // End of query for IXL
 
-  conn.sobject("EmailTemplate")
+  conn.sobject("EmailTemplate") // Start of query for QW
     .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
     .where(
       tsnge +
@@ -493,35 +487,18 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             body = body.toString();
             replyEmail = body.match(/([a-zA-Z0-9._-]+@quia.com)/gi);
 
-            function count(str) {
-              var regex = /<\/br><\/br>/g;
-              return ((str || '').match(regex) || []).length
-            }
-            var breakCount = count(body);
-            var result = body.split('</br></br>').slice();
-            var finalBody = [];
-            var greeting = result[1];
-            var closing = result[breakCount - 1];
-            for (var k = 2; k < breakCount - 1; k++) {
-              if (k == breakCount - 2) {
-                finalBody.push(result[k]);
-              } else {
-                finalBody.push(result[k] + '<br/><br/>');
-              }
-            }
-            finalBody = finalBody.join('');
+            var result = clean(body);
 
           }
-          // fields in Account relationship are fetched
           if (record.Body != null && record.IsActive == true) {
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
               }, {
                 $set: {
-                  body: finalBody,
-                  greeting: greeting,
-                  closing: closing,
+                  greeting: result[0],
+                  body: result[1],
+                  closing: result[2],
                   updatedDate: date,
                   addedByUser: 'salesforce@salesforce.com',
                   team: 'techSupport',
@@ -538,9 +515,9 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       } catch (e) {
         console.log(e);
       }
-    }) // End of query
+    }) // End of query for QW
 
-  conn.sobject("EmailTemplate")
+  conn.sobject("EmailTemplate") // Start of query for QB
     .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
     .where(
       tsqb +
@@ -618,6 +595,110 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       } catch (e) {
         console.log(e);
       }
-    }) // End of query
+    }) // End of query for QB
 
+  conn.sobject("EmailTemplate") // Start of query for Family
+    .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
+    .where(
+      famte +
+      end)
+    .execute(function(err, records) {
+      console.log('Error: ' + err);
+      try {
+        // Select program based on Folder name
+        for (var i = 0; i < records.length; i++) {
+          // Get individual record
+          var record = records[i];
+          var body = record.HtmlValue;
+          var folder = record.Folder.Name;
+          // Get and format last modified date
+          var longDate = new Date(record.LastModifiedDate);
+          var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
+
+          // Get the e-mail body in HTML and remove first sentence and after sincerely
+          if (body == null) {
+            console.log("********Error - null*********");
+          } else {
+            var numberRegex = /\d*\.*\d*\s*(.*)/g;
+            var name = numberRegex.exec(record.Name)[1];
+            body = body.toString();
+            var result = clean(body);
+          }
+          // fields in Account relationship are fetched
+          if (record.IsActive == true) {
+            templatesDb.collection('templates')
+              .update({
+                id: record.DeveloperName
+              }, {
+                $set: {
+                  name: record.Name,
+                  body: result[1].toString(),
+                  greeting: result[0].toString(),
+                  closing: result[2].toString(),
+                  updatedDate: date,
+                  ranking: 0,
+                  copyFull: 0,
+                  copyPortion: 0,
+                  addedByUser: 'salesforce@salesforce.com',
+                  team: 'family',
+                  publicStatus: 'true',
+                  program: 'FAM',
+                  category: 'Other',
+                  replyEmail: 'help@ixl.com',
+                  folder: folder
+                }
+              }, {
+                upsert: true
+              }) // End of update statement
+          } // End of if statement
+        } // End of for loop
+      } catch (e) {
+        console.log(e);
+      }
+    }) // End of query for Family
 }); // End of  conn.login
+
+
+function clean(body) {
+  body = body.replace(/(\r\n|\n|\r)/gm, "");
+  var result = body.split(/\s*<\s*\/?br\s*\/?><\s*\/?br\s*\/?>\s*/g).slice();
+  //console.log(result[0] + result.length + ' ' + j);
+  var foundGreeting = false;
+  for (var j = 0; j < result.length; j++) {
+    // If it contains !Contact then remove it
+    if (result[j].match(/Dear/)) {
+      result.splice(j, 1);
+    }
+    // If it contains Thank you and number of sentences is 1, set it as intro
+    if (result[j].match(/Thank\syou/) && foundGreeting == false && j == 0) {
+      var foundGreeting = true;
+      var num = (result[j].match(/\./g) || []).length;
+      if (num == 1) {
+        greeting = result[j];
+        result.splice(j, 1);
+      } else if (foundGreeting == false && j == 0) {
+        var foundGreeting = true;
+        greeting = result[j];
+      }
+    }
+
+    // If the result contains incerely, splice
+    if (result[j].match(/incerely/)) {
+      result.splice(j);
+    }
+  }
+  if (foundGreeting == false) {
+    greeting = 'none';
+  }
+  var closing = result.pop();
+  finalBody = [];
+
+  for (var k = 0; k < result.length; k++) {
+    if (k == result.length - 1) {
+      finalBody.push(result[k]);
+      continue;
+    }
+    finalBody.push(result[k] + `<br/><br/>`);
+  }
+  return [greeting, finalBody.join(""), closing];
+}
