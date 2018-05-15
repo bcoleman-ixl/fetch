@@ -5,7 +5,7 @@
  * By Bryce Coleman
  *
  */
-const express = require('express');
+express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
@@ -55,6 +55,15 @@ const tsqworg = 'Folder.Name = \'TS QW Other Organizations\' OR ';
 
 /* Family folders */
 const famte = 'Folder.Name = \'Family Translated Editions\' OR ';
+const famacct = 'Folder.Name = \'Family Account Changes\' OR ';
+const famalt = 'Folder.Name = \'Family Alternative Payments\' OR ';
+const famcancel = 'Folder.Name = \'Family Cancellations/Refund\' OR ';
+const famfaq = 'Folder.Name = \'Family FAQs\' OR ';
+const famhsbc = 'Folder.Name = \'Family HSBC\' OR ';
+const fammobile = 'Folder.Name = \'Family Mobile Subscriptions\' OR ';
+const famquote = 'Folder.Name = \'Family Quotes\' OR ';
+const famspa = 'Folder.Name = \'Family Spanish\' OR ';
+
 
 const end = 'Folder.Name = \'End of the query\'';
 
@@ -601,6 +610,14 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
     .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
     .where(
       famte +
+      famacct +
+      famalt +
+      famcancel +
+      famfaq +
+      famhsbc +
+      fammobile +
+      famquote +
+      famspa +
       end)
     .execute(function(err, records) {
       console.log('Error: ' + err);
@@ -619,8 +636,11 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
           if (body == null) {
             console.log("********Error - null*********");
           } else {
-            var numberRegex = /\d*\.*\d*\s*(.*)/g;
-            var name = numberRegex.exec(record.Name)[1];
+            var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
+            var numberSplit = numberRegex.exec(record.Name);
+            console.log(numberSplit[2]);
+            var name = numberSplit[2];
+            var scNum = numberSplit[1];
             body = body.toString();
             var result = clean(body);
           }
@@ -631,21 +651,19 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                 id: record.DeveloperName
               }, {
                 $set: {
-                  name: record.Name,
+                  name: name,
                   body: result[1].toString(),
                   greeting: result[0].toString(),
                   closing: result[2].toString(),
                   updatedDate: date,
-                  ranking: 0,
-                  copyFull: 0,
-                  copyPortion: 0,
                   addedByUser: 'salesforce@salesforce.com',
                   team: 'family',
                   publicStatus: 'true',
                   program: 'FAM',
                   category: 'Other',
-                  replyEmail: 'help@ixl.com',
-                  folder: folder
+                  replyEmail: 'support@ixl.com',
+                  folder: folder,
+                  tags: scNum + ` @FAM`
                 }
               }, {
                 upsert: true
@@ -656,49 +674,55 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
         console.log(e);
       }
     }) // End of query for Family
+  console.log('Complete with Query');
 }); // End of  conn.login
 
 
 function clean(body) {
-  body = body.replace(/(\r\n|\n|\r)/gm, "");
-  var result = body.split(/\s*<\s*\/?br\s*\/?><\s*\/?br\s*\/?>\s*/g).slice();
-  //console.log(result[0] + result.length + ' ' + j);
-  var foundGreeting = false;
-  for (var j = 0; j < result.length; j++) {
-    // If it contains !Contact then remove it
-    if (result[j].match(/Dear/)) {
-      result.splice(j, 1);
-    }
-    // If it contains Thank you and number of sentences is 1, set it as intro
-    if (result[j].match(/Thank\syou/) && foundGreeting == false && j == 0) {
-      var foundGreeting = true;
-      var num = (result[j].match(/\./g) || []).length;
-      if (num == 1) {
-        greeting = result[j];
+  try {
+    body = body.replace(/(\r\n|\n|\r)/gm, "");
+    var result = body.split(/\s*<\s*\/?br\s*\/?>\s*<\s*\/?br\s*\/?>\s*/g).slice();
+    var greeting = 'none';
+    //console.log(result[0] + result.length + ' ' + j);
+    var foundGreeting = false;
+    for (var j = 0; j < result.length; j++) {
+      // If it contains !Contact then remove it
+      if (result[j].match(/Dear/)) {
         result.splice(j, 1);
-      } else if (foundGreeting == false && j == 0) {
+      }
+      // If it contains Thank you and number of sentences is 1, set it as intro
+      if (result[j].match(/Thank\syou/) && foundGreeting == false && j == 0) {
         var foundGreeting = true;
-        greeting = result[j];
+        var num = (result[j].match(/\./g) || []).length;
+        if (num == 1) {
+          greeting = result[j];
+          result.splice(j, 1);
+        } else if (foundGreeting == false && j == 0) {
+          var foundGreeting = true;
+          greeting = result[j];
+        }
+      }
+
+      // If the result contains incerely, splice
+      if (result[j].match(/incerely/)) {
+        result.splice(j);
       }
     }
-
-    // If the result contains incerely, splice
-    if (result[j].match(/incerely/)) {
-      result.splice(j);
+    if (foundGreeting == false) {
+      greeting = 'none';
     }
-  }
-  if (foundGreeting == false) {
-    greeting = 'none';
-  }
-  var closing = result.pop();
-  finalBody = [];
+    var closing = result.pop();
+    finalBody = [];
 
-  for (var k = 0; k < result.length; k++) {
-    if (k == result.length - 1) {
-      finalBody.push(result[k]);
-      continue;
+    for (var k = 0; k < result.length; k++) {
+      if (k == result.length - 1) {
+        finalBody.push(result[k]);
+        continue;
+      }
+      finalBody.push(result[k] + `<br/><br/>`);
     }
-    finalBody.push(result[k] + `<br/><br/>`);
+    return [greeting, finalBody.join(""), closing];
+  } catch (e) {
+    console.log(body);
   }
-  return [greeting, finalBody.join(""), closing];
 }
