@@ -17,8 +17,8 @@
   --gothicFont: 'Gothic A1', sans-serif;
   --robotoFont: 'Roboto', sans-serif;
   --arialFont: 'Arial', sans-serif;
-  /* Font for Jibu title */
-  --titleFont: 'Black Han Sans', sans-serif;
+  /* Font for title */
+  --titleFont: 'Oleo Script', cursive;
   /* Dimensions for template for user console */
   --template-w: 435px;
   /* Dimensions for templates in admin console */
@@ -43,9 +43,10 @@ p {
 
 h2 {
   font-family: var(--gothicFont);
-  font-size: 18px !important;
+  font-size: 17px !important;
   vertical-align: middle;
   font-weight: 500 !important;
+  margin-top: 15px !important;
 }
 
 h3 {
@@ -56,7 +57,7 @@ h3 {
 
 h4 {
   font-family: var(--gothicFont);
-  font-size: 18px !important;
+  font-size: 16px !important;
   vertical-align: middle;
 }
 
@@ -66,33 +67,28 @@ h5 {
   color: #B8B8B8 !important;
 }
 
+#pasteNote {
+  color: var(--drkred) !important;
+}
+
 #title {
   text-align: center;
-  font-size: 80px;
+  font-size: 90px;
   font-family: var(--titleFont);
-  font-weight: 100;
   padding: 0 3% 0 3%;
-  margin: 0;
+  margin: 0 auto;
   cursor: pointer;
+  color: #484848;
 }
 
 #subtitle {
   text-align: center;
-  font-size: 15px;
-  font-family: var(--gothicFont);
+  font-size: 18px !important;
+  font-family: var(--arialFont);
   font-weight: 100;
-  font-style: italic;
   padding: 0 3% 5px 3%;
+  letter-spacing: 1px;
   margin: 0;
-}
-
-#description {
-  text-align: center;
-  font-size: 12px;
-  font-family: var(--gothicFont);
-  font-style: italic;
-  margin: 0;
-  color: gray;
 }
 
 #add-template {
@@ -118,6 +114,9 @@ h5 {
   height: 60px;
   font-size: 25px;
   font-family: var(--gothicFont);
+  margin-top: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0px 5px 10px #E8E8E8;
 }
 
 #clear-search {
@@ -160,8 +159,9 @@ h5 {
   padding: 1em 2em 2em 2em;
   margin: 10px 5px 5px 5px;
   text-align: left;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px gainsboro;
+  border: 1px solid #E0E0E0;
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px gainsboro;
 }
 
 .template:hover {
@@ -170,6 +170,11 @@ h5 {
 
 .template:focus {
   outline: none;
+}
+
+.verifiedCol {
+  margin: 20px 0px 10px 0px;
+  padding-left: 0px !important;
 }
 
 .btn {
@@ -278,17 +283,17 @@ h5 {
   border: 0 !important;
 }
 
-.options {
-  display: inline-block;
-}
-
 .space {
-  padding: 1em 1em 0 1em;
+  padding: 0 1em 0 1em;
   width: 100vw;
   text-align: center;
 }
 
 .analytics {
+  color: var(--green);
+}
+
+.reports {
   color: var(--green);
 }
 
@@ -322,19 +327,17 @@ h5 {
 
 #verified {
   color: var(--green);
+  opacity: 0.6;
 }
 
 #notVerified {
   color: var(--yellow);
+  opacity: 0.6;
 }
 
 .align {
   text-align: center;
   display: block;
-}
-
-.nameStyle {
-  color: blue;
 }
 
 /* Change glow of search box */
@@ -363,7 +366,7 @@ h5 {
 
 /* START Navbar styling */
 
-#greeting {
+#navGreeting {
   text-align: center;
   font-weight: bold;
   font-size: 20px;
@@ -392,7 +395,7 @@ h5 {
 
 .profile-img {
   border-radius: 50%;
-  margin: 20px 10px 5px 20px;
+  /*margin: 20px 10px 5px 20px;*/
   cursor: pointer;
 }
 
@@ -402,9 +405,13 @@ h5 {
 }
 
 .dropdown-menu {
-  margin: 0px 0px 0px 20px !important;
+  margin: -5px 0px 0px 20px !important;
   padding: 0px !important;
   min-width: 180px !important;
+}
+
+.dropdown-toggle {
+  padding: 10px !important;
 }
 
 .nav .open>a, .nav .open>a:focus, .nav .open>a:hover {
@@ -430,10 +437,8 @@ h5 {
   text-align: center !important;
 }
 
-#qr-link a {
-  padding: 30px !important;
-  font-family: var(--arialFont);
-  font-size: 20px;
+#nav-link a {
+  padding: 30px 40px 30px 0px !important;
   color: var(--blue) !important;
 }
 
@@ -486,11 +491,74 @@ h5 {
   outline: none;
 }
 
-/* Styles for serach logs */
+/* Styles for search logs */
 
 /******************************************************************************/
 
 .logs {
   text-align: left;
   margin: 3em;
+}
+
+/* Styles for authentication page */
+
+/******************************************************************************/
+
+#welcome {
+  font-family: var(--titleFont);
+  text-align: center;
+  font-size: 90px
+}
+
+#descriptionTitle {
+  font-family: var(--arialFont);
+  font-size: 20px;
+}
+
+#descriptionBody {
+  font-family: var(--arialFont);
+  font-size: 16px;
+  text-align: justify;
+  max-width: 380px;
+  padding: 15px 25px 35px 25px;
+  margin: 0 auto;
+  line-height: 30px;
+}
+
+.background {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-image: url('typewriter.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+}
+
+hr {
+  margin: 5px !important;
+}
+
+.login {
+  min-height: 500px;
+  min-width: 400px;
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  background-color: white;
+  text-align: center;
+  margin: -250px 0 0 -200px;
+  border-radius: 5px;
+  box-shadow: 0px 20px 80px rgba(0, 0, 0, 1);
+}
+
+.button {
+  height: 70px;
+  width: 350px;
+  background-color: #43b9bc;
+  color: white;
+  border: none;
+  font-size: 25px;
+  font-family: var(--robotoFont);
 }
