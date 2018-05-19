@@ -52,6 +52,7 @@ const tsqw = 'Folder.Name = \'TS QW\' OR ';
 const tsqwaccounts = 'Folder.Name = \'TS QW Accounts\' OR ';
 const tsqwclasses = 'Folder.Name = \'TS QW Classes\' OR ';
 const tsqworg = 'Folder.Name = \'TS QW Other Organizations\' OR ';
+const tsheinle = 'Folder.Name = \'TS Heinle Learning Center\' OR ';
 
 /* Family folders */
 const famte = 'Folder.Name = \'Family Translated Editions\' OR ';
@@ -112,6 +113,7 @@ app.use(passport.session());
 app.use(express.static(__dirname + '/css'));
 app.use(express.static(__dirname + '/js'));
 app.use(express.static(__dirname + '/public/'));
+app.use(express.static(__dirname + '/public/'));
 app.use(express.static(__dirname + '/img/'));
 app.use(favicon(__dirname + '/img/favicon.ico'));
 /* Connect to templates database and grab template list for displaying in index.ejs */
@@ -120,7 +122,6 @@ templatesClient.connect(keys.mongoDb.templatesURI, (err, client) => {
   templatesDb = client.db('templates');
   // Listen on port 3000
   app.listen(3000);
-  console.log('connected to templatesDb');
 });
 
 logsClient.connect(keys.mongoDb.logsURI, (err, client) => {
@@ -128,7 +129,6 @@ logsClient.connect(keys.mongoDb.logsURI, (err, client) => {
   logsDb = client.db('logs');
   // Listen on port 3001
   app.listen(3001);
-  console.log('connected to search logs');
 });
 
 /* Connects to users database*/
@@ -169,12 +169,25 @@ app.get('/admin/logs', authCheckAdmin, (req, res) => {
 
 /* Adds the template to the database */
 app.post('/add', (req, res) => {
+  req.body.body = format(req.body.body);
   templatesDb.collection('templates').save(req.body, (err, result) => {
     if (err) return console.log(err)
-    console.log('saved to database')
     res.redirect('back')
   })
 });
+
+function format(body) {
+  body = body.replace(/<br>/, "");
+  body = body.replace(/<div><br><\/div>/g, "<br/>");
+  body = body.replace(/<\/div>/g, "");
+  body = body.replace(/<div>/g, "<br/>");
+  body = body.replace(/ \"body\": "<br\/>/g, "\"body\": \"");
+  body = body.replace(/&nbsp;/g, "");
+  if (body.substring(0, 5) == "<br/>") {
+    body = body.substring(5);
+  }
+  return body;
+}
 
 /**
  * Finds template by ID and removes
@@ -292,7 +305,6 @@ passport.use(new GoogleStrategy({
     }).then((currentUser) => {
       if (currentUser) {
         // Already have user
-        console.log('existing user:' + currentUser);
         done(null, currentUser);
       } else {
 
@@ -300,6 +312,10 @@ passport.use(new GoogleStrategy({
           userEmail: profile.emails[0].value,
           userSearch: []
         });
+
+
+
+
         // Create a new user
         new User({
           name: profile.name.givenName,
@@ -310,7 +326,6 @@ passport.use(new GoogleStrategy({
           type: 'user',
           email: profile.emails[0].value
         }).save().then((newUser) => {
-          console.log('new user created *******' + newUser);
           done(null, newUser);
         });
       }
@@ -410,45 +425,27 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             body = body.replace(/(\r\n|\n|\r)/gm, "");
             replyEmail = body.match(/([a-zA-Z0-9._-]+@ixl.com+)/gi)[0];
 
-            function count(str) {
-              var regex = /\s*<\s*br\s*\/>\s*<\s*br\s*\/\s*>/g;
-              return ((str || '').match(regex) || []).length
-            }
-
-            var breakCount = count(body);
-            var regexp = /\s*<\s*br\s*\/>\s*<\s*br\s*\/\s*>/g;
-
-            var start = 0;
-            var result = body.split(regexp).slice(start);
-            var finalBody = [];
-            var greeting = result[1];
-            var closing = result[breakCount - 2];
-            for (var k = 2; k < breakCount - 2; k++) {
-              if (k == breakCount - 3) {
-                finalBody.push(result[k]);
-              } else {
-                finalBody.push(result[k] + '<br /> <br />');
-              }
-            }
-
-            finalBody = finalBody.join('');
-
-
+            var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
+            var numberSplit = numberRegex.exec(record.Name);
+            var name = numberSplit[2];
+            var scNum = numberSplit[1];
+            body = body.toString();
+            var result = clean(body);
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
               }, {
                 $set: {
-                  body: finalBody,
-                  greeting: greeting,
-                  closing: closing,
+                  body: result[1].toString(),
+                  greeting: result[0].toString(),
+                  closing: result[2].toString(),
                   updatedDate: date,
                   addedByUser: 'salesforce@salesforce.com',
                   team: 'techSupport',
                   publicStatus: 'true',
                   program: 'IXL',
-                  replyEmail: replyEmail,
-                  folder: folder
+                  replyEmail: 'help@ixl.com',
+                  folder: folder,
                 }
               }, {
                 upsert: true
@@ -514,7 +511,8 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   publicStatus: 'true',
                   program: 'QW',
                   replyEmail: replyEmail,
-                  folder: folder
+                  folder: folder,
+                  name: name
                 }
               }, {
                 upsert: true
@@ -531,6 +529,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
     .where(
       tsqb +
       tsqbstolen +
+      tsheinle +
       end)
     .execute(function(err, records) {
       try {
@@ -555,27 +554,12 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             body = body.toString();
             replyEmail = body.match(/([a-zA-Z0-9._-]+@quia.com+)/gi)[0];
 
-            function count(str) {
-              var regex = /<\/br><\/br>/g;
-              return ((str || '').match(regex) || []).length
-            }
-
-            var breakCount = count(body);
-
-            var result = body.split('</br></br>').slice();
-
-            // Empty array for the final body
-            var finalBody = [];
-            var greeting = result[1];
-            var closing = result[breakCount - 1];
-            for (var k = 2; k < breakCount - 1; k++) {
-              if (k == breakCount - 2) {
-                finalBody.push(result[k]);
-              } else {
-                finalBody.push(result[k] + '<br/><br/>');
-              }
-            }
-            finalBody = finalBody.join('');
+            var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
+            var numberSplit = numberRegex.exec(record.Name);
+            var name = numberSplit[2];
+            var scNum = numberSplit[1];
+            body = body.toString();
+            var result = clean(body);
 
           }
           // fields in Account relationship are fetched
@@ -585,16 +569,17 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                 id: record.DeveloperName
               }, {
                 $set: {
-                  body: finalBody,
-                  greeting: greeting,
-                  closing: closing,
+                  body: result[1].toString(),
+                  greeting: result[0].toString(),
+                  closing: result[2].toString(),
                   updatedDate: date,
                   addedByUser: 'salesforce@salesforce.com',
                   team: 'techSupport',
                   publicStatus: 'true',
                   program: 'QB',
                   replyEmail: replyEmail,
-                  folder: folder
+                  folder: folder,
+                  name: name
                 }
               }, {
                 upsert: true
@@ -638,7 +623,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
           } else {
             var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
             var numberSplit = numberRegex.exec(record.Name);
-            console.log(numberSplit[2]);
             var name = numberSplit[2];
             var scNum = numberSplit[1];
             body = body.toString();
@@ -651,7 +635,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                 id: record.DeveloperName
               }, {
                 $set: {
-                  name: name,
                   body: result[1].toString(),
                   greeting: result[0].toString(),
                   closing: result[2].toString(),
@@ -660,10 +643,8 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   team: 'family',
                   publicStatus: 'true',
                   program: 'FAM',
-                  category: 'Other',
                   replyEmail: 'support@ixl.com',
-                  folder: folder,
-                  tags: scNum + ` @FAM`
+                  folder: folder
                 }
               }, {
                 upsert: true
@@ -683,7 +664,6 @@ function clean(body) {
     body = body.replace(/(\r\n|\n|\r)/gm, "");
     var result = body.split(/\s*<\s*\/?br\s*\/?>\s*<\s*\/?br\s*\/?>\s*/g).slice();
     var greeting = 'none';
-    //console.log(result[0] + result.length + ' ' + j);
     var foundGreeting = false;
     for (var j = 0; j < result.length; j++) {
       // If it contains !Contact then remove it
