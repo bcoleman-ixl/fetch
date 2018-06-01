@@ -40,19 +40,22 @@ const tsixlskill = 'Folder.Name = \'TS IXL Skill issues\' OR ';
 const tsixltemp = 'Folder.Name = \'TS IXL Temp\' OR ';
 const tsl1ixl = 'Folder.Name = \'TS L1 IXL\' OR ';
 
-/* Quia folders */
+/* Quia Web folders */
 const tsnge = 'Folder.Name = \'TS NGE\' OR ';
 const tsnie = 'Folder.Name = \'TS NIE\' OR ';
 const tsnjcl = 'Folder.Name = \'TS NJCL\' OR ';
 const tsnje = 'Folder.Name = \'TS NJE\' OR ';
 const tsnpe = 'Folder.Name = \'TS NSE\' OR ';
-const tsqb = 'Folder.Name = \'TS QB\' OR ';
-const tsqbstolen = 'Folder.Name = \'TS QB Stolen book keys\' OR ';
 const tsqw = 'Folder.Name = \'TS QW\' OR ';
 const tsqwaccounts = 'Folder.Name = \'TS QW Accounts\' OR ';
 const tsqwclasses = 'Folder.Name = \'TS QW Classes\' OR ';
 const tsqworg = 'Folder.Name = \'TS QW Other Organizations\' OR ';
+
+/* Quia Books folders */
+const tsqb = 'Folder.Name = \'TS QB\' OR ';
+const tsqbstolen = 'Folder.Name = \'TS QB Stolen book keys\' OR ';
 const tsheinle = 'Folder.Name = \'TS Heinle Learning Center\' OR ';
+const tsl1qb = 'Folder.Name = \'TS L1 Quia Books\' OR ';
 
 /* Family folders */
 const famte = 'Folder.Name = \'Family Translated Editions\' OR ';
@@ -75,6 +78,18 @@ const end = 'Folder.Name = \'End of the query\'';
 const authCheck = (req, res, next) => {
   if (!req.user) {
     res.redirect('/authenticate');
+  } else {
+    next();
+  }
+}
+
+/**
+ * Checking if users have been authenticated
+ * Redirect to authenticate if user is null
+ */
+const authCheckSession = (req, res, next) => {
+  if (!req.user) {
+    res.redirect('back');
   } else {
     next();
   }
@@ -175,6 +190,7 @@ app.post('/add', (req, res) => {
     res.redirect('back')
   })
 });
+
 
 function format(body) {
   body = body.replace(/<br>/, "");
@@ -282,6 +298,7 @@ app.put('/updateLogs', (req, res) => {
     })
 });
 
+
 /* Authentication */
 // TODO: Add comments
 passport.serializeUser((user, done) => {
@@ -321,8 +338,8 @@ passport.use(new GoogleStrategy({
           name: profile.name.givenName,
           googleID: profile.id,
           img: profile._json.image.url,
-          team: 'techSupport',
-          programs: ['IXL'],
+          team: 'null',
+          programs: ['null'],
           type: 'user',
           email: profile.emails[0].value
         }).save().then((newUser) => {
@@ -417,8 +434,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             /* Format the date and body of the e-mail */
             var longDate = new Date(record.LastModifiedDate);
             var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
-
-
             var numberRegex = /\d*\.*\d*\s*(.*)/g;
             var name = numberRegex.exec(record.Name)[1];
             var body = record.HtmlValue;
@@ -591,6 +606,93 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       }
     }) // End of query for QB
 
+
+
+
+
+
+
+
+  /** New QB folders
+
+
+  conn.sobject("EmailTemplate") // Start of query for QB
+    .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
+    .where(
+      //tsl1qb +
+      end)
+    .execute(function(err, records) {
+      try {
+        console.log(tsl1qb);
+        // Select program based on Folder name
+
+        for (var i = 0; i < records.length; i++) {
+          // Get individual record
+          var record = records[i];
+          var folder = record.Folder.Name;
+          // Get and format last modified date
+          var longDate = new Date(record.LastModifiedDate);
+          var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
+
+          // Get the e-mail body in HTML and remove first sentence and after sincerely
+          if (record.Body == null) {
+            console.log('Body [[null]] for ' + record.Name);
+          } else {
+            var numberRegex = /\d*\.*\d*\s*(.*)/g;
+            var name = numberRegex.exec(record.Name)[1];
+            var body = record.Body;
+            body = body.replace(/(\r\n|\n|\r)/gm, "</br>");
+            body = body.toString();
+            replyEmail = body.match(/([a-zA-Z0-9._-]+@quia.com+)/gi)[0];
+
+            var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
+            var numberSplit = numberRegex.exec(record.Name);
+            var name = numberSplit[2];
+            var scNum = numberSplit[1];
+            body = body.toString();
+            var result = clean(body);
+
+          }
+          // fields in Account relationship are fetched
+          if (record.Body != null && record.IsActive == true) {
+            templatesDb.collection('templates')
+              .update({
+                id: record.DeveloperName
+              }, {
+                $set: {
+                  body: result[1].toString(),
+                  greeting: result[0].toString(),
+                  closing: result[2].toString(),
+                  updatedDate: date,
+                  addedByUser: 'salesforce@salesforce.com',
+                  team: 'techSupport',
+                  publicStatus: 'true',
+                  program: 'QB',
+                  replyEmail: replyEmail,
+                  folder: folder,
+                  tags: '@QB, ' + scNum,
+                  category: 'Other',
+                  rannking: 0,
+                  copyFull: 0,
+                  copyPortion: 0,
+                  name: name
+                }
+              }, {
+                upsert: true
+              }) // End of update statement
+          } // End of if statement
+        } // End of for loop
+      } catch (e) {
+        console.log('***' + e);
+      }
+    }) // End of query for QB
+
+*/
+
+
+
+
+
   conn.sobject("EmailTemplate") // Start of query for Family
     .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
     .where(
@@ -635,6 +737,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                 id: record.DeveloperName
               }, {
                 $set: {
+                  name: name,
                   body: result[1].toString(),
                   greeting: result[0].toString(),
                   closing: result[2].toString(),
