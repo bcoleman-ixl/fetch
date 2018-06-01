@@ -1,17 +1,24 @@
 var searchLogArr = new Array();
 
 function search() {
-
   let input = document.getElementById('search-bar');
   let filterArr = input.value.toUpperCase().split(' ').clean('');
   let ul = document.getElementById('data-table');
   let li = ul.getElementsByClassName('template');
-  // TODO: Remove Category and Type names from search
+  if (filterArr == '') {
+    console.log(filterArr);
+    for (var i = 0; i < li.length; i++) {
+      let item = li[i];
+      item.style.display = '';
+      console.log('working');
+    }
+  }
   for (k = 0; k < li.length; k++) {
     // Loop through each list item
     let item = li[k];
-    // convert item to text
-    content = item.textContent;
+    // convert item to text and replace date with blank space
+    content = item.textContent.replace(/[A-Z]*[a-z][a-z]\s\d*,\s\d{4}/, '');
+
     // If search bar is blank, display this element
     if (filterArr.length == 0) {
       item.style.display = '';
@@ -40,6 +47,7 @@ function search() {
     if ($.inArray(searchContents, searchLogArr) < 0) {
       searchLogArr.push(searchContents);
       console.log(searchLogArr);
+      $('#test').show();
     } else {
 
     }
