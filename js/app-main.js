@@ -14,7 +14,7 @@ $(document).ready(function() {
 });
 /* Ensures that modal for adding hyperlinks in MCE loads correctly */
 $(document).on('focusin', function(e) {
-  if ($(event.target).closest(".mce-window").length) {
+  if ($(e.target).closest(".mce-window").length) {
     e.stopImmediatePropagation();
   }
 });
@@ -46,12 +46,11 @@ function initialize() {
     force_p_newlines: false,
     forced_root_block: false,
     convert_newlines_to_brs: true,
-    valid_elements: 'a,li,ul,u,i,b/strong,br/div',
     menubar: false,
     statusbar: true,
     anchor_bottom: false,
     anchor_top: false,
-    height: '350',
+    height: '275',
     plugins: 'lists, advlist, textcolor, colorpicker, link',
     toolbar: [
       'undo redo | bold italic underline | alignleft  aligncenter  alignright | numlist  bullist | forecolor | backcolor | removeformat | link'
@@ -61,6 +60,7 @@ function initialize() {
   document.getElementById('updatedDate').value = MONTH_NAMES[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
   let dataTable = document.querySelector('#data-table');
   dataTable.addEventListener('click', handleClick, false);
+  dataTable.addEventListener('drop', handleDrop, false);
 }
 
 Date.prototype.toDateInputValue = (function() {
@@ -153,6 +153,7 @@ function handleClick(e) {
   let eventId = $(e.target).closest('div').attr('id');
   let template = $(e.target).closest(`li[class^='template']`);
   let program = $(`#` + templateId + ` #templateProgram`).text().trim();
+  let folder = $(`#` + templateId + ` #templateFolder`).text().trim();
   let replyEmail = $(`#` + templateId + ` #templateReplyEmail`).text();
   let greeting = $(e.target).closest(`.template`).find(`#templateGreeting`).text();
   let closing = $(e.target).closest(`.template`).find(`#templateClosing`).text();
@@ -165,9 +166,9 @@ function handleClick(e) {
    */
   if (e.target !== e.currentTarget && (eventId == 'templateBody' || eventId == 'copyFull')) {
     let body = $(e.target).closest(`.template`).find(`#templateBody`).html().replace('<p>', '</br>').replace('</p>', '</br>');
-    body = document.getElementById(templateId).querySelector('#templateBody').outerHTML.replace(`<\/div>\n<div>`, '</br></br>');
+    body = document.getElementById(templateId).querySelector('#templateBody').innerHTML
     alertUser(template);
-    copy(buildEmail(body, program, replyEmail, greeting, closing, templateId, userTeam));
+    copy(buildEmail(body, program, replyEmail, greeting, closing, templateId, userTeam, folder));
     updateRanking(templateId, eventId);
     /**
      * If copyPortion is clicked, then execute the following:
@@ -177,8 +178,7 @@ function handleClick(e) {
      */
   } else if (e.target !== e.currentTarget && eventId == 'copyPortion') {
     alertUser(template);
-    body = document.getElementById(templateId).querySelector('#templateBody').outerHTML.replace('<p>', '</br>').replace('</p>', '</br>');
-    body = document.getElementById(templateId).querySelector('#templateBody').outerHTML.replace(`<\/div>\n<div>`, '</br></br>');
+    body = document.getElementById(templateId).querySelector('#templateBody').innerHTML;
     copy(body);
     updateRanking(templateId, eventId);
 
@@ -227,82 +227,90 @@ function alertUser(template) {
   $(span).fadeIn(400).fadeOut(1000);
 }
 
+/**
+ * 1. Creates and hides a container for the HTML
+ * 2. Detects the stylesheets of the page
+ * 3. Mounts the iframe to the DOM to make 'contentWindow' available
+ * 4. Copies the HTML to the clipboard.
+ * 5. Removes the iframe
+ *
+ * @param  {[type]} html [description]
+ */
+
 function copy(html) {
-  // Create container for the HTML
   let container = document.createElement('div');
   container.innerHTML = html;
-
-  // Hide the element
-  container.style.position = 'fixed';
-  container.style.pointerEvents = 'none';
-  container.style.opacity = 0;
-
-  // Detect all style sheets of the page
+  container.style.opacity = 100;
   let activeSheets = Array.prototype.slice.call(document.styleSheets)
     .filter(function(sheet) {
       return !sheet.disabled;
     });
-
-  // Mount the iframe to the DOM to make `contentWindow` available
   document.body.appendChild(container);
-
-  // Copy to clipboard
   window.getSelection().removeAllRanges();
-
   let range = document.createRange();
   range.selectNode(container);
   window.getSelection().addRange(range);
   document.execCommand('copy');
-
-  // Remove the iframe
+  console.log("copied:" + html);
   document.body.removeChild(container)
 }
 
-function buildEmail(body, program, replyEmail, greeting, closing, templateId, userTeam) {
+
+
+
+
+function buildEmail(body, program, replyEmail, greeting, closing, templateId, userTeam, folder) {
   /**
    * Grabs users first name from their account menu (set by Google Profile).
    * Sets e-mail, program, phone number, website, greeting,
    * closing, and location of the IXL logo. Uses these elements
    * to build the email which includes the greeting, template body,
    * closing, and signature.
-   *
-   * TODO: Need to update so user can select their own greeting/closing
+   * @return {String} Complete e-mail response
    */
-
-
-  var opening = '***error***'
+  var opening = '';
   if (greeting == 'default' && closing == 'default') {
     greeting = 'Thank you for reaching out to us.';
     opening = `Dear NAME, <br/><br/> ${greeting}`;
     closing = 'Please let me know if you have any questions and I will be happy to help!</br></br>';
     body = `</br></br>${body}</br></br>`;
-
-  } else if (greeting == 'none') {
+  } else if ((greeting == 'none' || greeting == ' ' || greeting == '') && (templateId != `X00_1_Blank_Signature_only`)) {
     greeting = '';
     closing = closing + `</br></br>`;
     body = `</br></br>${body}</br></br>`;
     opening = `Dear NAME, ${greeting}`;
+  } else if (templateId == `X00_1_Blank_Signature_only`) {
+    return getProgramSignature(program, replyEmail, userTeam, folder);
   } else {
-    console.log('here');
     body = `</br></br>${body}</br></br>`;
     closing = `${closing}</br></br>`;
     opening = `Dear NAME, <br/><br/> ${greeting}`;
   }
-
-  var signature = getProgramSignature(program, replyEmail, userTeam);
-
+  var signature = getProgramSignature(program, replyEmail, userTeam, folder);
   return `${opening} ${body} ${closing} ${signature}`;
 }
 
+function handleDrop(e) {
+  let templateId = $(e.target).closest(`li[class^='template']`).attr('id');
+  let eventId = $(e.target).closest('div').attr('id');
+  let template = $(e.target).closest(`li[class^='template']`);
+  var data = e.dataTransfer.getData("Text");
+  //console.log(data);
+  //console.log(templateId);
+}
+
+function allowDrop(event) {
+  event.preventDefault();
+}
 
 /**
- * Builds signature
+ * Builds signature. Uses userTeam and template program to determine signature
  * @param  {[type]} program    Name of the program associated with the template
  * @param  {[type]} replyEmail The reply e-mail that will be included in the signature
- * @return {[type]}            Return the complete signature
+ * @return {String}            Return the complete signature
  */
-function getProgramSignature(program, replyEmail, userTeam) {
-  console.log(userTeam);
+function getProgramSignature(program, replyEmail, userTeam, folder) {
+  console.log(folder);
   var user = document.getElementById('userFirstName').innerHTML;
   if (userTeam == 'techSupport' && program == 'IXL') {
     var valediction = `Sincerely,</br>`;
@@ -323,7 +331,11 @@ function getProgramSignature(program, replyEmail, userTeam) {
     var name = `<b>${user}</b></br>`;
     var department = 'IXL Membership Specialist</br></br>';
     var email = `E-mail: support@ixl.com</br>`;
-    var phone = 'Phone: 855.255.8800</br>';
+    if (folder == 'Family Translated Editions') {
+      var phone = '';
+    } else {
+      var phone = 'Phone: 855.255.8800</br>';
+    }
     var website = 'Website: www.ixl.com</br>';
     var logoLocation = `'https://c.na57.content.force.com/servlet/servlet.ImageServer?id=0150b0000027zq8&oid=00D300000001FBU&lastMod=1495736864000'`
     var logo = `<img src= ${logoLocation} alt='ixl-logo'>`;
@@ -336,7 +348,7 @@ function getProgramSignature(program, replyEmail, userTeam) {
  * Sends the eventId (which is the template Id)
  * to be removed. Reloads window after it
  * has been removed.
- * @param  {[type]} e the Click event
+ * @param  {Event} e the Click event
  */
 function remove(e) {
   fetch('remove', {
@@ -356,6 +368,13 @@ function remove(e) {
   })
 }
 
+/**
+ * 1. Collect the manage templates form.
+ * 2. Collect empty form fields.
+ * 3. Collect fileds from the template that was clicked.
+ * @param  {[type]} templateId [description]
+ * @return {[type]}            [description]
+ */
 function editTemplate(templateId) {
   // Grab the maange templates form
   let form = document.getElementById('templatesForm');
@@ -385,9 +404,6 @@ function editTemplate(templateId) {
   let closing = document.getElementById(templateId).querySelector('#templateClosing');
   let replyEmail = document.getElementById(templateId).querySelector('#templateReplyEmail');
   let today = new Date().toDateInputValue();
-
-  console.log(program);
-
   // Set all form fields equal to this templates fields
   idField.value = templateId;
   nameField.value = name.textContent.trim();
@@ -427,7 +443,7 @@ function update(e) {
   let greeting = document.querySelector('#greeting').value;
   let closing = document.querySelector('#closing').value;
   let replyEmail = document.querySelector('#replyEmail').value;
-
+  body = format(body);
   fetch('update', {
     method: 'put',
     headers: {
@@ -453,6 +469,19 @@ function update(e) {
     window.location.reload()
   })
 }
+
+function format(body) {
+  body = body.replace(/<div><br><\/div>/g, "<br/>");
+  body = body.replace(/<\/div>/g, "");
+  body = body.replace(/<div>/g, "<br/>");
+  body = body.replace(/ \"body\": "<br\/>/g, "\"body\": \"");
+  body = body.replace(/&nbsp;/g, "");
+  if (body.substring(0, 5) == "<br/>") {
+    body = body.substring(5);
+  }
+  return body;
+}
+
 
 function updateRanking(templateId, eventId) {
   let ranking = document.getElementById(templateId).querySelector('#templateRanking').innerHTML;
