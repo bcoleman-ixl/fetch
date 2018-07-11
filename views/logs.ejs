@@ -4,11 +4,11 @@
 
 <head>
   <meta charset='utf-8'>
-  <link rel='stylesheet' href='/admin-styles.css'>
+  <link rel='stylesheet' href='/styles.css'>
   <!-- Bootstrap minified CSS -->
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
   <!-- Google Fonts -->
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans|Roboto|Comfortaa' rel='stylesheet'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans|Roboto|Boogaloo' rel='stylesheet'>
   <title>Jibu - Logs</title>
 </head>
 
@@ -64,6 +64,8 @@
 
 
 
+
+
   <!-- Templates -->
   <div class='row space'>
 
@@ -74,7 +76,7 @@
       <% for(var k = 0; k < logs.length; k++) { %>
 
         <p> <b>User:
-          <%= logs[k].userEmail; %></b>
+            <%= logs[k].userEmail; %></b>
         </p>
 
 
@@ -83,8 +85,8 @@
           <p>
             <i>
 
-              <%= logs[k].userSearch[m]; %>
-            </i>
+                <%= logs[k].userSearch[m]; %>
+              </i>
           </p>
 
           <%  } %>
@@ -97,7 +99,6 @@
 
   </div>
   <!-- End templates -->
-
   <!-- Logout -->
 
   <!-- End Logout -->
