@@ -10,7 +10,6 @@ function search() {
     for (var i = 0; i < li.length; i++) {
       let item = li[i];
       item.style.display = '';
-      console.log('working');
     }
   }
   for (k = 0; k < li.length; k++) {
@@ -68,6 +67,17 @@ function test(filterArr, item) {
   // If item content does match filter, return true
   return true;
 }
+
+function showAll(){
+  let ul = document.getElementById('data-table');
+  let li = ul.getElementsByClassName('template');
+  for (k = 0; k < li.length; k++) {
+    let item = li[k];
+      item.style.display = '';
+      console.log('showAll');
+      }
+        document.getElementById('templateCount').innerHTML = li.length;
+    }
 
 Array.prototype.clean = function(value) {
   // Remove trailing and ending white space
