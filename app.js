@@ -56,6 +56,8 @@ const tsqb = 'Folder.Name = \'TS QB\' OR ';
 const tsqbstolen = 'Folder.Name = \'TS QB Stolen book keys\' OR ';
 const tsheinle = 'Folder.Name = \'TS Heinle Learning Center\' OR ';
 const tsl1qb = 'Folder.Name = \'TS L1 Quia Books\' OR ';
+const tsl1ak = 'Folder.Name = \'TS L1 Al Kitaab\' OR ';
+const tsct = 'Folder.Name = \'TS Cheng & Tsui\' OR ';
 
 /* Family folders */
 const famte = 'Folder.Name = \'Family Translated Editions\' OR ';
@@ -67,7 +69,7 @@ const famhsbc = 'Folder.Name = \'Family HSBC\' OR ';
 const fammobile = 'Folder.Name = \'Family Mobile Subscriptions\' OR ';
 const famquote = 'Folder.Name = \'Family Quotes\' OR ';
 const famspa = 'Folder.Name = \'Family Spanish\' OR ';
-
+const fammulti = 'Folder.Name = \'Family Multiplication.com\' OR ';
 
 const end = 'Folder.Name = \'End of the query\'';
 
@@ -128,16 +130,29 @@ app.use(passport.session());
 app.use(express.static(__dirname + '/css'));
 app.use(express.static(__dirname + '/js'));
 app.use(express.static(__dirname + '/public/'));
-app.use(express.static(__dirname + '/public/'));
+app.use(express.static(__dirname + '/config/'));
 app.use(express.static(__dirname + '/img/'));
+app.use(express.static(__dirname + '/backup/'));
 app.use(favicon(__dirname + '/img/favicon.ico'));
+
 /* Connect to templates database and grab template list for displaying in index.ejs */
 templatesClient.connect(keys.mongoDb.templatesURI, (err, client) => {
   if (err) return console.log(err);
   templatesDb = client.db('templates');
+  templatesDb.collection('templates').find().toArray((err, templatesArr) => {
+    var fs = require('fs');
+    var templatesBackupArr = [];
+    console.log(templatesArr.length);
+    for (var i = 0; i < templatesArr.length; i++) {
+      templatesBackupArr.unshift(JSON.stringify(templatesArr[i]));
+    }
+    fs.writeFile("./backup/backup.json", templatesBackupArr);
+  });
   // Listen on port 3000
   app.listen(3000);
 });
+
+
 
 logsClient.connect(keys.mongoDb.logsURI, (err, client) => {
   if (err) return console.log(err);
@@ -159,6 +174,18 @@ app.get('/templates', authCheck, (req, res) => {
     })
   })
 });
+
+app.get('/errors', authCheckAdmin, (req, res) => {
+  templatesDb.collection('templates').find().toArray((err, result) => {
+    if (err) return console.log(err)
+    // Renders index.ejs and loads templates and user profile
+    res.render('errors.ejs', {
+      templatesArr: result,
+      user: req.user
+    })
+  })
+});
+
 
 app.get('/admin', authCheckAdmin, (req, res) => {
   templatesDb.collection('templates').find().toArray((err, result) => {
@@ -184,6 +211,7 @@ app.get('/admin/logs', authCheckAdmin, (req, res) => {
 
 /* Adds the template to the database */
 app.post('/add', (req, res) => {
+  console.log(req.body);
   req.body.body = format(req.body.body);
   templatesDb.collection('templates').save(req.body, (err, result) => {
     if (err) return console.log(err)
@@ -243,7 +271,8 @@ app.put('/update', (req, res) => {
         closing: req.body.closing,
         publicStatus: req.body.publicStatus,
         replyEmail: [req.body.replyEmail],
-        tags: req.body.tags
+        tags: req.body.tags,
+        versions: req.body.versions
       }
     }, {
       sort: {
@@ -252,7 +281,7 @@ app.put('/update', (req, res) => {
       upsert: true
     }, (err, result) => {
       if (err) return res.send(err)
-      res.send(result)
+      res.send(result);
     })
 });
 
@@ -330,9 +359,6 @@ passport.use(new GoogleStrategy({
           userSearch: []
         });
 
-
-
-
         // Create a new user
         new User({
           name: profile.name.givenName,
@@ -354,7 +380,7 @@ passport.use(new GoogleStrategy({
 app.get('/auth/google',
   passport.authenticate('google', {
     scope: ['profile', 'email'],
-    prompt: 'select_account'
+    prompt: 'consent'
   }));
 
 app.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
@@ -384,8 +410,7 @@ var conn = new jsforce.Connection({
     // update at config/keys
     loginUrl: 'https://ixl.my.salesforce.com',
     clientId: keys.salesforce.clientId,
-    clientSecret: keys.salesforce.clientSecret,
-    redirectUri: keys.salesforce.redirectUri
+    clientSecret: keys.salesforce.clientSecret
   }
 });
 /**
@@ -422,12 +447,9 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       tsl1ixl +
       end)
     .execute(function(err, records) {
-
       try {
         for (var i = 0; i < records.length; i++) {
-
           var record = records[i];
-
           if (record.HtmlValue != null && record.IsActive == true) {
             var folder = record.Folder.Name;
 
@@ -539,12 +561,14 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       }
     }) // End of query for QW
 
-  conn.sobject("EmailTemplate") // Start of query for QB
+  conn.sobject("EmailTemplate") // Start of query for Quia Books
     .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
     .where(
       tsqb +
       tsqbstolen +
       tsheinle +
+      tsl1ak +
+      tsct +
       end)
     .execute(function(err, records) {
       try {
@@ -593,8 +617,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   publicStatus: 'true',
                   program: 'QB',
                   replyEmail: replyEmail,
-                  folder: folder,
-                  name: name
+                  folder: folder
                 }
               }, {
                 upsert: true
@@ -608,22 +631,17 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
 
 
 
+  // New FAM folders (currenlty not working)
 
 
-
-
-
-  /** New QB folders
-
-
-  conn.sobject("EmailTemplate") // Start of query for QB
+  conn.sobject("EmailTemplate") // Start of query for FAM folders
     .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
     .where(
-      //tsl1qb +
+      fammulti +
       end)
     .execute(function(err, records) {
       try {
-        console.log(tsl1qb);
+        console.log(fammulti);
         // Select program based on Folder name
 
         for (var i = 0; i < records.length; i++) {
@@ -644,14 +662,12 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             body = body.replace(/(\r\n|\n|\r)/gm, "</br>");
             body = body.toString();
             replyEmail = body.match(/([a-zA-Z0-9._-]+@quia.com+)/gi)[0];
-
             var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
             var numberSplit = numberRegex.exec(record.Name);
             var name = numberSplit[2];
             var scNum = numberSplit[1];
             body = body.toString();
             var result = clean(body);
-
           }
           // fields in Account relationship are fetched
           if (record.Body != null && record.IsActive == true) {
@@ -665,14 +681,14 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   closing: result[2].toString(),
                   updatedDate: date,
                   addedByUser: 'salesforce@salesforce.com',
-                  team: 'techSupport',
+                  team: 'family',
                   publicStatus: 'true',
-                  program: 'QB',
+                  program: 'FAM',
                   replyEmail: replyEmail,
                   folder: folder,
-                  tags: '@QB, ' + scNum,
+                  tags: '@FAM, ' + scNum,
                   category: 'Other',
-                  rannking: 0,
+                  ranking: 0,
                   copyFull: 0,
                   copyPortion: 0,
                   name: name
@@ -685,12 +701,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       } catch (e) {
         console.log('***' + e);
       }
-    }) // End of query for QB
-
-*/
-
-
-
+    }) // End of query for new FAM folders
 
 
   conn.sobject("EmailTemplate") // Start of query for Family
@@ -762,6 +773,8 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
 }); // End of  conn.login
 
 
+
+
 function clean(body) {
   try {
     body = body.replace(/(\r\n|\n|\r)/gm, "");
@@ -809,3 +822,8 @@ function clean(body) {
     console.log(body);
   }
 }
+
+
+
+
+module.exports.cleaning = clean();
