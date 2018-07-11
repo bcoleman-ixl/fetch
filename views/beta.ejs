@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <link rel='stylesheet' href='/styles.css'>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js" integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe" crossorigin="anonymous"></script>
+
+
+
+
+  <!-- Bootstrap minified CSS -->
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Oleo+Script|Roboto" rel="stylesheet">
+  <% if(user.email == 'mjenkins@ixl.com'){ %>
+    <title>CS3K</title>
+    <% } else {%>
+      <title>Fetch</title>
+      <% }%>
+</head>
+
+<body>
+  <div class='signIn'>
+  </div>
+  <!-- Manage templates modal -->
+  <div class='modal' id='manageTemplates' tabindex='-1' role='dialog' aria-labelledby='Manage templates' aria-hidden='true'>
+    <div class='modal-dialog' role='document'>
+      <div class='modal-content'>
+        <div class='modal-header'>
+          <span id='manageTemplatesTitle'>Add new template (Please use Ctrl-Shift-V when pasting)</span>
+          <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+          <span aria-hidden='true'>&times;</span>
+        </button>
+        </div>
+        <div class='new-template'>
+          <form id='templatesForm' action='/add' method='POST' autocomplete='off' id='templatesForm'>
+            <div class='row'>
+              <div class='col-lg-12'>
+                <div class='form-group' style='padding-right: 0px;'>
+                  <input type='text' class='form-control' id='name' name='name' autocomplete='off' required='true' placeholder='Template Name' maxlength='38'>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-lg-12 col-md-12">
+                <input type='text' class="form-control" id='greeting' name='greeting' placeholder="Opening sentence (i.e., Thank you fo reaching out to us.)" required='false'>
+              </div>
+            </div>
+            <div class='form-group'>
+              <ul class="nav nav-pills">
+                <li class="active"><a data-toggle="pill" href="#originalTab">Original</a></li>
+                <li><a data-toggle="pill" href="#version0Tab"><span contenteditable="true" id="versionTitle">Version 1</span></a></li>
+                <li><a data-toggle="pill" href="#version1Tab"><span contenteditable="true" id="versionTitle">Version 2</span></a></li>
+                <li><a data-toggle="pill" href="#version2Tab"><span contenteditable="true" id="versionTitle">Version 3</span></a></li>
+                <li><a data-toggle="pill" href="#version3Tab"><span contenteditable="true" id="versionTitle">Version 4</span></a></li>
+              </ul>
+              <div class="tab-content">
+                <div id="originalTab" class="tab-pane fade in active">
+                  <textarea rows='0' cols='80' id="body" class="editor" name='body'></textarea>
+                </div>
+                <div id="version0Tab" class="tab-pane fade">
+                  <textarea id="version0Field" rows='0' cols='80' class="editor" name='body'>testing!!</textarea>
+                </div>
+                <div id="version1Tab" class="tab-pane fade">
+                  <textarea id="version1Field" rows='0' cols='80' class="editor" name='body'></textarea>
+                </div>
+                <div id="version2Tab" class="tab-pane fade">
+                  <textarea id="version2Field" rows='0' cols='80' class="editor" name='body'></textarea>
+                </div>
+                <div id="version3Tab" class="tab-pane fade">
+                  <textarea id="version3Field" rows='0' cols='80' class="editor" name='body'></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-lg-12 col-md-12">
+                <input type='text' class="form-control" id='closing' name='closing' placeholder="Closing sentence (i.e., Let me know if you have any questions.)" required='false'>
+              </div>
+            </div>
+            <div class='row'>
+              <div class='form-group col-lg-6 col-md-6'>
+                <select class='form-control' id='category' name='category' required='true'>
+                  <option disabled selected value> --Select category-- </option>
+                  <% for(var m = 0; m < user.programs.length; m++) { %>
+                    <% if(user.programs[m] == 'IXL'){ %>
+                      <option>Analytics</option>
+                      <option>Audio</option>
+                      <option>Diagnostic</option>
+                      <option>Network</option>
+                      <option>Roster</option>
+                      <option>Skills</option>
+                      <option>Signing In</option>
+                      <option>SmartScore</option>
+                      <option>Other</option>
+                    <% } %>
+                    <% if(user.programs[m] == 'QW'){ %>
+                      <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
+                      <option>Activities</option>
+                      <option>Reports</option>
+                      <option>Classes</option>
+                      <option>Quizzes</option>
+                      <option>Surveys</option>
+                    <% } %>
+                    <% if(user.programs[m] == 'CSE'){ %>
+                      <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
+                      <option>SSO</option>
+                      <option>Auto Rostering</option>
+                    <% } %>
+                    <% if(user.programs[m] == 'FAM'){ %>
+                      <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
+                      <option>Quote</option>
+                      <option>Cancel</option>
+                      <option>Refund</option>
+                    <% } %>
+                    <% if(user.programs[m] == 'QB'){ %>
+                      <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
+                      <option>Keys</option>
+                      <option>Courses</option>
+                      <option>Grading</option>
+                      <option>Media</option>
+                    <% } %>
+                    <% } %>
+                </select>
+              </div>
+              <div class='form-group col-lg-6 col-md-6'>
+                <select class='form-control' id='program' name='program' required='true'>
+                  <option disabled selected value> --Select program-- </option>
+                  <% for(var m = 0; m < user.programs.length; m++) { %>
+                    <% if(user.programs[m] == 'IXL' && user.team != 'family'){ %>
+                      <option>IXL</option>
+                    <% } %>
+                    <% if(user.programs[m] == 'QW'){ %>
+                      <option>QW</option>
+                    <% } %>
+                    <% if(user.programs[m] == 'QB'){ %>
+                      <option>QB</option>
+                    <% } %>
+                    <% if(user.programs[m] == 'FAM'){ %>
+                      <option>FAM</option>
+                    <% } %>
+                    <% if(user.programs[m] == 'CSE'){ %>
+                      <option>CSE</option>
+                    <% } %>
+                    <% } %>
+                </select>
+              </div>
+              <div class='form-group'>
+                <input type='hidden' class='form-control' id='id' name='id' required='true'>
+                <input type='hidden' id='updatedDate' name='updatedDate' value='error'>
+                <input type='hidden' id='addedByUser' name='addedByUser' value='<%= user.email %>'>
+                <input type='hidden' id='ranking' name='ranking' value=0>
+                <input type='hidden' id='copyFull' name='copyFull' value=0>
+                <input type='hidden' id='copyPortion' name='copyPortion' value=0>
+                <input type='hidden' id='team' name='team' value='<%= user.team %>'>
+              </div>
+            </div>
+            <div class="row">
+              <% if (user.type == 'admin') { %>
+                <div class="form-group col-lg-6 col-md-6">
+                  <select class='form-control' id='publicStatus' name='publicStatus' required='true'>
+                    <option disabled selected value> --Select public status-- </option>
+                    <option>true</option>
+                    <option>false</option>
+                  </select>
+                </div>
+                <% } else { %>
+                  <input type='hidden' id='publicStatus' name='publicStatus' value='false'>
+                  <% } %>
+                    <div class='form-group col-lg-6 col-md-6'>
+                      <input type='text' class='form-control' id='replyEmail' autocomplete='off' name='replyEmail' required='true' placeholder='Signature E-mail'>
+                    </div>
+            </div>
+            <div class="row">
+              <div class='form-group col-lg-12 col-md-12'>
+                <input type='text' class='form-control' id='tags' name='tags' required='true' placeholder='Tags' maxlength='45'>
+              </div>
+            </div>
+            <button type='submit' class='btn btn-primary' id='submitBtn'>Submit</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  </div>
+  <!-- End manage templates modal -->
+  <!-- Begin confirm remove modal -->
+  <div class='modal fade' id='confirmRemoveDialog' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+    <div class='modal-dialog'>
+      <div class='modal-content'>
+        <div class='modal-header'>
+          <p>Are you sure you want to remove the template:
+            <b><span id='confirmRemoveName'>*error*</span></b>? This action cannot be undone.
+          </p>
+        </div>
+        <div class='modal-footer' id='confirmRemoveModal'>
+          <button type='button' class='btn btn-default' data-dismiss='modal'>Cancel</button>
+          <a class='btn btn-danger btn-ok' id='confirmRemoveBtn' onclick='remove(event)'>Delete</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End confirm remove modal -->
+  <!-- Begin snippets modal -->
+  <div class='modal fade' id='snippetsView' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+    <div class='modal-dialog'>
+      <div class='modal-content'>
+        <div class='modal-header'>
+          <div id="snippetsBody" contenteditable="true">
+
+          </div>
+        </div>
+        <div class='modal-footer' id='snippetsModal'>
+          <button type='button' class='btn btn-success' data-dismiss='modal'>Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End snippets modal -->
+  <!-- Navbar -->
+  <nav class='navbar navbar-default'>
+    <div class="container-fluid">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+            <img class="profile-img" src="<%= user.img %>" alt=""></a>
+          <ul class="dropdown-menu">
+            <li>
+              <% if (user) { %>
+                <li id='navGreeting'>Hello
+                  <span id="userFirstName"><%= user.name %></span>!
+                  <h5 id="userEmail"><%= user.email %></h5>
+                  <h5 id="userTeam" hidden><%= user.team %></h5>
+                </li>
+                <% } %>
+            </li>
+            <li class="divider"></li>
+            <li><a href='#manageTemplates' data-toggle='modal' data-target='#manageTemplates' onclick='setTemplateId()'> Add a template</a></li>
+            <!-- Start if statement-->
+            <% if (user.type == 'admin') { %>
+              <li><a href="/admin">Admin Console</a></li>
+              <li><a href="/admin/logs">Search logs</a></li>
+              <% } %>
+                <!-- End if statement -->
+                <!-- All users will see logout button -->
+                <li class="divider"></li>
+                <li id="logout"> <button class="btn btn-danger btn-sm" type="button" name="button" onclick="location.href = '/logout';">Logout</button></li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <% if (user.team == 'techSupport') { %>
+          <li id="nav-link"> <a href="https://docs.google.com/document/d/19HYG9WQJ3L9I4XI1KtYMnaEYqsFYeYDNBe7zI2tYs2k/edit" target="_blank">QR</a></li>
+          <% } %>
+      </ul>
+    </div>
+  </nav>
+  <!-- End navbar -->
+  <!-- Header -->
+  <!-- Displays  -->
+  <div class="header">
+    <div class="row space">
+      <div class="col-lg-4">
+      </div>
+      <div class="col-lg-4">
+        <h1 id="title">Fetch</h1>
+      </div>
+      <div class="col-lg-4">
+      </div>
+    </div>
+    <h4 id="subtitle">Your templates. Organized.</h4>
+  </div>
+  <!-- End header -->
+  <!-- Spacing -->
+  <div class='row space'>
+    <div class='col-lg-3'></div>
+    <div class='col-lg-6'>
+      <div>
+      </div>
+    </div>
+    <div class='col-lg-3'></div>
+  </div>
+  <!-- End spacing -->
+  <!-- Search bar -->
+  <div class='row space'>
+    <div class='col-lg-4 col-md-2 col-sm-2'></div>
+    <div class='col-lg-4 col-md-8 col-sm-8'>
+      <div class='form-group has-feedback has-clear'>
+        <input type='text' class='form-control input-lg' id='search-bar' autofocus="autofocus" placeholder='Search' onkeyup='search()' spellcheck='false'>
+        <span id="clear-search" class="glyphicon glyphicon-remove-circle"></span>
+        <span id="templateCount"></span>
+      </div>
+    </div>
+    <div class='col-lg-4 col-md-2 col-sm-2'>
+    </div>
+  </div>
+  <!-- End search bar -->
+  <!-- Templates -->
+  <div class='row space'>
+    <div class='col-lg-1 col-md-1'>
+    </div>
+    <div class='col-lg-12 col-md-12'>
+      <ul id='data-table' class='align'>
+        <% function compare(a,b) {  if (a.ranking < b.ranking){ return -1; } if (a.ranking > b.ranking){ return 1; } return 0; }%>
+          <% templatesArr.sort(compare); %>
+            <% templates = templatesArr; %>
+              <% for(var i = templates.length - 1; i > 0; i--) { %>
+                <% for(var m = 0; m < user.programs.length; m++) { %>
+                  <% if(user.programs[m] == templates[i].program){ %>
+                    <% if (templates[i].publicStatus == 'xxtrue' ||
+              templates[i].addedByUser == 'xxsalesforce@salesforce.com' ||
+              templates[i].addedByUser == user.email) { %>
+                      <% if ((templates[i].publicStatus == 'false' && templates[i].addedByUser == user.email) || (templates[i].publicStatus == 'true')) { %>
+                        <% var category = templates[i].category.substr(0, 5).toLowerCase(); %>
+                          <li id='<%= templates[i].id %>' class='template user'>
+                            <div class="row">
+                              <div class="col-lg-11 col-md-11 col-sm-11 nameCol">
+                                <h2 id='templateName'>
+                                  <%= templates[i].name %>
+                                    </h2>
+                              </div>
+                              <div class="col-lg-1 col-md-1 col-sm-1 verifiedCol">
+                                <% if(templates[i].addedByUser == 'salesforce@salesforce.com'){ %>
+                                  <svg class="overflow" viewBox="0 0 448 512" data-fa-i2svg=""><path id="verified" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path></svg>
+                                  <% } else if (templates[i].addedByUser == user.email && templates[i].publicStatus == 'false'){ %>
+                                    <svg viewBox="0 0 448 512">
+                                    <path id="notVerifiedUser" d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z"></path>
+                                  </svg>
+                                    <% }  else {%>
+                                      <svg class="overflow" viewBox="0 0 448 512" data-fa-i2svg=""><path id="notVerified" d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path></svg>
+                                      <% } %>
+                              </div>
+                            </div>
+                            <div class="details">
+                              <span id='templateRanking' hidden>
+                  <%= templates[i].ranking %>
+                </span>
+                              <span id='templateCopyFull' hidden>
+                  <%= templates[i].copyFull %>
+                </span>
+                              <span id='templateCopyPortion' hidden>
+                  <%= templates[i].copyPortion %>
+                </span>
+                              <span id='templateUpdatedDate'>
+                             <%= templates[i].updatedDate %>
+                           </span> @<span id='templateProgram'><%= templates[i].program.toUpperCase() %></span>
+
+                              <div id="copyFull">
+                                <button class="buttonStyle" type="button" name="button" id="copyFullBtn">
+                                <svg viewBox="0 0 448 512">
+                                  <path d="M433.941 65.941l-51.882-51.882A48 48 0 0 0 348.118 0H176c-26.51 0-48 21.49-48 48v48H48c-26.51 0-48 21.49-48 48v320c0 26.51 21.49 48 48 48h224c26.51 0 48-21.49 48-48v-48h80c26.51 0 48-21.49 48-48V99.882a48 48 0 0 0-14.059-33.941zM266 464H54a6 6 0 0 1-6-6V150a6 6 0 0 1 6-6h74v224c0 26.51 21.49 48 48 48h96v42a6 6 0 0 1-6 6zm128-96H182a6 6 0 0 1-6-6V54a6 6 0 0 1 6-6h106v88c0 13.255 10.745 24 24 24h88v202a6 6 0 0 1-6 6zm6-256h-64V48h9.632c1.591 0 3.117.632 4.243 1.757l48.368 48.368a6 6 0 0 1 1.757 4.243V112z">
+                                  </path>
+                                </svg>
+                              </button>
+                              </div>
+
+                              <div id="copyPortion">
+                                <button class="buttonStyle" type="button" name="button" id="copyPortionBtn">
+                                <svg viewBox="0 0 576 512">
+                                  <path  d="M569.354 231.631C512.969 135.949 407.81 72 288 72 168.14 72 63.004 135.994 6.646 231.631a47.999 47.999 0 0 0 0 48.739C63.031 376.051 168.19 440 288 440c119.86 0 224.996-63.994 281.354-159.631a47.997 47.997 0 0 0 0-48.738zM288 392c-75.162 0-136-60.827-136-136 0-75.162 60.826-136 136-136 75.162 0 136 60.826 136 136 0 75.162-60.826 136-136 136zm104-136c0 57.438-46.562 104-104 104s-104-46.562-104-104c0-17.708 4.431-34.379 12.236-48.973l-.001.032c0 23.651 19.173 42.823 42.824 42.823s42.824-19.173 42.824-42.823c0-23.651-19.173-42.824-42.824-42.824l-.032.001C253.621 156.431 270.292 152 288 152c57.438 0 104 46.562 104 104z"></path>
+                                </svg>
+                              </button>
+                              </div>
+                              <% if(true) { %>
+
+                                <div id="snippets">
+                                  <button class="buttonStyle" type="button" name="button" id="snippetsBtn">
+                    <svg viewBox="0 0 576 512" >
+                      <path d="M288 12.3V240h227.7c6.9 0 12.3-5.8 12-12.7-6.4-122.4-104.5-220.6-227-227-6.9-.3-12.7 5.1-12.7 12zM552.7 288c6.9 0 12.3 5.8 12 12.7-2.8 53.2-23.2 105.6-61.2 147.8-4.6 5.1-12.6 5.4-17.5.5L325 288h227.7zM401 433c4.8 4.8 4.7 12.8-.4 17.3-42.6 38.4-99 61.7-160.8 61.7C107.6 511.9-.2 403.8 0 271.5.2 143.4 100.8 38.9 227.3 32.3c6.9-.4 12.7 5.1 12.7 12V272l161 161z"></path>
+                    </svg>
+                    </button>
+                                </div>
+                                <% } %>
+                                  <!-- Still in development -->
+                                  <% if(templates[i].id == 'S1T5K7U5E7Y6X8F6G1') { %>
+                                    <div id="versions">
+                                      <button class="buttonStyle" type="button" name="button" id="versionsBtn">
+                                <svg  viewBox="0 0 512 512">
+                                <path d="M296 32h192c13.255 0 24 10.745 24 24v160c0 13.255-10.745 24-24 24H296c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24zm-80 0H24C10.745 32 0 42.745 0 56v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zM0 296v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm296 184h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H296c-13.255 0-24 10.745-24 24v160c0 13.255 10.745 24 24 24z"></path>
+                                </svg>
+                                </button>
+                                    </div>
+                                    <% } %>
+
+                                      <% if (templates[i].publicStatus == 'false' || user.type == 'admin' || templates[i].addedByUser == user.email){ %>
+
+                                        <% if (templates[i].addedByUser == user.email || user.type == 'admin') { %>
+                                          <div id="edit">
+                                            <button class="buttonStyle" type="button" name="button" id="editBtn">
+                                    <svg viewBox="0 0 512 512">
+                                      <path d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z"></path>
+                                    </svg>
+                                  </button>
+                                          </div>
+                                          <% } %>
+                                            <% if (templates[i].addedByUser == user.email) { %>
+                                              <div id="removeConfirm">
+                                                <button class="buttonStyle" type="button" name="button" id="removeConfirmBtn">
+                                              <svg viewBox="0 0 448 512">
+                                              <path d="M192 188v216c0 6.627-5.373 12-12 12h-24c-6.627 0-12-5.373-12-12V188c0-6.627 5.373-12 12-12h24c6.627 0 12 5.373 12 12zm100-12h-24c-6.627 0-12 5.373-12 12v216c0 6.627 5.373 12 12 12h24c6.627 0 12-5.373 12-12V188c0-6.627-5.373-12-12-12zm132-96c13.255 0 24 10.745 24 24v12c0 6.627-5.373 12-12 12h-20v336c0 26.51-21.49 48-48 48H80c-26.51 0-48-21.49-48-48V128H12c-6.627 0-12-5.373-12-12v-12c0-13.255 10.745-24 24-24h74.411l34.018-56.696A48 48 0 0 1 173.589 0h100.823a48 48 0 0 1 41.16 23.304L349.589 80H424zm-269.611 0h139.223L276.16 50.913A6 6 0 0 0 271.015 48h-94.028a6 6 0 0 0-5.145 2.913L154.389 80zM368 128H80v330a6 6 0 0 0 6 6h276a6 6 0 0 0 6-6V128z"></path>
+                                              </svg>
+                                              </button>
+                                              </div>
+                                              <% } %>
+                                                <% } %>
+                                                  <span id="copiedAlert" hidden>Copied</span>
+                            </div>
+
+                            <div class="templateBodyContainer">
+
+                              <% if(templates[i].id == 'S1T5K7U5E7Y6X8F6G1') { %>
+                                <div class="versions">
+
+                                  <div class="version0">
+                                    <div class="versionDescription" id="versionDescription0">
+                                      Daughter
+                                    </div>
+                                    <span id="versionBody0" hidden>
+                                      <%=templates[i].versions[0];%>
+                                    </span>
+                                  </div>
+
+                                  <div class="version1">
+                                    <div class="versionDescription" id="versionDescription1">
+                                      Parent
+                                    </div>
+                                    <span id="versionBody1" hidden>
+                                      <%=templates[i].versions[1];%>
+                                    </span>
+                                  </div>
+
+                                  <div class="version2">
+                                    <div class="versionDescription" id="versionDescription2">
+                                      Student
+                                    </div>
+                                    <span id="versionBody2" hidden>
+                                        <%= templates[i].versions[2]; %>
+                                    </span>
+                                  </div>
+
+                                  <div class="version3">
+                                    <div class="versionDescription" id="versionDescription3">
+                                      Admin
+                                    </div>
+                                    <span id="version3" hidden>
+                                      <%=  templates[i].versions[3]; %>
+                                    </span>
+                                  </div>
+                                </div>
+                                <% } %>
+                                  <div class='<%= templates[i].category %> templateBodyUser' ondragover="allowDrop(event)" id='templateBody'>
+                                    <%- templates[i].body %>
+                                  </div>
+                            </div>
+                            <div class='row'>
+                              <div class='col-lg-7 col-md-7'>
+                                <h3 class='tags' id="templateTags"><%= templates[i].tags %></h3>
+                                <h3 class='type' id='templateTeam' hidden><%= templates[i].team %></h3>
+                                <h3 class='type' id='templatePublicStatus' hidden><%= templates[i].publicStatus %></h3>
+                                <h3 class='type' id='templateReplyEmail' hidden><%= templates[i].replyEmail %></h3>
+                                <h3 class='type' id='templateGreeting' hidden><%= templates[i].greeting %></h3>
+                                <h3 class='type' id='templateClosing' hidden><%= templates[i].closing %></h3>
+                                <h3 class='type' id='templateFolder' hidden><%= templates[i].folder %></h3>
+                              </div>
+                              <div class='col-lg-5 col-md-5 alignRight'>
+                                <h3 class='category' id="templateCategory"><span class="<%= category %>"> <%= templates[i].category %> </span></h3>
+                              </div>
+                            </div>
+                          </li>
+                          <% } %>
+                            <% } %>
+                              <% } %>
+                                <% } %>
+                                  <% } %>
+      </ul>
+    </div>
+    <div class='col-lg-1'></div>
+  </div>
+  <!-- End templates -->
+  <div class="row space">
+    <div class="col-lg-12 col-md-12">
+    </div>
+  </div>
+  <!-- Logout -->
+  <!-- End Logout -->
+</body>
+<script src='tinymce/tinymce.min.js'></script>
+<script src='jquery.min.js'></script>
+<script src='app-main.js'></script>
+<script src='search.js'></script>
+<script src='bootstrap.min.js'></script>
+
+</html>
