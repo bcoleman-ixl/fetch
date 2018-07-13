@@ -47,6 +47,7 @@ a {
 
 p {
   font-family: var(--arialFont);
+  margin-bottom: 0px !important;
 }
 
 h2 {
@@ -151,18 +152,20 @@ h5 {
   box-shadow: 0px 4px 10px gainsboro;
 }
 
+.template:active {
+  border: 1px solid var(--greenAltLight);
+}
+
 .error {
   border: 2px solid red !important;
   border-radius: 5px !important;
 }
 
 .template:hover {
-  box-shadow: 0px 0px 20px 2px var(--lightGray);
+  box-shadow: 0px 4px 10px var(--lightGray);
+  opacity: 0.9;
 }
 
-.template:focus {
-  outline: none;
-}
 
 .verifiedCol {
   padding-top: 13px !important;
@@ -578,6 +581,44 @@ h5 {
   border-radius: 50%;
   /*margin: 20px 10px 5px 20px;*/
   cursor: pointer;
+  position: absolute;
+}
+
+#errorCountBadge {
+  display: none;
+  position: relative;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+  padding: 5px;
+  font-size: 12px;
+  right: -45px;
+  top: -15px;
+}
+
+#errorCountBadgeMenu {
+  display: none;
+  position: relative;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+  padding: 5px;
+  font-size: 12px;
+}
+
+#scruffy {
+  height: 200px;
+  display: none;
+}
+
+#scruffyMessage {
+  font-size: 20px;
+  margin: 0px 40px 20px 40px;
+  display: none;
+}
+
+#scruffyNote {
+  font-size: 15px;
 }
 
 .profile-img:hover, .profile-img:focus, .profile-img:active {
@@ -586,7 +627,7 @@ h5 {
 }
 
 .dropdown-menu {
-  margin: -5px 0px 0px 20px !important;
+  margin: 23px 0px 0px 20px !important;
   padding: 0px !important;
   min-width: 180px !important;
 }
@@ -664,10 +705,6 @@ h5 {
   width: var(--template-w);
   height: auto;
   padding-bottom: 15px;
-}
-
-.template:hover {
-  box-shadow: 0px 0px 20px 2px lightgray;
 }
 
 .template:focus {
