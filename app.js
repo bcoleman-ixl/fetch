@@ -39,6 +39,7 @@ const tsixlsignin = 'Folder.Name = \'TS IXL Sign in issues\' OR ';
 const tsixlskill = 'Folder.Name = \'TS IXL Skill issues\' OR ';
 const tsixltemp = 'Folder.Name = \'TS IXL Temp\' OR ';
 const tsl1ixl = 'Folder.Name = \'TS L1 IXL\' OR ';
+const tsixldeletion = 'Folder.Name = \'TS IXL Deletion\' OR ';
 
 /* Quia Web folders */
 const tsnge = 'Folder.Name = \'TS NGE\' OR ';
@@ -50,14 +51,22 @@ const tsqw = 'Folder.Name = \'TS QW\' OR ';
 const tsqwaccounts = 'Folder.Name = \'TS QW Accounts\' OR ';
 const tsqwclasses = 'Folder.Name = \'TS QW Classes\' OR ';
 const tsqworg = 'Folder.Name = \'TS QW Other Organizations\' OR ';
+const tsqwdeletion = 'Folder.Name = \'TS QW Deletion\' OR ';
 
 /* Quia Books folders */
+// L2 QB Folders
 const tsqb = 'Folder.Name = \'TS QB\' OR ';
-const tsqbstolen = 'Folder.Name = \'TS QB Stolen book keys\' OR ';
 const tsheinle = 'Folder.Name = \'TS Heinle Learning Center\' OR ';
-const tsl1qb = 'Folder.Name = \'TS L1 Quia Books\' OR ';
-const tsl1ak = 'Folder.Name = \'TS L1 Al Kitaab\' OR ';
 const tsct = 'Folder.Name = \'TS Cheng & Tsui\' OR ';
+// L1 QB Folders
+const tsl1qb = 'Folder.Name = \'TS L1 Quia Books\' OR ';
+const tsl1hlc = 'Folder.Name = \'TS L1 HLC\' OR ';
+const tsl1ak = 'Folder.Name = \'TS L1 Al Kitaab\' OR ';
+const tsl1ct = 'Folder.Name = \'TS L1 Cheng & Tsui\' OR ';
+// Misc. QB Folders
+const tsqbstolen = 'Folder.Name = \'TS QB Stolen book keys\' OR ';
+const tsestudio = 'Folder.Name = \'TS eStudio\' OR ';
+const tsqbdeletion = 'Folder.Name = \'TS QB Deletion\' OR ';
 
 /* Family folders */
 const famte = 'Folder.Name = \'Family Translated Editions\' OR ';
@@ -69,10 +78,14 @@ const famhsbc = 'Folder.Name = \'Family HSBC\' OR ';
 const fammobile = 'Folder.Name = \'Family Mobile Subscriptions\' OR ';
 const famquote = 'Folder.Name = \'Family Quotes\' OR ';
 const famspa = 'Folder.Name = \'Family Spanish\' OR ';
-const fammulti = 'Folder.Name = \'Family Multiplication.com\' OR ';
+
+/* Account services folders */
+const asfolder = 'Folder.Name = \'Account Services\' OR ';
 
 const end = 'Folder.Name = \'End of the query\'';
 
+/* Programs for the application */
+const programs = ['IXL', 'QW', 'QB', 'IXLT', 'QWT', 'QBT', 'CSE', 'FAM', 'AS', 'AM'];
 /**
  * Checking if users have been authenticated
  * Redirect to authenticate if user is null
@@ -142,7 +155,6 @@ templatesClient.connect(keys.mongoDb.templatesURI, (err, client) => {
   templatesDb.collection('templates').find().toArray((err, templatesArr) => {
     var fs = require('fs');
     var templatesBackupArr = [];
-    console.log(templatesArr.length);
     for (var i = 0; i < templatesArr.length; i++) {
       templatesBackupArr.unshift(JSON.stringify(templatesArr[i]));
     }
@@ -170,7 +182,8 @@ app.get('/templates', authCheck, (req, res) => {
     // Renders index.ejs and loads templates and user profile
     res.render('index.ejs', {
       templatesArr: result,
-      user: req.user
+      user: req.user,
+      programs: programs
     })
   })
 });
@@ -181,11 +194,11 @@ app.get('/errors', authCheckAdmin, (req, res) => {
     // Renders index.ejs and loads templates and user profile
     res.render('errors.ejs', {
       templatesArr: result,
-      user: req.user
+      user: req.user,
+      programs: programs
     })
   })
 });
-
 
 app.get('/admin', authCheckAdmin, (req, res) => {
   templatesDb.collection('templates').find().toArray((err, result) => {
@@ -193,9 +206,14 @@ app.get('/admin', authCheckAdmin, (req, res) => {
     // Renders admin.ejs and loads tempaltes and user profile
     res.render('admin.ejs', {
       templatesArr: result,
-      user: req.user
+      user: req.user,
+      programs: programs
     })
   })
+});
+
+app.get('/userGuide', function(req, res) {
+  res.sendFile(__dirname + '/user_guide.pdf');
 });
 
 app.get('/admin/logs', authCheckAdmin, (req, res) => {
@@ -204,14 +222,14 @@ app.get('/admin/logs', authCheckAdmin, (req, res) => {
     // Renders admin.ejs and loads tempaltes and user profile
     res.render('logs.ejs', {
       logs: result,
-      user: req.user
+      user: req.user,
+      programs: programs
     })
   })
 });
 
 /* Adds the template to the database */
 app.post('/add', (req, res) => {
-  console.log(req.body);
   req.body.body = format(req.body.body);
   templatesDb.collection('templates').save(req.body, (err, result) => {
     if (err) return console.log(err)
@@ -255,6 +273,7 @@ app.delete('/remove', (req, res) => {
  * always be todays date.
  */
 app.put('/update', (req, res) => {
+  console.log(req.body);
   templatesDb.collection('templates')
     .findOneAndUpdate({
       id: req.body.id
@@ -353,7 +372,6 @@ passport.use(new GoogleStrategy({
         // Already have user
         done(null, currentUser);
       } else {
-
         logsDb.collection('logs').insert({
           userEmail: profile.emails[0].value,
           userSearch: []
@@ -383,9 +401,19 @@ app.get('/auth/google',
     prompt: 'consent'
   }));
 
-app.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
-  res.redirect('/templates');
-});
+app.get('/auth/google/callback',
+  passport.authenticate('google'), // complete the authenticate using the google strategy
+  (err, req, res, next) => { // custom error handler to catch any errors, such as TokenError
+    if (err.name === 'TokenError') {
+      res.redirect('/auth/google'); // redirect them back to the login page
+    } else {
+
+    }
+  },
+  (req, res) => { // On success, redirect back to '/'
+    res.redirect('/');
+  }
+);
 
 
 app.get('/authenticate', (req, res) => {
@@ -433,8 +461,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
   }
   // Now you can get the access token and instance URL information.
   // Save them to establish connection next time.
-  console.log('Token: ' + conn.accessToken);
-  console.log(conn.instanceUrl);
 
   conn.sobject("EmailTemplate") // Start of query for IXL
     .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
@@ -445,6 +471,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       tsixlskill +
       tsixltemp +
       tsl1ixl +
+      tsixldeletion +
       end)
     .execute(function(err, records) {
       try {
@@ -461,13 +488,12 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             var body = record.HtmlValue;
             body = body.replace(/(\r\n|\n|\r)/gm, "");
             replyEmail = body.match(/([a-zA-Z0-9._-]+@ixl.com+)/gi)[0];
-
             var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
             var numberSplit = numberRegex.exec(record.Name);
             var name = numberSplit[2];
             var scNum = numberSplit[1];
             body = body.toString();
-            var result = clean(body);
+            var result = clean(body, 'IXL');
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
@@ -494,6 +520,57 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       }
     }) // End of query for IXL
 
+  conn.sobject("EmailTemplate") // Start of query for IXLTEMP
+    .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
+    .where(
+      tsl1ixl +
+      end)
+    .execute(function(err, records) {
+      try {
+        for (var i = 0; i < records.length; i++) {
+          var record = records[i];
+          if (record.HtmlValue != null && record.IsActive == true) {
+            var folder = record.Folder.Name;
+            /* Format the date and body of the e-mail */
+            var longDate = new Date(record.LastModifiedDate);
+            var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
+            var numberRegex = /\d*\.*\d*\s*(.*)/g;
+            var name = numberRegex.exec(record.Name)[1];
+            var body = record.HtmlValue;
+            body = body.replace(/(\r\n|\n|\r)/gm, "");
+            replyEmail = body.match(/([a-zA-Z0-9._-]+@ixl.com+)/gi)[0];
+            var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
+            var numberSplit = numberRegex.exec(record.Name);
+            var name = numberSplit[2];
+            var scNum = numberSplit[1];
+            body = body.toString();
+            var result = clean(body, 'IXL');
+            templatesDb.collection('templates')
+              .update({
+                id: record.DeveloperName + 'TEMP'
+              }, {
+                $set: {
+                  body: result[1].toString(),
+                  greeting: result[0].toString(),
+                  closing: result[2].toString(),
+                  updatedDate: date,
+                  addedByUser: 'salesforce@salesforce.com',
+                  team: 'techSupport',
+                  publicStatus: 'true',
+                  program: 'IXLT',
+                  replyEmail: 'help@ixl.com',
+                  folder: folder,
+                }
+              }, {
+                upsert: true
+              }) // End of update statement
+          } // End of if statement
+        } // End of for loop
+      } catch (e) {
+        console.log(e);
+      }
+    }) // End of query for IXLTEMP
+
   conn.sobject("EmailTemplate") // Start of query for QW
     .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
     .where(
@@ -506,6 +583,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       tsqwaccounts +
       tsqwclasses +
       tsqworg +
+      tsqwdeletion +
       end)
     .execute(function(err, records) {
       try {
@@ -514,6 +592,10 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
         for (var i = 0; i < records.length; i++) {
           // Get individual record
           var record = records[i];
+
+          if (record.Folder.Name == 'TS QW Deletion') {
+            console.log(record.Folder.Name);
+          }
           var folder = record.Folder.Name;
           // Get and format last modified date
           var longDate = new Date(record.LastModifiedDate);
@@ -529,9 +611,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             body = body.replace(/(\r\n|\n|\r)/gm, "</br>");
             body = body.toString();
             replyEmail = body.match(/([a-zA-Z0-9._-]+@quia.com)/gi);
-
-            var result = clean(body);
-
+            var result = clean(body, 'QW');
           }
           if (record.Body != null && record.IsActive == true) {
             templatesDb.collection('templates')
@@ -561,19 +641,88 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       }
     }) // End of query for QW
 
-  conn.sobject("EmailTemplate") // Start of query for Quia Books
+  /**
+   * TEMP templates
+   * @type {Number}
+   *
+   conn.sobject("EmailTemplate") // Start of query for TEMP
+   .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
+   .where(
+   tsl1ixl +
+   end)
+   .execute(function(err, records) {
+   try {
+   // Select program based on Folder name
+   for (var i = 0; i < records.length; i++) {
+   // Get individual record
+   var record = records[i];
+   var folder = record.Folder.Name;
+   // Get and format last modified date
+   var longDate = new Date(record.LastModifiedDate);
+   var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
+
+   // Get the e-mail body in HTML and remove first sentence and after sincerely
+   if (record.Body == null) {
+   console.log('Body [[null]] for ' + record.Name);
+ } else {
+ var numberRegex = /\d*\.*\d*\s*(.*)/g;
+ var name = numberRegex.exec(record.Name)[1];
+ var body = record.Body;
+ body = body.replace(/(\r\n|\n|\r)/gm, "</br>");
+ body = body.toString();
+ replyEmail = body.match(/([a-zA-Z0-9._-]+@quia.com+)/gi)[0];
+
+ var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
+ var numberSplit = numberRegex.exec(record.Name);
+ var name = numberSplit[2];
+ var scNum = numberSplit[1];
+ body = body.toString();
+ var result = clean(body, 'QB');
+}
+// fields in Account relationship are fetched
+if (record.Body != null && record.IsActive == true) {
+templatesDb.collection('templates')
+.update({
+id: record.DeveloperName + 'TEMP'
+}, {
+$set: {
+name: name,
+body: result[1].toString(),
+greeting: result[0].toString(),
+closing: result[2].toString(),
+updatedDate: date,
+addedByUser: 'salesforce@salesforce.com',
+team: 'techSupport',
+publicStatus: 'true',
+program: 'IXLT',
+replyEmail: replyEmail,
+folder: folder,
+tags: scNum
+}
+}, {
+upsert: true
+}) // End of update statement
+} // End of if statement
+} // End of for loop
+} catch (e) {
+console.log(e);
+}
+}) // End of query for TEMP
+
+   */
+
+  conn.sobject("EmailTemplate") // Start of query for Quia Books (L1 Only)
     .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
     .where(
-      tsqb +
-      tsqbstolen +
-      tsheinle +
+      // L1 QB folders
       tsl1ak +
-      tsct +
+      tsl1hlc +
+      tsl1qb +
+      tsl1ct +
       end)
     .execute(function(err, records) {
       try {
         // Select program based on Folder name
-
         for (var i = 0; i < records.length; i++) {
           // Get individual record
           var record = records[i];
@@ -598,8 +747,8 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             var name = numberSplit[2];
             var scNum = numberSplit[1];
             body = body.toString();
-            var result = clean(body);
 
+            var result = clean(body, 'QB');
           }
           // fields in Account relationship are fetched
           if (record.Body != null && record.IsActive == true) {
@@ -628,22 +777,85 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
         console.log(e);
       }
     }) // End of query for QB
+  /*
 
+  conn.sobject("EmailTemplate") // Start of query for AS folders
+  //  .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
+  .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name, TemplateType')
+  .where(
+  asfolder +
+  end)
+  .execute(function(err, records) {
+  try {
+  for (var i = 0; i < records.length; i++) {
+  // Get individual record
+  if (records[i].IsActive) {
+  var record = records[i];
+  var folder = record.Folder.Name;
+  // Get and format last modified date
+  var longDate = new Date(record.LastModifiedDate);
+  var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
 
+  // Get the e-mail body in HTML and remove first sentence and after sincerely
+  if (record.HtmlValue == null) {
+  console.log('Body [[null]] for AS ' + record.Name);
+  } else {
+  var numberRegex = /\d*\.*\d*\s*(.*)/g;
+  var name = numberRegex.exec(record.Name)[1];
+  var body = record.HtmlValue;
+  body = body.replace(/(\r\n|\n|\r)/gm, "");
+  body = body.toString();
+  replyEmail = null;
+  var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
+  var numberSplit = numberRegex.exec(record.Name);
+  var name = numberSplit[2];
+  var scNum = numberSplit[1];
+  var result = cleanTest(body);
+  }
+  // fields in Account relationship are fetched
+  if (record.HtmlValue != null && record.IsActive == true) {
+  templatesDb.collection('templates')
+  .update({
+  id: record.DeveloperName
+  }, {
+  $set: {
+  body: result[1].toString(),
+  greeting: result[0].toString(),
+  closing: result[2].toString(),
+  updatedDate: date,
+  addedByUser: 'salesforce@salesforce.com',
+  team: 'accountServices',
+  publicStatus: 'true',
+  program: 'AS',
+  folder: folder,
+  name: name
+  }
+  }, {
+  upsert: true
+  }) // End of update statement
+  } // End of if statement
+  } //
+  } // End of for loop
+  } catch (e) {
+  console.log(e);
+  }
+  }) // End of query for AS folders
 
-  // New FAM folders (currenlty not working)
+   */
 
-
-  conn.sobject("EmailTemplate") // Start of query for FAM folders
+  conn.sobject("EmailTemplate") // Start of query for Quia Books (L2 Only)
     .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
     .where(
-      fammulti +
+      // L2 QB folders
+      tsqb +
+      tsct +
+      tsheinle +
+      tsqbstolen +
+      tsqbdeletion +
       end)
     .execute(function(err, records) {
       try {
-        console.log(fammulti);
         // Select program based on Folder name
-
         for (var i = 0; i < records.length; i++) {
           // Get individual record
           var record = records[i];
@@ -662,12 +874,14 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             body = body.replace(/(\r\n|\n|\r)/gm, "</br>");
             body = body.toString();
             replyEmail = body.match(/([a-zA-Z0-9._-]+@quia.com+)/gi)[0];
+
             var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
             var numberSplit = numberRegex.exec(record.Name);
             var name = numberSplit[2];
             var scNum = numberSplit[1];
             body = body.toString();
-            var result = clean(body);
+
+            var result = clean(body, 'QB');
           }
           // fields in Account relationship are fetched
           if (record.Body != null && record.IsActive == true) {
@@ -681,17 +895,11 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   closing: result[2].toString(),
                   updatedDate: date,
                   addedByUser: 'salesforce@salesforce.com',
-                  team: 'family',
+                  team: 'techSupport',
                   publicStatus: 'true',
-                  program: 'FAM',
+                  program: 'QB',
                   replyEmail: replyEmail,
-                  folder: folder,
-                  tags: '@FAM, ' + scNum,
-                  category: 'Other',
-                  ranking: 0,
-                  copyFull: 0,
-                  copyPortion: 0,
-                  name: name
+                  folder: folder
                 }
               }, {
                 upsert: true
@@ -699,14 +907,76 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
           } // End of if statement
         } // End of for loop
       } catch (e) {
-        console.log('***' + e);
+        console.log(e);
       }
-    }) // End of query for new FAM folders
+    }) // End of query for QB
+  /*
 
+  conn.sobject("EmailTemplate") // Start of query for AS folders
+  //  .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
+  .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name, TemplateType')
+  .where(
+  asfolder +
+  end)
+  .execute(function(err, records) {
+  try {
+  for (var i = 0; i < records.length; i++) {
+  // Get individual record
+  if (records[i].IsActive) {
+  var record = records[i];
+  var folder = record.Folder.Name;
+  // Get and format last modified date
+  var longDate = new Date(record.LastModifiedDate);
+  var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
 
-  conn.sobject("EmailTemplate") // Start of query for Family
-    .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
-    .where(
+  // Get the e-mail body in HTML and remove first sentence and after sincerely
+  if (record.HtmlValue == null) {
+  console.log('Body [[null]] for AS ' + record.Name);
+  } else {
+  var numberRegex = /\d*\.*\d*\s*(.*)/g;
+  var name = numberRegex.exec(record.Name)[1];
+  var body = record.HtmlValue;
+  body = body.replace(/(\r\n|\n|\r)/gm, "");
+  body = body.toString();
+  replyEmail = null;
+  var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
+  var numberSplit = numberRegex.exec(record.Name);
+  var name = numberSplit[2];
+  var scNum = numberSplit[1];
+  var result = cleanTest(body);
+  }
+  // fields in Account relationship are fetched
+  if (record.HtmlValue != null && record.IsActive == true) {
+  templatesDb.collection('templates')
+  .update({
+  id: record.DeveloperName
+  }, {
+  $set: {
+  body: result[1].toString(),
+  greeting: result[0].toString(),
+  closing: result[2].toString(),
+  updatedDate: date,
+  addedByUser: 'salesforce@salesforce.com',
+  team: 'accountServices',
+  publicStatus: 'true',
+  program: 'AS',
+  folder: folder,
+  name: name
+  }
+  }, {
+  upsert: true
+  }) // End of update statement
+  } // End of if statement
+  } //
+  } // End of for loop
+  } catch (e) {
+  console.log(e);
+  }
+  }) // End of query for AS folders
+
+   */
+
+  conn.sobject("EmailTemplate").select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name').where(
       famte +
       famacct +
       famalt +
@@ -718,7 +988,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       famspa +
       end)
     .execute(function(err, records) {
-      console.log('Error: ' + err);
       try {
         // Select program based on Folder name
         for (var i = 0; i < records.length; i++) {
@@ -739,7 +1008,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             var name = numberSplit[2];
             var scNum = numberSplit[1];
             body = body.toString();
-            var result = clean(body);
+            var result = clean(body, 'FAM');
           }
           // fields in Account relationship are fetched
           if (record.IsActive == true) {
@@ -769,13 +1038,9 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
         console.log(e);
       }
     }) // End of query for Family
-  console.log('Complete with Query');
 }); // End of  conn.login
 
-
-
-
-function clean(body) {
+function clean(body, id) {
   try {
     body = body.replace(/(\r\n|\n|\r)/gm, "");
     var result = body.split(/\s*<\s*\/?br\s*\/?>\s*<\s*\/?br\s*\/?>\s*/g).slice();
@@ -783,7 +1048,7 @@ function clean(body) {
     var foundGreeting = false;
     for (var j = 0; j < result.length; j++) {
       // If it contains !Contact then remove it
-      if (result[j].match(/Dear/)) {
+      if (result[j].match(/Dear/) || result[j].match(/Hello/)) {
         result.splice(j, 1);
       }
       // If it contains Thank you and number of sentences is 1, set it as intro
@@ -819,11 +1084,29 @@ function clean(body) {
     }
     return [greeting, finalBody.join(""), closing];
   } catch (e) {
-    console.log(body);
+    console.log(e);
   }
 }
 
+function cleanTest(body) {
+  try {
+    var greeting = 'none';
+    if (body.match(/\*.*\*/)) {
+      var warningMsgRegex = /\*.*\*<\/br><\/br>/;
+      var warningMsg = warningMsgRegex.exec(body);
+      greeting = warningMsg;
+      body = body.replace(warningMsg, '');
+    }
 
+    if (body.match(/Hi NAME,\s*<\/br><\/br>/gm)) {
+      var firstLineRegex = /Hi NAME,\s*<\/br><\/br>/gm;
+      var firstLine = firstLineRegex.exec(body)[0];
+      body = body.replace(firstLine, '');
+    }
 
+    return [greeting, body, 'none'];
 
-module.exports.cleaning = clean();
+  } catch (e) {
+    console.log(e);
+  }
+}
