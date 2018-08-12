@@ -9,9 +9,7 @@
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
-$(document).ready(function() {
-  $('#data-table').show();
-});
+
 /* Ensures that modal for adding hyperlinks in MCE loads correctly */
 $(document).on('focusin', function(e) {
   if ($(e.target).closest('.mce-window').length) {
@@ -67,11 +65,30 @@ function initialize() {
   let dataTable = document.querySelector('#data-table');
   dataTable.addEventListener('click', handleClick, false);
   dataTable.addEventListener('drop', handleDrop, false);
-
-
-  $("#includeManageForm").load("/public/form.ejs");
-
+  var totalErrorCount = parseInt(document.getElementById('totalErrorCount').innerHTML);
+  var errorCountBadge = document.getElementById('errorCountBadge');
+  var errorCountBadgeMenu = document.getElementById('errorCountBadgeMenu');
+  if (totalErrorCount > 0) {
+    errorCountBadge.style.display = 'inline';
+    errorCountBadge.innerHTML = totalErrorCount;
+    errorCountBadgeMenu.style.display = 'inline';
+    errorCountBadgeMenu.innerHTML = totalErrorCount;
+  } else {
+    errorCountBadge.style.display = 'none';
+    errorCountBadgeMenu.style.display = 'none';
+  }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  dataTable = document.getElementById('data-table');
+  loader = document.getElementById('loader');
+  dataTable.style.display = 'inline-block';
+  $("#loader").children().css({
+    "display": "none"
+  });
+  search();
+}, false);
+
 
 Date.prototype.toDateInputValue = (function() {
   let local = new Date(this);
@@ -94,7 +111,7 @@ $('#confirmRemoveDialog').on('hidden.bs.modal', function() {
  */
 $('#clear-search').click(function() {
   document.getElementById('search-bar').value = '';
-  showAll();
+  reset();
   // Places cursor back in search box
   $('#search-bar').focus();
 });
@@ -166,7 +183,9 @@ function setTemplateId() {
  * @return {[type]}   [description]
  */
 function handleClick(e) {
-  var obj = buildObj(e);
+  if (e.target.id != 'data-table') {
+    var obj = buildObj(e);
+  }
   var versionsRegex = RegExp(/versionDescription.*/);
   /**
    * If templateBody or copyFull is clicked, then execute the following:
@@ -176,9 +195,11 @@ function handleClick(e) {
    * 4. Updates the ranking of this template.
    */
   if (e.target !== e.currentTarget && (obj.eventId == 'templateBody' || obj.eventId == 'copyFull')) {
-    alertUser(obj.template);
-    copy(buildEmail(obj.body, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder));
-    updateRanking(obj.templateId, obj.eventId);
+    if ($('#copiedAlert').is(':hidden')) {
+      alertUser(obj.template);
+      copy(buildEmail(obj.body, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder));
+      updateRanking(obj.templateId, obj.eventId);
+    }
     /**
      * If copyPortion is clicked, then execute the following:
      * 1. Alert user that the template has been copied.
@@ -186,9 +207,11 @@ function handleClick(e) {
      * 4. Updates the ranking of this template.
      */
   } else if (e.target !== e.currentTarget && obj.eventId == 'copyPortion') {
-    alertUser(obj.template);
-    copy(obj.body);
-    updateRanking(obj.templateId, obj.eventId);
+    if ($('#copiedAlert').is(':hidden')) {
+      alertUser(obj.template);
+      copy(obj.body);
+      updateRanking(obj.templateId, obj.eventId);
+    }
 
     /* If trash (or remove) button was clicked */
   } else if (e.target !== e.currentTarget && obj.eventId == 'removeConfirm') {
@@ -238,6 +261,19 @@ function handleClick(e) {
   }
 }
 
+function handleFilterClick(e) {
+  filterView(e.target);
+}
+
+function resetStyle(e) {
+  e.target.style.backgroundColor = '';
+  e.target.style.color = '';
+}
+
+function showOptions() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
 function versionsDisplay(versionsElement) {
   if (versionsElement.style.opacity < 1) {
     versionsElement.style.opacity = 1;
@@ -273,7 +309,7 @@ function buildObj(e) {
 function alertUser(template) {
   // Grab the span element
   let span = $(template).find(`#copiedAlert`);
-  $(span).fadeIn(600).fadeOut(2000);
+  $(span).fadeIn(300).fadeOut(1000);
 }
 
 /**
@@ -311,6 +347,20 @@ function buildEmail(body, program, replyEmail, greeting, closing, templateId, us
    * closing, and signature.
    * @return {String} Complete e-mail response
    */
+  if (userTeam == 'accountServices' || userTeam == 'accountManagement') {
+    if (greeting == 'none') {
+      var opening = `Hi NAME, </br></br>`;
+    } else {
+      var opening = `Hi NAME, </br></br>${greeting}</br></br>`;
+    }
+
+    if (closing == 'none') {
+      closing = ''
+    } else {
+      closing = `</br>${closing}`;
+    }
+    return `${opening} ${body} ${closing}`;
+  }
   var opening = '';
   if (greeting == 'default' && closing == 'default') {
     greeting = 'Thank you for reaching out to us.';
@@ -349,9 +399,7 @@ function getProgramSignature(program, replyEmail, userTeam, folder) {
   var user = document.getElementById('userFirstName').innerHTML;
   var userEmail = document.getElementById('userEmail').innerHTML;
 
-
-
-  if ((userTeam == 'techSupport' || userTeam == 'techSupportCSE') && (program == 'IXL')) {
+  if ((userTeam == 'techSupport' || userTeam == 'techSupportCSE') && (program == 'IXL' || program == 'IXLT')) {
     var valediction = `Sincerely,</br>`;
     var name = `<b>${user}</b></br>`;
     var department = 'IXL Support</br></br>';
@@ -362,7 +410,7 @@ function getProgramSignature(program, replyEmail, userTeam, folder) {
     var logo = `<img src= ${logoLocation} alt='ixl-logo'>`;
     return `${valediction} ${name} ${department} ${email} ${phone} ${website} ${logo}`;
 
-  } else if ((userTeam == 'techSupport' || userTeam == 'techSupportCSE') && (program == 'QW' || program == 'QB')) {
+  } else if ((userTeam == 'techSupport' || userTeam == 'techSupportCSE') && (program == 'QW' || program == 'QB' || program == 'QBT')) {
     var valediction = `Sincerely,</br>`;
     var name = `${user}</br>Quia Support</br>`;
     return `${valediction} ${name} ${replyEmail}`;
@@ -402,25 +450,37 @@ function getProgramSignature(program, replyEmail, userTeam, folder) {
 
 
 function handleDrop(e) {
-  let templateId = $(e.target).closest(`li[class^='template']`).attr('id');
   try {
+
+    var obj = buildObj(e);
     let template = $(e.target).closest(`li[class^='template']`);
     var droppedText = e.dataTransfer.getData('Text').replace(/(\r\n|\n|\r)/gm, ' ');
-    var regex = /Username:\s*([a-z0-9_@]+).*(http[^\s]+)/g;
-    var split = regex.exec(droppedText);
-    var username = split[1];
-    var resetLink = split[2];
-    var obj = buildObj(e);
-    obj.body = obj.body.replace('PASSWORDLINK', `<b>${resetLink}</b>`);
-    obj.body = obj.body.replace('USERNAME', `<b>${username}</b>`);
-    if (username.includes('@')) {
-      obj.body = obj.body.replace('http://www.ixl.com/signin/CUSTOM', `<b>http://www.ixl.com/signin/${username.split('@')[1]}</b>`);
+    if (obj.templateId == 'X1_01_New_Set_up_Teacher_info_NOT_included') {
+      var regexSchoolName = /Name\s(.*)\sAcce/;
+      var regexCustomDomain = /Custom\s*domain\s*([a-z]*)/;
+      var regexPrimaryContact = /([\w-_.]+@(?:\w+(?::\d+)?\.){1,3}(?:\w+\.?){1,2})/;
+      var schoolName = regexSchoolName.exec(droppedText)[1];
+      var customDomain = regexCustomDomain.exec(droppedText)[1];
+      var primaryContact = regexPrimaryContact.exec(droppedText)[1];
+      obj.body = obj.body.replace('sent to XXXXX', `sent to ${primaryContact}`);
+      obj.body = obj.body.replace('[ORG NAME’s]', `<em>${schoolName}’s</em>`);
+      obj.body = obj.body.replace('page at XXXX', `page at <em>https://www.ixl.com/signin/${customDomain}</em>`);
     } else {
-      obj.body = obj.body.replace('from your dedicated sign in page', '');
-      obj.body = obj.body.replace('http://www.ixl.com/signin/CUSTOM', `<b>http://www.ixl.com/signin</b>`);
-      obj.body = obj.body.replace('http://books.quia.com', '<b>http://books.quia.com</b>');
-      obj.body = obj.body.replace('http://www.quia.com/web', '<b>http://www.quia.com/web</b>');
-      obj.body = obj.body.replace('http://hlc.quia.com', '<b>http://hlc.quia.com</b>');
+      var regex = /Username:\s*([a-z0-9_@]+).*(http[^\s]+)/g;
+      var split = regex.exec(droppedText);
+      var username = split[1];
+      var resetLink = split[2];
+      obj.body = obj.body.replace('PASSWORDLINK', `<b>${resetLink}</b>`);
+      obj.body = obj.body.replace('USERNAME', `<b>${username}</b>`);
+      if (username.includes('@')) {
+        obj.body = obj.body.replace('http://www.ixl.com/signin/CUSTOM', `<b>http://www.ixl.com/signin/${username.split('@')[1]}</b>`);
+      } else {
+        obj.body = obj.body.replace('from your dedicated sign in page', '');
+        obj.body = obj.body.replace('http://www.ixl.com/signin/CUSTOM', `<b>http://www.ixl.com/signin</b>`);
+        obj.body = obj.body.replace('http://books.quia.com', '<b>http://books.quia.com</b>');
+        obj.body = obj.body.replace('http://www.quia.com/web', '<b>http://www.quia.com/web</b>');
+        obj.body = obj.body.replace('http://hlc.quia.com', '<b>http://hlc.quia.com</b>');
+      }
     }
     copy(buildEmail(obj.body, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder));
     updateRanking(obj.templateId, 'copyFull');
@@ -690,5 +750,7 @@ function updateLogs(userSearch) {
     if (res.ok) return res.json()
   }).then(data => {})
 }
+
+
 
 initialize()
