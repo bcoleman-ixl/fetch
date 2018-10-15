@@ -4,7 +4,8 @@
   "description": "Template search for IXL",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --ignore backup/ app.js"
+    "dev": "nodemon --ignore backup/ app.js",
+    "start": "nodemon --ignore backup/ app.js"
   },
   "repository": {
     "type": "git",
