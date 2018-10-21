@@ -2,8 +2,6 @@
  * Main script for application. Handles clicks, ranking,
  * sorting, and operations for creating, updating,
  * deleting, and copying templates.
- *
- *
  */
 // Constants and function for creating the updated date
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -22,6 +20,19 @@ $('.versionTabs').on('keydown', function(event) {
     event.preventDefault();
   }
 });
+
+
+
+// NOTE: Side navbar
+/* Set the width of the side navigation to 250px */
+function openNav() {
+  document.getElementById("mySidenav").style.width = "350px";
+}
+
+/* Set the width of the side navigation to 0 */
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+}
 
 
 /**
@@ -55,9 +66,9 @@ function initialize() {
     anchor_bottom: false,
     anchor_top: false,
     height: '275',
-    plugins: 'lists, advlist, textcolor, colorpicker, link',
+    plugins: 'lists, advlist, textcolor, colorpicker, link, code',
     toolbar: [
-      'undo redo | bold italic underline | alignleft  aligncenter  alignright | numlist  bullist | forecolor | backcolor | removeformat | link'
+      'undo redo | bold italic underline | alignleft  aligncenter  alignright | numlist  bullist | removeformat | link | code'
     ]
   });
   let date = new Date().toDateInputValue();
@@ -65,17 +76,17 @@ function initialize() {
   let dataTable = document.querySelector('#data-table');
   dataTable.addEventListener('click', handleClick, false);
   dataTable.addEventListener('drop', handleDrop, false);
-  var totalErrorCount = parseInt(document.getElementById('totalErrorCount').innerHTML);
-  var errorCountBadge = document.getElementById('errorCountBadge');
-  var errorCountBadgeMenu = document.getElementById('errorCountBadgeMenu');
-  if (totalErrorCount > 0) {
-    errorCountBadge.style.display = 'inline';
-    errorCountBadge.innerHTML = totalErrorCount;
-    errorCountBadgeMenu.style.display = 'inline';
-    errorCountBadgeMenu.innerHTML = totalErrorCount;
-  } else {
-    errorCountBadge.style.display = 'none';
-    errorCountBadgeMenu.style.display = 'none';
+  var userType = document.getElementById('userType').innerHTML;
+  if (userType == 'admin') {
+    var totalErrorCount = parseInt(document.getElementById('totalErrorCount').innerHTML);
+    var errorCount = document.getElementById('errorCount');
+    if (totalErrorCount > 0) {
+      errorCount.innerHTML = "Errors" + " - " + totalErrorCount;
+    } else if (totalErrorCount == 0) {
+      errorCount.innerHTML = "Errors" + " - " + "None";
+    } else {
+      errorCount.style.display = 'none';
+    }
   }
 }
 
@@ -86,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
   $("#loader").children().css({
     "display": "none"
   });
+  $("#loader").children().addClass('stopAnimation');
   search();
 }, false);
 
@@ -103,7 +115,14 @@ $('#confirmRemoveDialog').on('hidden.bs.modal', function() {
   $('#confirmRemoveModal').find('a').attr('id', 'confirmRemoveBtn');
 })
 
-
+/**
+ * Looks for # in URL and loads value into search-bar
+ */
+var hashParams = window.location.hash.substr(1).split('&'); // substr(1) to remove the `#`
+for (var i = 0; i < hashParams.length; i++) {
+  var p = hashParams[i].split('=');
+  document.getElementById('search-bar').value = decodeURIComponent(p[0]);;
+}
 
 /**
  * Clears search box when x is clicked, search() Function
@@ -187,6 +206,7 @@ function handleClick(e) {
     var obj = buildObj(e);
   }
   var versionsRegex = RegExp(/versionDescription.*/);
+
   /**
    * If templateBody or copyFull is clicked, then execute the following:
    * 1. P tags are removed and replaced with breaks. Divs are also replaced with breaks. TODO: Need better solution here.
@@ -195,23 +215,27 @@ function handleClick(e) {
    * 4. Updates the ranking of this template.
    */
   if (e.target !== e.currentTarget && (obj.eventId == 'templateBody' || obj.eventId == 'copyFull')) {
-    if ($('#copiedAlert').is(':hidden')) {
-      alertUser(obj.template);
-      copy(buildEmail(obj.body, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder));
-      updateRanking(obj.templateId, obj.eventId);
-    }
+    copiedAlert(e);
+    copy(buildEmail(obj.body, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
+    updateRanking(obj.templateId, obj.eventId);
     /**
      * If copyPortion is clicked, then execute the following:
      * 1. Alert user that the template has been copied.
      * 3. Copy the body of the template using copy().
      * 4. Updates the ranking of this template.
      */
+  } else if (e.target !== e.currentTarget && obj.eventId == 'reply') {
+    copiedAlert(e);
+    copy(buildEmail(obj.body, obj.program, obj.replyEmail, "Thank you for your reply.", obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
+    updateRanking(obj.templateId, obj.eventId);
+
+  } else if (e.target !== e.currentTarget && obj.eventId == 'share') {
+    copy("http://scruffy.quiacorp.com:3000/templates" + "#" + obj.templateId);
+
   } else if (e.target !== e.currentTarget && obj.eventId == 'copyPortion') {
-    if ($('#copiedAlert').is(':hidden')) {
-      alertUser(obj.template);
-      copy(obj.body);
-      updateRanking(obj.templateId, obj.eventId);
-    }
+    copiedAlert(e);
+    copy(obj.body);
+    updateRanking(obj.templateId, obj.eventId);
 
     /* If trash (or remove) button was clicked */
   } else if (e.target !== e.currentTarget && obj.eventId == 'removeConfirm') {
@@ -241,8 +265,8 @@ function handleClick(e) {
     /* If a version was clicked for copying */
   } else if (e.target !== e.currentTarget && versionsRegex.test(obj.eventId)) {
     let versionsBody = document.getElementById(obj.templateId).querySelector('#versionBody' + (obj.eventId).substr(obj.eventId.length - 1));
-    copy(buildEmail(versionsBody.innerHTML, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder));
-    alertUser(obj.template);
+    copy(buildEmail(versionsBody.innerHTML, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
+    copiedAlert(e);
     updateRanking(obj.templateId, 'copyFull');
     let versionsElementToHide = document.getElementById(obj.templateId).querySelector('.versions');
     versionsDisplay(versionsElementToHide);
@@ -261,13 +285,24 @@ function handleClick(e) {
   }
 }
 
+function copiedAlert(e) {
+  let templateObjId = $(e.target).closest(`li[class^='template']`).attr('id');
+  let templateObj = document.getElementById(templateObjId);
+  console.log(templateObj);
+  $('#' + templateObjId).addClass('templateClicked');
+  setTimeout(function() {
+    $('#' + templateObjId).removeClass('templateClicked');
+    console.log('firing');
+  }, 500);
+}
+
 function handleFilterClick(e) {
   filterView(e.target);
 }
 
 function resetStyle(e) {
   e.target.style.backgroundColor = '';
-  e.target.style.color = '';
+  e.target.style.border = '';
 }
 
 function showOptions() {
@@ -301,16 +336,6 @@ function buildObj(e) {
   return obj;
 }
 
-/**
- * Alerts the user when a template has
- * been copied by displaying the word
- * 'copied' on the template
- */
-function alertUser(template) {
-  // Grab the span element
-  let span = $(template).find(`#copiedAlert`);
-  $(span).fadeIn(300).fadeOut(1000);
-}
 
 /**
  * 1. Creates and hides a container for the HTML
@@ -338,7 +363,7 @@ function copy(html) {
   document.body.removeChild(container)
 }
 
-function buildEmail(body, program, replyEmail, greeting, closing, templateId, userTeam, folder) {
+function buildEmail(body, program, replyEmail, greeting, closing, templateId, userTeam, folder, eventId) {
   /**
    * Grabs users first name from their account menu (set by Google Profile).
    * Sets e-mail, program, phone number, website, greeting,
@@ -347,7 +372,8 @@ function buildEmail(body, program, replyEmail, greeting, closing, templateId, us
    * closing, and signature.
    * @return {String} Complete e-mail response
    */
-  if (userTeam == 'accountServices' || userTeam == 'accountManagement') {
+
+  if (templateId == 'Y6M7S3G2C2J6M8I1G1') {
     if (greeting == 'none') {
       var opening = `Hi NAME, </br></br>`;
     } else {
@@ -359,8 +385,37 @@ function buildEmail(body, program, replyEmail, greeting, closing, templateId, us
     } else {
       closing = `</br>${closing}`;
     }
+    var valediction = `Sincerely,</br>`;
+    var name = `<b>Customer Support Engineer</b></br></br>`;
+    var email = `E-mail: ${replyEmail} </br>`;
+    var phone = 'Phone: 984-229-9444</br>';
+    var website = 'Website: www.ixl.com</br>';
+    var logoLocation = `'https://c.na57.content.force.com/servlet/servlet.ImageServer?id=0150b0000027zq8&oid=00D300000001FBU&lastMod=1495736864000'`
+    var logo = `<img src= ${logoLocation} alt='ixl-logo'>`;
+    console.log(templateId);
+    var signature = `${valediction} ${name} ${email} ${phone} ${website} ${logo}`;
+    if (eventId == 'reply') {
+      return `Hi NAME, </br></br>Thank you for your reply.</br></br>${body} ${closing}</br></br>${signature}`;
+    }
+    return `${opening} ${body} ${closing}</br></br>${signature}`;
+  }
+
+  if (userTeam == 'accountServices' || userTeam == 'accountManagement' || userTeam == 'teacherMemberships') {
+    if (greeting == 'none') {
+      var opening = `Hi NAME, </br></br>`;
+    } else {
+      var opening = `Hi NAME, </br></br>${greeting}</br></br>`;
+    }
+
+    if (closing == 'none') {
+      closing = ''
+    } else {
+      closing = `</br></br>${closing}`;
+    }
+
     return `${opening} ${body} ${closing}`;
   }
+
   var opening = '';
   if (greeting == 'default' && closing == 'default') {
     greeting = 'Thank you for reaching out to us.';
@@ -386,6 +441,9 @@ function buildEmail(body, program, replyEmail, greeting, closing, templateId, us
     opening = `Dear NAME, <br/><br/> ${greeting}`;
   }
   var signature = getProgramSignature(program, replyEmail, userTeam, folder);
+  if (eventId == 'reply') {
+    return `Hello NAME,<br/><br/> ${greeting} ${body} ${closing} ${signature}`;
+  }
   return `${opening} ${body} ${closing} ${signature}`;
 }
 
@@ -451,7 +509,6 @@ function getProgramSignature(program, replyEmail, userTeam, folder) {
 
 function handleDrop(e) {
   try {
-
     var obj = buildObj(e);
     let template = $(e.target).closest(`li[class^='template']`);
     var droppedText = e.dataTransfer.getData('Text').replace(/(\r\n|\n|\r)/gm, ' ');
@@ -484,7 +541,7 @@ function handleDrop(e) {
     }
     copy(buildEmail(obj.body, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder));
     updateRanking(obj.templateId, 'copyFull');
-    alertUser(obj.template);
+    copiedAlert(e);
   } catch (e) {
     console.log(e);
   }
@@ -539,6 +596,7 @@ function editTemplate(templateId) {
   let tagsField = document.getElementById('tags');
   let teamField = document.getElementById('team');
   let publicStatusField = document.getElementById('publicStatus');
+  let vettedField = document.getElementById('vetted');
   let greetingField = document.getElementById('greeting');
   let closingField = document.getElementById('closing');
   let replyEmailField = document.getElementById('replyEmail');
@@ -551,6 +609,7 @@ function editTemplate(templateId) {
   let tags = document.getElementById(templateId).querySelector('#templateTags');
   let team = document.getElementById(templateId).querySelector('#templateTeam');
   let publicStatus = document.getElementById(templateId).querySelector('#templatePublicStatus');
+  let vetted = document.getElementById(templateId).querySelector('#templateVetted');
   let greeting = document.getElementById(templateId).querySelector('#templateGreeting');
   let closing = document.getElementById(templateId).querySelector('#templateClosing');
   let replyEmail = document.getElementById(templateId).querySelector('#templateReplyEmail');
@@ -576,6 +635,7 @@ function editTemplate(templateId) {
   tagsField.value = tags.textContent;
   teamField.value = team.textContent;
   publicStatusField.value = publicStatus.textContent;
+  vettedField.value = vetted.textContent;
 
   greetingField.value = greeting.textContent;
   closingField.value = closing.textContent;
@@ -602,6 +662,7 @@ function update(e) {
   let tags = document.querySelector('#tags').value;
   let team = document.querySelector('#team').value;
   let publicStatus = document.querySelector('#publicStatus').value;
+  let vetted = document.querySelector('#vetted').value;
   let greeting = document.querySelector('#greeting').value;
   let closing = document.querySelector('#closing').value;
   let replyEmail = document.querySelector('#replyEmail').value;
@@ -630,6 +691,7 @@ function update(e) {
       'tags': tags,
       'team': team,
       'publicStatus': publicStatus,
+      'vetted': vetted,
       'greeting': greeting,
       'closing': closing,
       'replyEmail': replyEmail,
@@ -661,7 +723,7 @@ function updateRanking(templateId, eventId) {
   var copyFullElement = document.getElementById(templateId).querySelector('#templateCopyFull');
   var copyPortionElement = document.getElementById(templateId).querySelector('#templateCopyPortion');
 
-  if (eventId == 'copyFull' || eventId == 'templateBody' || eventId == 'versions') {
+  if (eventId == 'copyFull' || eventId == 'templateBody' || eventId == 'versions' || eventId == 'reply') {
     newRanking = parseInt(rankingElement.innerHTML) + 1;
     newFull = parseInt(copyFullElement.innerHTML) + 1;
     newPortion = parseInt(copyPortionElement.innerHTML);
@@ -734,7 +796,6 @@ function rank() {
 /**
  * Updates search logs by recording searches where no templates were found
  * @param  {[type]} userSearch An array of the users search content
- */
 function updateLogs(userSearch) {
   let userEmail = document.getElementById('userEmail').innerHTML.toLowerCase();
   fetch('updateLogs', {
@@ -750,6 +811,7 @@ function updateLogs(userSearch) {
     if (res.ok) return res.json()
   }).then(data => {})
 }
+*/
 
 
 
