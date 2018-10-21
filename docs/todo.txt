@@ -1,10 +1,9 @@
 NIE Issues - reach out to Tom
 Student_Notification in TS QB Stolen book keys needs a greeting
 Secret_Words in TS NGE Greeting? Closing?
-Add line between greeting and e-mail? in National Exam folders?
+Remove P tags from Daily practice ipad
 
-
-Remove table from Phones on IXL and Other tablets/phones on IXL (Also, can we consolidate into one?)
 Closing for X24_Purchased_wrong_book_BOOK_KEY2 in TS QB
 Closing for X47_DSC_helps_with_setup_e_mail1 in TS QB
 Change SmartScore student in production (add break tags before 'Don't rush' and <ul>, also fix break tags before and after ul tag)
+Remove duplicate sent user/pass separately
