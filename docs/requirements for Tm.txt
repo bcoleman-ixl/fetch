@@ -1,0 +1,49 @@
+# of subjects (
+["single-subject"], ["dual-subject"], ["3-subject"], ["4-subject"], ["all-access"]
+)
+
+# of licenses (
+[25], [30], [40], [50], [60], [70], [80], [90]
+)
+
+edition (
+["US"], ["UK"], ["CA"], ["AU"], ["BR"], ["DE"], ["FR"], ["IN"], ["IE"], ["NZ"], ["SG"], ["ZA"], ["JP"]
+)
+
+currency
+(
+["US", "USD","United States Dollar", "$"],
+["UK", "GBP","British Pound", "£"],
+["CA", "CAD", "Canadian Dollar", "$"],
+["AU", "AUD", "Australian Dollar", "$"],
+["BR", "BRL", "Brazilian Real", "R$"],
+["DE", "EUR", "Euro - Germany", "€"],
+["FR", "EUR", "Euro - France", "€"],
+["IN", "INR", "India Rupee", "₹"],
+["IE", "EUR","Euro - Ireland", "€"],
+["NZ", "NZD","New Zealand Dollar", "$"],
+["SG", "SGD","Singapore Dollar", "$"],
+["ZA", "ZAR","South African Rand", "R"],
+["JP", "JPY","Japan Yen", "$"]
+)
+
+Tables:
+Currency (countryCode, currencyCode, currencyName, currencySymbol, subjectQuantity (ForeignKey))
+Subjects (subjectQuantityName, subjectQuantity(Primary key), )
+Licenses (numberLicenses, countryCode, subjectQuantity (Foreign Key) )
+
+cost
+
+
+Generate informal quote button?
+Click through to select options on top of template body?
+Ways to make the system flexible? Adaptable?
+SQL?
+
+Click on edition then it displays options (clicking on AU only shows options for dual subjects, US shows single-subject through all-access options)
+Then click on number of Licenses
+
+Options are stored in SQL database, relational? Or as objects?
+Add new editions, update current editions, remove editions.
+
+<i class="fas fa-quote-left"></i>

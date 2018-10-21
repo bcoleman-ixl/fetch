@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <link rel='stylesheet' href='/styles.css'>
+  <!-- Bootstrap minified CSS -->
+  <link rel='stylesheet' href='bootstrap.min.css'>
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" integrity="sha384-kW+oWsYx3YpxvjtZjFXqazFpA7UP/MbiY4jvs+RWZo2+N94PFZ36T6TFkc9O3qoB" crossorigin="anonymous"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Oleo+Script|Roboto" rel="stylesheet">
+  <% if(user.email == 'mjenkins@ixl.com'){ %>
+    <title>CS3K</title>
+    <% } else {%>
+      <title>Fetch</title>
+      <% }%>
+</head>
+
+<body>
+  <div class='signIn'>
+  </div>
+  <!-- Manage templates modal -->
+  <%- include include/manageTemplatesModal %>
+    <!-- End manage templates modal -->
+    <!-- Begin confirm remove modal -->
+    <%- include include/removeModal %>
+      <!-- End confirm remove modal -->
+      <!-- Begin snippets modal -->
+      <%- include include/snippetsModal %>
+        <!-- End snippets modal -->
+        <!-- Navbar -->
+        <%- include include/navbar %>
+          <!-- End navbar -->
+          <!-- Header -->
+
+
+          <div class="userTable">
+            <% for(var m = 0; m < users.length; m++) { %>
+              <div class="userProfile">
+                <div class="row">
+
+                  <div class="image-container">
+                    <img class="image" src="<%= users[m].img %>" alt="">
+
+                  </div>
+                  <div class="name-container">
+
+                    <div id="userName">
+                      <%= users[m].name %>
+                    </div>
+                    <div id="userTeam">
+                      <%
+                      var userRole = users[m].type;
+                      userRole = userRole.charAt(0).toUpperCase() + userRole.slice(1);
+                      var userTeam = users[m].team;
+                      teamFormatted = userTeam.replace(/([A-Z])/g, '$1').replace(/^./,function(str){ return str.toUpperCase();
+                      })
+
+                      %>
+                        <%= teamFormatted   %> |  <%= userRole %>
+                    </div>
+
+                  </div>
+                </div>
+
+
+              </div>
+
+              <% }%>
+
+          </div>
+
+
+          <!-- End header -->
+          <!-- Spacing -->
+          <div class='row space'>
+            <div class='col-lg-3'></div>
+            <div class='col-lg-6'>
+              <div>
+              </div>
+            </div>
+            <div class='col-lg-3'></div>
+          </div>
+          <!-- End spacing -->
+          <!-- Search bar -->
+
+</body>
+<script src='tinymce/tinymce.min.js'></script>
+<script src='jquery.min.js'></script>
+<script src='app-main.js'></script>
+<script src='search.js'></script>
+<script src='bootstrap.min.js'></script>
+
+</html>
