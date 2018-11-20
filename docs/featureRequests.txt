@@ -5,6 +5,7 @@
 11. Data tracking (when were templates used, by whom, how many times);
 12. Quick Access to templates
 14. Folders? Better ways to search?
+Creating a place for "notes" on templates so people who are unfamiliar with them have some more context as to where they'd be appropriate
 
 
 *****Completed Feature requests*****
