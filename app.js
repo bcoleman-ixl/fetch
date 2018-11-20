@@ -9,6 +9,7 @@ express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
+const mysql = require('mysql');
 
 // Constants and function for creating the updated date
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -17,11 +18,10 @@ const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
 
 /* Connecting to Mongo database */
 const mongoose = require('mongoose');
-const usersClient = require('mongoose');
 const templatesClient = require('mongodb').MongoClient;
-const logsClient = require('mongodb').MongoClient;
+const usersClient = require('mongodb').MongoClient;
 let templatesDb = null;
-let logsDb = null;
+let usersDb = null;
 
 /* User authentication */
 const User = require('./models/user-model');
@@ -63,9 +63,11 @@ const tsl1qb = 'Folder.Name = \'TS L1 Quia Books\' OR ';
 const tsl1hlc = 'Folder.Name = \'TS L1 HLC\' OR ';
 const tsl1ak = 'Folder.Name = \'TS L1 Al Kitaab\' OR ';
 const tsl1ct = 'Folder.Name = \'TS L1 Cheng & Tsui\' OR ';
+
 // Misc. QB Folders
 const tsqbstolen = 'Folder.Name = \'TS QB Stolen book keys\' OR ';
 const tsestudio = 'Folder.Name = \'TS eStudio\' OR ';
+const tsalkitaab = 'Folder.Name = \'TS Al Kitaab\' OR ';
 const tsqbdeletion = 'Folder.Name = \'TS QB Deletion\' OR ';
 
 /* Family folders */
@@ -84,8 +86,32 @@ const asfolder = 'Folder.Name = \'Account Services\' OR ';
 
 const end = 'Folder.Name = \'End of the query\'';
 
-/* Programs for the application */
-const programs = ['IXL', 'QW', 'QB', 'IXLT', 'QWT', 'QBT', 'CSE', 'FAM', 'AS', 'AM'];
+var currency = [];
+var licenses = [];
+var subjects = [];
+
+/* Programs for the application
+IXL - IXL
+QW - Quia Web
+QB - Quia Books
+IXLT - IXL for Temps
+CSE - Customer Support Engineer
+FAM - Family
+AS - Account services
+AM - Account managers
+TM - Teacher memberships
+*/
+const programs = [
+  'AM',
+  'AS',
+  'CSE',
+  'FAM',
+  'IXL',
+  'IXLT',
+  'QB',
+  'QW',
+  'TM'
+];
 /**
  * Checking if users have been authenticated
  * Redirect to authenticate if user is null
@@ -131,7 +157,7 @@ app.use(bodyParser.urlencoded({
 
 /* Use cookies with max age of 20 hours */
 app.use(cookieSession({
-  maxAge: 20 * 60 * 60 * 1000,
+  maxAge: 72 * 60 * 60 * 1000,
   keys: [keys.session.cookieKey]
 }));
 
@@ -153,40 +179,145 @@ templatesClient.connect(keys.mongoDb.templatesURI, (err, client) => {
   if (err) return console.log(err);
   templatesDb = client.db('templates');
   templatesDb.collection('templates').find().toArray((err, templatesArr) => {
+    /**
     var fs = require('fs');
     var templatesBackupArr = [];
     for (var i = 0; i < templatesArr.length; i++) {
-      templatesBackupArr.unshift(JSON.stringify(templatesArr[i]));
-    }
-    fs.writeFile("./backup/backup.json", templatesBackupArr);
+    templatesBackupArr.unshift(JSON.stringify(templatesArr[i]));
+  }
+  fs.writeFile("./backup/backup.json", templatesBackupArr);
+     *
+     */
   });
   // Listen on port 3000
   app.listen(3000);
 });
 
 
+/**
+ * [con description]
+ * @type {[type]}
+ */
 
-logsClient.connect(keys.mongoDb.logsURI, (err, client) => {
+var con = mysql.createConnection({
+  host: '192.168.18.229',
+  port: '3306',
+  user: 'bcoleman',
+  password: 'aep4eiJ6',
+  database: 'fetchdb',
+  multipleStatements: true
+});
+
+con.connect(function(err) {
+  if (err) throw err;
+});
+
+var query = 'SELECT licenses.countryCode,licenses.type, currency.subjectQuantityMax,licenses.subjectQuantity, licenses.numberLicenses, licenses.cost, licenses.rebateId, licenses.rebateCost, rebates.rebateName, rebates.rebateEndDate, currency.currencySymbol, currency.currencyCode, subjects.subjectQuantityName, licenses.spanishCost, licenses.id FROM `licenses` INNER JOIN `subjects` ON licenses.subjectQuantity = subjects.subjectQuantity INNER JOIN `currency` ON licenses.countryCode = currency.countryCode OR licenses.countryCode = currency.subjectQuantityMax OR licenses.countryCode = currency.currencyCode INNER JOIN `rebates` ON licenses.rebateId = rebates.rebateId ORDER BY countryCode DESC, type ASC, subjectQuantity ASC, numberLicenses ASC; SELECT * FROM currency ORDER BY countryCode; SELECT * FROM subjects; SELECT * FROM objects; SELECT * FROM rebates';
+
+
+usersClient.connect(keys.mongoDb.usersURI, (err, client) => {
   if (err) return console.log(err);
-  logsDb = client.db('logs');
+  usersDb = client.db('users');
   // Listen on port 3001
   app.listen(3001);
 });
+
+
 
 /* Connects to users database*/
 mongoose.connect(keys.mongoDb.usersURI);
 
 app.get('/templates', authCheck, (req, res) => {
   templatesDb.collection('templates').find().toArray((err, result) => {
-    if (err) return console.log(err)
-    // Renders index.ejs and loads templates and user profile
-    res.render('index.ejs', {
-      templatesArr: result,
-      user: req.user,
-      programs: programs
-    })
+    con.query(query, [1, 2, 3, 4], function(error, results, fields) {
+
+      if (err) return console.log(err)
+      // Renders index.ejs and loads templates and user profile
+      var userTemplates = [];
+      for (var i = 0; i < result.length; i++) {
+        for (var m = 0; m < req.user.programs.length; m++) {
+          if (result[i].program == req.user.programs[m]) {
+            userTemplates.push(result[i]);
+          }
+        }
+      }
+      res.render('index.ejs', {
+        templatesArr: userTemplates,
+        user: req.user,
+        programs: programs,
+        licenses: results[0],
+        currency: results[1],
+        subjects: results[2],
+        objects: results[3]
+      })
+    });
   })
 });
+
+app.get('/review', authCheckAdmin, (req, res) => {
+  templatesDb.collection('templates').find().toArray((err, result) => {
+    con.query(query, [1, 2, 3, 4], function(error, results, fields) {
+
+      if (err) return console.log(err)
+      // Renders review.ejs and loads templates and user profile
+      var userTemplates = [];
+      for (var i = 0; i < result.length; i++) {
+        for (var m = 0; m < req.user.programs.length; m++) {
+          if (result[i].program == req.user.programs[m]) {
+            userTemplates.push(result[i]);
+          }
+        }
+      }
+      res.render('review.ejs', {
+        templatesArr: userTemplates,
+        user: req.user,
+        programs: programs,
+        licenses: results[0],
+        currency: results[1],
+        subjects: results[2],
+        objects: results[3]
+      })
+    });
+  })
+});
+
+app.get('/admin', authCheck, (req, res) => {
+  templatesDb.collection('templates').find().toArray((err, result) => {
+    con.query(query, [1, 2, 3, 4], function(error, results, fields) {
+      if (err) return console.log(err)
+      // Renders index.ejs and loads templates and user profile
+      var userTemplates = [];
+      console.log(result.length);
+      for (var i = 0; i < result.length; i++) {
+        userTemplates.push(result[i]);
+      }
+      res.render('admin.ejs', {
+        templatesArr: userTemplates,
+        user: req.user,
+        programs: programs,
+        licenses: results[0],
+        currency: results[1],
+        subjects: results[2],
+        objects: results[3]
+      })
+    });
+  })
+});
+
+app.get('/quotes', authCheck, (req, res) => {
+  con.query(query, [1, 2, 3, 4, 5], function(error, results, fields) {
+    res.render('quotes.ejs', {
+      user: req.user,
+      programs: programs,
+      licenses: results[0],
+      currency: results[1],
+      subjects: results[2],
+      objects: results[3],
+      rebates: results[4]
+    })
+  });
+});
+
 
 app.get('/errors', authCheckAdmin, (req, res) => {
   templatesDb.collection('templates').find().toArray((err, result) => {
@@ -200,28 +331,16 @@ app.get('/errors', authCheckAdmin, (req, res) => {
   })
 });
 
-app.get('/admin', authCheckAdmin, (req, res) => {
-  templatesDb.collection('templates').find().toArray((err, result) => {
-    if (err) return console.log(err);
-    // Renders admin.ejs and loads tempaltes and user profile
-    res.render('admin.ejs', {
-      templatesArr: result,
-      user: req.user,
-      programs: programs
-    })
-  })
-});
-
 app.get('/userGuide', function(req, res) {
   res.sendFile(__dirname + '/user_guide.pdf');
 });
 
-app.get('/admin/logs', authCheckAdmin, (req, res) => {
-  logsDb.collection('logs').find().toArray((err, result) => {
+app.get('/users', authCheck, (req, res) => {
+  usersDb.collection('users').find().toArray((err, result) => {
     if (err) return console.log(err)
     // Renders admin.ejs and loads tempaltes and user profile
-    res.render('logs.ejs', {
-      logs: result,
+    res.render('users.ejs', {
+      users: result,
       user: req.user,
       programs: programs
     })
@@ -273,7 +392,6 @@ app.delete('/remove', (req, res) => {
  * always be todays date.
  */
 app.put('/update', (req, res) => {
-  console.log(req.body);
   templatesDb.collection('templates')
     .findOneAndUpdate({
       id: req.body.id
@@ -289,6 +407,7 @@ app.put('/update', (req, res) => {
         greeting: req.body.greeting,
         closing: req.body.closing,
         publicStatus: req.body.publicStatus,
+        vetted: req.body.vetted,
         replyEmail: [req.body.replyEmail],
         tags: req.body.tags,
         versions: req.body.versions
@@ -302,6 +421,30 @@ app.put('/update', (req, res) => {
       if (err) return res.send(err)
       res.send(result);
     })
+});
+
+
+app.put('/addLicense', (req, res) => {
+  var sql = `INSERT INTO licenses (cost, countryCode, type, spanishCost, subjectQuantity, numberLicenses, rebateCost, rebateId) VALUES (${req.body.cost}, "${req.body.countryCode}", "${req.body.type}", ${req.body.spanishCost},${req.body.subjectQuantity}, ${req.body.numberLicenses}, ${req.body.rebateCost},"${req.body.rebateId}")`;
+  console.log(sql);
+  con.query(sql, function(err, result) {
+    console.log(err);
+  });
+  window.location.reload()
+});
+
+app.put('/updateLicense', (req, res) => {
+  var sql = `UPDATE licenses SET cost = ${req.body.cost}, countryCode = "${req.body.countryCode}",  type = "${req.body.type}", subjectQuantity = ${req.body.subjectQuantity}, numberLicenses = ${req.body.numberLicenses}, rebateCost = ${req.body.rebateCost},  rebateId = "${req.body.rebateId}", spanishCost = ${req.body.spanishCost} WHERE id
+   = ${req.body.id} `
+  console.log(sql);
+  con.query(sql, function(err, result) {
+    console.log(err);
+  });
+});
+
+app.put('/deleteLicense', (req, res) => {
+  var sql = "DELETE FROM licenses WHERE id = " + req.body.id;
+  con.query(sql, function(err, result) {});
 });
 
 /**
@@ -330,21 +473,7 @@ app.put('/updateRanking', (req, res) => {
     })
 });
 
-/**
- * Adds users search logs to the Database
- * @type {String}
- */
-app.put('/updateLogs', (req, res) => {
-  console.log('sending: ' + req.body.userSearch);
-  logsDb.collection('logs')
-    .update({
-      userEmail: req.body.userEmail
-    }, {
-      $addToSet: {
-        userSearch: req.body.userSearch
-      }
-    })
-});
+
 
 
 /* Authentication */
@@ -372,19 +501,15 @@ passport.use(new GoogleStrategy({
         // Already have user
         done(null, currentUser);
       } else {
-        logsDb.collection('logs').insert({
-          userEmail: profile.emails[0].value,
-          userSearch: []
-        });
-
         // Create a new user
         new User({
           name: profile.name.givenName,
           googleID: profile.id,
           img: profile._json.image.url,
-          team: 'null',
-          programs: ['null'],
+          team: 'teacherMemberships',
+          programs: ['TM'],
           type: 'user',
+          vettingRights: false,
           email: profile.emails[0].value
         }).save().then((newUser) => {
           done(null, newUser);
@@ -397,8 +522,7 @@ passport.use(new GoogleStrategy({
 
 app.get('/auth/google',
   passport.authenticate('google', {
-    scope: ['profile', 'email'],
-    prompt: 'consent'
+    scope: ['profile', 'email']
   }));
 
 app.get('/auth/google/callback',
@@ -422,7 +546,11 @@ app.get('/authenticate', (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
+  console.log(req.session);
+  req.session.cookieKey = null;
+  req.session.user = null;
   req.logout();
+  console.log(req.session);
   res.redirect('/authenticate');
 });
 
@@ -505,7 +633,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   updatedDate: date,
                   addedByUser: 'salesforce@salesforce.com',
                   team: 'techSupport',
-                  publicStatus: 'true',
                   program: 'IXL',
                   replyEmail: 'help@ixl.com',
                   folder: folder,
@@ -520,56 +647,56 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       }
     }) // End of query for IXL
 
-  conn.sobject("EmailTemplate") // Start of query for IXLTEMP
-    .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
-    .where(
-      tsl1ixl +
-      end)
-    .execute(function(err, records) {
-      try {
-        for (var i = 0; i < records.length; i++) {
-          var record = records[i];
-          if (record.HtmlValue != null && record.IsActive == true) {
-            var folder = record.Folder.Name;
-            /* Format the date and body of the e-mail */
-            var longDate = new Date(record.LastModifiedDate);
-            var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
-            var numberRegex = /\d*\.*\d*\s*(.*)/g;
-            var name = numberRegex.exec(record.Name)[1];
-            var body = record.HtmlValue;
-            body = body.replace(/(\r\n|\n|\r)/gm, "");
-            replyEmail = body.match(/([a-zA-Z0-9._-]+@ixl.com+)/gi)[0];
-            var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
-            var numberSplit = numberRegex.exec(record.Name);
-            var name = numberSplit[2];
-            var scNum = numberSplit[1];
-            body = body.toString();
-            var result = clean(body, 'IXL');
-            templatesDb.collection('templates')
-              .update({
-                id: record.DeveloperName + 'TEMP'
-              }, {
-                $set: {
-                  body: result[1].toString(),
-                  greeting: result[0].toString(),
-                  closing: result[2].toString(),
-                  updatedDate: date,
-                  addedByUser: 'salesforce@salesforce.com',
-                  team: 'techSupport',
-                  publicStatus: 'true',
-                  program: 'IXLT',
-                  replyEmail: 'help@ixl.com',
-                  folder: folder,
-                }
-              }, {
-                upsert: true
-              }) // End of update statement
-          } // End of if statement
-        } // End of for loop
-      } catch (e) {
-        console.log(e);
-      }
-    }) // End of query for IXLTEMP
+  /**
+    conn.sobject("EmailTemplate") // Start of query for IXLTEMP
+      .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
+      .where(
+        tsl1ixl +
+        end)
+      .execute(function(err, records) {
+        try {
+          for (var i = 0; i < records.length; i++) {
+            var record = records[i];
+            if (record.HtmlValue != null && record.IsActive == true) {
+              var folder = record.Folder.Name;
+
+              var longDate = new Date(record.LastModifiedDate);
+              var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
+              var numberRegex = /\d*\.*\d*\s*(.*)/g;
+              var name = numberRegex.exec(record.Name)[1];
+              var body = record.HtmlValue;
+              body = body.replace(/(\r\n|\n|\r)/gm, "");
+              replyEmail = body.match(/([a-zA-Z0-9._-]+@ixl.com+)/gi)[0];
+              var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
+              var numberSplit = numberRegex.exec(record.Name);
+              var name = numberSplit[2];
+              var scNum = numberSplit[1];
+              body = body.toString();
+              var result = clean(body, 'IXL');
+              templatesDb.collection('templates')
+                .update({
+                  id: record.DeveloperName + 'TEMP'
+                }, {
+                  $set: {
+                    body: result[1].toString(),
+                    greeting: result[0].toString(),
+                    closing: result[2].toString(),
+                    updatedDate: date,
+                    addedByUser: 'salesforce@salesforce.com',
+                    team: 'techSupport',
+                    program: 'IXLT',
+                    replyEmail: 'help@ixl.com',
+                    folder: folder,
+                  }
+                }, {
+                  upsert: true
+                }) // End of update statement
+            } // End of if statement
+          } // End of for loop
+        } catch (e) {
+          console.log(e);
+        }
+      })  End of query for IXLTEMP */
 
   conn.sobject("EmailTemplate") // Start of query for QW
     .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
@@ -625,7 +752,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
                   updatedDate: date,
                   addedByUser: 'salesforce@salesforce.com',
                   team: 'techSupport',
-                  publicStatus: 'true',
                   program: 'QW',
                   replyEmail: replyEmail,
                   folder: folder,
@@ -641,75 +767,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       }
     }) // End of query for QW
 
-  /**
-   * TEMP templates
-   * @type {Number}
-   *
-   conn.sobject("EmailTemplate") // Start of query for TEMP
-   .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
-   .where(
-   tsl1ixl +
-   end)
-   .execute(function(err, records) {
-   try {
-   // Select program based on Folder name
-   for (var i = 0; i < records.length; i++) {
-   // Get individual record
-   var record = records[i];
-   var folder = record.Folder.Name;
-   // Get and format last modified date
-   var longDate = new Date(record.LastModifiedDate);
-   var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
 
-   // Get the e-mail body in HTML and remove first sentence and after sincerely
-   if (record.Body == null) {
-   console.log('Body [[null]] for ' + record.Name);
- } else {
- var numberRegex = /\d*\.*\d*\s*(.*)/g;
- var name = numberRegex.exec(record.Name)[1];
- var body = record.Body;
- body = body.replace(/(\r\n|\n|\r)/gm, "</br>");
- body = body.toString();
- replyEmail = body.match(/([a-zA-Z0-9._-]+@quia.com+)/gi)[0];
-
- var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
- var numberSplit = numberRegex.exec(record.Name);
- var name = numberSplit[2];
- var scNum = numberSplit[1];
- body = body.toString();
- var result = clean(body, 'QB');
-}
-// fields in Account relationship are fetched
-if (record.Body != null && record.IsActive == true) {
-templatesDb.collection('templates')
-.update({
-id: record.DeveloperName + 'TEMP'
-}, {
-$set: {
-name: name,
-body: result[1].toString(),
-greeting: result[0].toString(),
-closing: result[2].toString(),
-updatedDate: date,
-addedByUser: 'salesforce@salesforce.com',
-team: 'techSupport',
-publicStatus: 'true',
-program: 'IXLT',
-replyEmail: replyEmail,
-folder: folder,
-tags: scNum
-}
-}, {
-upsert: true
-}) // End of update statement
-} // End of if statement
-} // End of for loop
-} catch (e) {
-console.log(e);
-}
-}) // End of query for TEMP
-
-   */
 
   conn.sobject("EmailTemplate") // Start of query for Quia Books (L1 Only)
     .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
@@ -735,6 +793,7 @@ console.log(e);
           if (record.Body == null) {
             console.log('Body [[null]] for ' + record.Name);
           } else {
+
             var numberRegex = /\d*\.*\d*\s*(.*)/g;
             var name = numberRegex.exec(record.Name)[1];
             var body = record.Body;
@@ -752,6 +811,7 @@ console.log(e);
           }
           // fields in Account relationship are fetched
           if (record.Body != null && record.IsActive == true) {
+
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
@@ -763,7 +823,6 @@ console.log(e);
                   updatedDate: date,
                   addedByUser: 'salesforce@salesforce.com',
                   team: 'techSupport',
-                  publicStatus: 'true',
                   program: 'QB',
                   replyEmail: replyEmail,
                   folder: folder
@@ -825,7 +884,6 @@ console.log(e);
   updatedDate: date,
   addedByUser: 'salesforce@salesforce.com',
   team: 'accountServices',
-  publicStatus: 'true',
   program: 'AS',
   folder: folder,
   name: name
@@ -852,6 +910,7 @@ console.log(e);
       tsheinle +
       tsqbstolen +
       tsqbdeletion +
+      tsalkitaab +
       end)
     .execute(function(err, records) {
       try {
@@ -896,7 +955,6 @@ console.log(e);
                   updatedDate: date,
                   addedByUser: 'salesforce@salesforce.com',
                   team: 'techSupport',
-                  publicStatus: 'true',
                   program: 'QB',
                   replyEmail: replyEmail,
                   folder: folder
@@ -958,7 +1016,6 @@ console.log(e);
   updatedDate: date,
   addedByUser: 'salesforce@salesforce.com',
   team: 'accountServices',
-  publicStatus: 'true',
   program: 'AS',
   folder: folder,
   name: name
@@ -1024,14 +1081,13 @@ console.log(e);
                   updatedDate: date,
                   addedByUser: 'salesforce@salesforce.com',
                   team: 'family',
-                  publicStatus: 'true',
                   program: 'FAM',
                   replyEmail: 'support@ixl.com',
                   folder: folder
                 }
               }, {
                 upsert: true
-              }) // End of update statement
+              }) // End of update statemnt
           } // End of if statement
         } // End of for loop
       } catch (e) {
@@ -1048,7 +1104,7 @@ function clean(body, id) {
     var foundGreeting = false;
     for (var j = 0; j < result.length; j++) {
       // If it contains !Contact then remove it
-      if (result[j].match(/Dear/) || result[j].match(/Hello/)) {
+      if (result[j].match(/Dear/) || result[j].match(/Hello/) || result[j].match(/Hi/)) {
         result.splice(j, 1);
       }
       // If it contains Thank you and number of sentences is 1, set it as intro
@@ -1065,7 +1121,7 @@ function clean(body, id) {
       }
 
       // If the result contains incerely, splice
-      if (result[j].match(/incerely/)) {
+      if (result[j].match(/\{!Case\.OwnerFirstName/)) {
         result.splice(j);
       }
     }
