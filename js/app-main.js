@@ -8,6 +8,8 @@ const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
 
+
+
 /* Ensures that modal for adding hyperlinks in MCE loads correctly */
 $(document).on('focusin', function(e) {
   if ($(e.target).closest('.mce-window').length) {
@@ -15,6 +17,11 @@ $(document).on('focusin', function(e) {
   }
 });
 
+/**
+ * Limits version titles to 15 characters
+ * @param  {[type]} event [description]
+ * @return {[type]}       [description]
+ */
 $('.versionTabs').on('keydown', function(event) {
   if ($(this).text().length === 15 && event.keyCode != 8) {
     event.preventDefault();
@@ -53,6 +60,7 @@ function initialize() {
    *  --Disables custom name for the bootom anchor in
    *  the url type ahead drop down
    *  --Toolbar buttons defined
+   *  — Code button shows html code behind each template
    *
    */
   tinymce.init({
@@ -76,7 +84,7 @@ function initialize() {
   let dataTable = document.querySelector('#data-table');
   dataTable.addEventListener('click', handleClick, false);
   dataTable.addEventListener('drop', handleDrop, false);
-  var userType = document.getElementById('userType').innerHTML;
+  var userType = document.getElementById('userType').innerHTML.trim();
   if (userType == 'admin') {
     var totalErrorCount = parseInt(document.getElementById('totalErrorCount').innerHTML);
     var errorCount = document.getElementById('errorCount');
@@ -119,9 +127,12 @@ $('#confirmRemoveDialog').on('hidden.bs.modal', function() {
  * Looks for # in URL and loads value into search-bar
  */
 var hashParams = window.location.hash.substr(1).split('&'); // substr(1) to remove the `#`
-for (var i = 0; i < hashParams.length; i++) {
-  var p = hashParams[i].split('=');
-  document.getElementById('search-bar').value = decodeURIComponent(p[0]);;
+if (hashParams[0] == "") {} else {
+  for (var i = 0; i < hashParams.length; i++) {
+    var p = hashParams[i].split('=');
+    document.getElementById('search-bar').value = decodeURIComponent(p[0]);;
+  }
+
 }
 
 /**
@@ -157,7 +168,36 @@ $('#manageTemplates').on('hidden.bs.modal', function() {
   let updateBtn = document.getElementById('submitBtn');
   updateBtn.innerHTML = 'Submit';
   updateBtn.onclick = '';
-})
+});
+
+
+$('#snippetsView').on('hidden.bs.modal', function() {
+  for (var i = 0; i < 4; i++) {
+    // Grab current blank fields
+    var bodyFieldTemp = document.getElementById('version' + i + 'Snippet');
+    var versionTab = document.getElementById('version' + i + 'SnippetTitle');
+    //Get current version info
+    bodyFieldTemp.innerHTML = "";
+    versionTab.innerHTML = "";
+  }
+  for (var k = 0; k < 4; k++) {
+    if ($('#originalSnippetTab' + k).hasClass('active')) {
+      $('#originalSnippetTab' + k).attr('class', '');
+    }
+  }
+  $('#originalSnippetTab').attr('class', 'active');
+  for (var m = 0; m < 4; m++) {
+    if ($('#version' + m + 'Snippet').hasClass('active') && $('#version' + m + 'Snippet').hasClass('in')) {
+      $('#version' + m + 'Snippet').attr('class', 'tab-pane fade');
+    }
+  }
+  $('#versionOriginalSnippetPill').attr('class', 'tab-pane fade in active');
+
+  // BUG: some issue with how the body loads. with classes fade and in.
+});
+
+
+
 /* Prevents colors from sticking on button operations when clicked */
 $('.btn').mouseup(function() {
   $(this).blur();
@@ -202,97 +242,126 @@ function setTemplateId() {
  * @return {[type]}   [description]
  */
 function handleClick(e) {
-  if (e.target.id != 'data-table') {
+  if (e.target.id != 'data-table' && e.target.parentNode != null) {
     var obj = buildObj(e);
-  }
-  var versionsRegex = RegExp(/versionDescription.*/);
-
-  /**
-   * If templateBody or copyFull is clicked, then execute the following:
-   * 1. P tags are removed and replaced with breaks. Divs are also replaced with breaks. TODO: Need better solution here.
-   * 2. Alert user that the template has been copied.
-   * 3. Copy by sending body to buildEmail(). Greeting, closing, signature, and othe components added. Then full e-mail is copied to the clipboard.
-   * 4. Updates the ranking of this template.
-   */
-  if (e.target !== e.currentTarget && (obj.eventId == 'templateBody' || obj.eventId == 'copyFull')) {
-    copiedAlert(e);
-    copy(buildEmail(obj.body, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
-    updateRanking(obj.templateId, obj.eventId);
+    var versionsRegex = RegExp(/versionDescription.*/);
     /**
-     * If copyPortion is clicked, then execute the following:
-     * 1. Alert user that the template has been copied.
-     * 3. Copy the body of the template using copy().
+     * If templateBody or copyFull is clicked, then execute the following:
+     * 1. P tags are removed and replaced with breaks. Divs are also replaced with breaks. TODO: Need better solution here.
+     * 2. Alert user that the template has been copied.
+     * 3. Copy by sending body to buildEmail(). Greeting, closing, signature, and othe components added. Then full e-mail is copied to the clipboard.
      * 4. Updates the ranking of this template.
      */
-  } else if (e.target !== e.currentTarget && obj.eventId == 'reply') {
-    copiedAlert(e);
-    copy(buildEmail(obj.body, obj.program, obj.replyEmail, "Thank you for your reply.", obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
-    updateRanking(obj.templateId, obj.eventId);
+    if (e.target !== e.currentTarget && (obj.eventId == 'templateBody' || obj.eventId == 'copyFull')) {
+      copiedAlert(e);
+      copy(buildEmail(obj.body, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
+      updateRanking(obj.templateId, obj.eventId);
+      /**
+       * If copyPortion is clicked, then execute the following:
+       * 1. Alert user that the template has been copied.
+       * 3. Copy the body of the template using copy().
+       * 4. Updates the ranking of this template.
+       */
+    } else if (e.target !== e.currentTarget && obj.eventId == 'reply') {
+      copiedAlert(e);
+      copy(buildEmail(obj.body, obj.program, obj.replyEmail, "Thank you for your reply.", obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
+      updateRanking(obj.templateId, obj.eventId);
 
-  } else if (e.target !== e.currentTarget && obj.eventId == 'share') {
-    copy("http://scruffy.quiacorp.com:3000/templates" + "#" + obj.templateId);
+    } else if (e.target !== e.currentTarget && obj.eventId == 'share') {
+      copy("http://scruffy.quiacorp.com:3000/templates" + "#" + obj.templateId);
 
-  } else if (e.target !== e.currentTarget && obj.eventId == 'copyPortion') {
-    copiedAlert(e);
-    copy(obj.body);
-    updateRanking(obj.templateId, obj.eventId);
+    } else if (e.target !== e.currentTarget && obj.eventId == 'copyPortion') {
+      copiedAlert(e);
+      copy(obj.body);
+      updateRanking(obj.templateId, obj.eventId);
 
-    /* If trash (or remove) button was clicked */
-  } else if (e.target !== e.currentTarget && obj.eventId == 'removeConfirm') {
-    // Grab elements to load template name and id into these elements
-    let confirmRemoveName = document.getElementById('confirmRemoveName');
-    let confirmRemoveBtn = document.getElementById('confirmRemoveBtn');
-    // Grab name of tempalte to be removed
-    let nameToRemove = document.getElementById(obj.templateId).querySelector('#templateName');
-    // Set to display name of item to be removed, set btn id to template id
-    confirmRemoveName.innerHTML = nameToRemove.innerHTML;
-    confirmRemoveBtn.id = obj.templateId;
+      /* If trash (or remove) button was clicked */
+    } else if (e.target !== e.currentTarget && obj.eventId == 'removeConfirm') {
+      // Grab elements to load template name and id into these elements
+      let confirmRemoveName = document.getElementById('confirmRemoveName');
+      let confirmRemoveBtn = document.getElementById('confirmRemoveBtn');
+      // Grab name of tempalte to be removed
+      let nameToRemove = document.getElementById(obj.templateId).querySelector('#templateName');
+      // Set to display name of item to be removed, set btn id to template id
+      confirmRemoveName.innerHTML = nameToRemove.innerHTML.trim();
+      confirmRemoveBtn.id = obj.templateId;
 
-    // Display the confirmation box
-    $('#confirmRemoveDialog').modal('show');
+      // Display the confirmation box
+      $('#confirmRemoveDialog').modal('show');
 
-    /* If snippets icon was clicked */
-  } else if (e.target !== e.currentTarget && obj.eventId == 'snippets') {
-    // Get the template body and the body field element. Display just the tempalte body.
-    let templateBody = document.getElementById(obj.templateId).querySelector('#templateBody');
-    let bodyField = document.getElementById('snippetsBody');
-    bodyField.innerHTML = templateBody.innerHTML;
-    $('#snippetsView').modal('show');
+      /* If snippets icon was clicked */
+    } else if (e.target !== e.currentTarget && obj.eventId == 'snippets') {
+      // Get the template body and the body field element. Display just the tempalte body.
+      $('#snippetsView').modal('show');
+      loadSnippetsModal(obj);
 
-    // Display the modal
-    updateRanking(obj.templateId, 'copyPortion');
+      // Display the modal
+      updateRanking(obj.templateId, 'copyPortion');
 
-    /* If a version was clicked for copying */
-  } else if (e.target !== e.currentTarget && versionsRegex.test(obj.eventId)) {
-    let versionsBody = document.getElementById(obj.templateId).querySelector('#versionBody' + (obj.eventId).substr(obj.eventId.length - 1));
-    copy(buildEmail(versionsBody.innerHTML, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
-    copiedAlert(e);
-    updateRanking(obj.templateId, 'copyFull');
-    let versionsElementToHide = document.getElementById(obj.templateId).querySelector('.versions');
-    versionsDisplay(versionsElementToHide);
-    /* If versions button was clicked for displaying */
-  } else if (e.target !== e.currentTarget && obj.eventId == 'versions') {
-    let versionsElement = document.getElementById(obj.templateId).querySelector('.versions');
-    versionsDisplay(versionsElement);
-    /* If edit button was clicked */
-  } else if (e.target !== e.currentTarget && obj.eventId == 'edit') {
-    //  Show manage teampltes modal
-    $('#manageTemplates').modal('show');
-    // Load all elements into the modal
-    editTemplate(obj.templateId);
-  } else {
-    e.stopPropagation();
+      /* If a version was clicked for copying */
+    } else if (e.target !== e.currentTarget && versionsRegex.test(obj.eventId)) {
+      let versionsBody = document.getElementById(obj.templateId).querySelector('#versionBody' + (obj.eventId).substr(obj.eventId.length - 1));
+      copy(buildEmail(versionsBody.innerHTML, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
+      copiedAlert(e);
+      updateRanking(obj.templateId, 'copyFull');
+      let versionsElementToHide = document.getElementById(obj.templateId).querySelector('.versions');
+      versionsDisplay(versionsElementToHide);
+      /* If quote  button was clicked for displaying */
+    } else if (e.target !== e.currentTarget && obj.eventId == 'quote') {
+      if (buildingQuote == true) {
+        resetQuote(currentQuoteTemplateId);
+      } else {
+
+        buildQuote(e);
+      }
+      /* If versions button was clicked for displaying */
+    } else if (e.target !== e.currentTarget && obj.eventId == 'versions') {
+      let versionsElement = document.getElementById(obj.templateId).querySelector('.versions');
+      versionsDisplay(versionsElement);
+      /* If edit button was clicked */
+    } else if (e.target !== e.currentTarget && obj.eventId == 'edit') {
+      //  Show manage teampltes modal
+      $('#manageTemplates').modal('show');
+      // Load all elements into the modal
+      editTemplate(obj.templateId);
+    } else {
+      e.stopPropagation();
+    }
   }
+}
+
+function loadSnippetsModal(obj) {
+  // Grab snippets fields
+  let bodyField = document.getElementById('snippetsBody');
+
+  // Grab this templates information
+  let templateBody = document.getElementById(obj.templateId).querySelector('#templateBody');
+  if (document.getElementById(obj.templateId).querySelector('#versionDescription0') != null) {
+    // Grab version body and insert into snippets modal field
+    for (var i = 0; i < 4; i++) {
+
+      // Grab current blank fields
+      var bodyFieldTemp = document.getElementById('version' + i + 'Snippet');
+      var versionTab = document.getElementById('version' + i + 'SnippetTitle');
+
+      //Get current version info
+      var versionBodyTemp = document.getElementById(obj.templateId).querySelector('#versionBody' + i);
+      var versionDescription = document.getElementById(obj.templateId).querySelector('#versionDescription' + i);
+      bodyFieldTemp.innerHTML = versionBodyTemp.innerHTML.trim();
+      versionTab.innerHTML = versionDescription.innerHTML.trim();
+    }
+  }
+  // Set all form fields equal to this templates fields
+  bodyField.innerHTML = templateBody.innerHTML.trim();
+
 }
 
 function copiedAlert(e) {
   let templateObjId = $(e.target).closest(`li[class^='template']`).attr('id');
   let templateObj = document.getElementById(templateObjId);
-  console.log(templateObj);
   $('#' + templateObjId).addClass('templateClicked');
   setTimeout(function() {
     $('#' + templateObjId).removeClass('templateClicked');
-    console.log('firing');
   }, 500);
 }
 
@@ -320,11 +389,12 @@ function versionsDisplay(versionsElement) {
   }
 }
 
+
 function buildObj(e) {
   var obj = new Object();
   let templateId = $(e.target).closest(`li[class^='template']`).attr('id');
   obj.templateId = $(e.target).closest(`li[class^='template']`).attr('id');
-  obj.userTeam = document.getElementById('userTeam').innerHTML;
+  obj.userTeam = document.getElementById('userTeam').innerHTML.trim();
   obj.eventId = $(e.target).closest('div').attr('id');
   obj.template = $(e.target).closest(`li[class^='template']`);
   obj.program = $(`#` + templateId + ` #templateProgram`).text().trim();
@@ -332,7 +402,7 @@ function buildObj(e) {
   obj.replyEmail = $(`#` + templateId + ` #templateReplyEmail`).text();
   obj.greeting = $(e.target).closest(`.template`).find(`#templateGreeting`).text();
   obj.closing = $(e.target).closest(`.template`).find(`#templateClosing`).text();
-  obj.body = document.getElementById(obj.templateId).querySelector('#templateBody').innerHTML;
+  obj.body = document.getElementById(obj.templateId).querySelector('#templateBody').innerHTML.trim();
   return obj;
 }
 
@@ -363,7 +433,25 @@ function copy(html) {
   document.body.removeChild(container)
 }
 
+
+function trimElement(element) {
+  if (typeof element != 'undefined') {
+    return element.trim();
+  }
+  return "";
+}
+
 function buildEmail(body, program, replyEmail, greeting, closing, templateId, userTeam, folder, eventId) {
+  body = trimElement(body);
+  program = trimElement(program);
+  replyEmail = trimElement(replyEmail);
+  greeting = trimElement(greeting);
+  closing = trimElement(closing);
+  templateId = trimElement(templateId);
+  userTeam = trimElement(userTeam);
+  folder = trimElement(folder);
+  eventId = trimElement(eventId);
+
   /**
    * Grabs users first name from their account menu (set by Google Profile).
    * Sets e-mail, program, phone number, website, greeting,
@@ -385,7 +473,7 @@ function buildEmail(body, program, replyEmail, greeting, closing, templateId, us
     } else {
       closing = `</br>${closing}`;
     }
-    var valediction = `Sincerely,</br>`;
+    var valediction = ``;
     var name = `<b>Customer Support Engineer</b></br></br>`;
     var email = `E-mail: ${replyEmail} </br>`;
     var phone = 'Phone: 984-229-9444</br>';
@@ -419,14 +507,14 @@ function buildEmail(body, program, replyEmail, greeting, closing, templateId, us
   var opening = '';
   if (greeting == 'default' && closing == 'default') {
     greeting = 'Thank you for reaching out to us.';
-    opening = `Dear NAME, <br/><br/> ${greeting}`;
+    opening = `Hi NAME, <br/><br/> ${greeting}`;
     closing = 'Please let me know if you have any questions and I will be happy to help!</br></br>';
     body = `</br></br>${body}</br></br>`;
   } else if ((greeting == 'none' || greeting == ' ' || greeting == '') && (closing != '') && (templateId != `X00_1_Blank_Signature_only`)) {
     greeting = '';
     closing = closing + `</br></br>`;
     body = `</br></br>${body}</br></br>`;
-    opening = `Dear NAME, ${greeting}`;
+    opening = `Hi NAME, ${greeting}`;
   } else if (templateId == `X00_1_Blank_Signature_only`) {
     return getProgramSignature(program, replyEmail, userTeam, folder);
 
@@ -434,11 +522,11 @@ function buildEmail(body, program, replyEmail, greeting, closing, templateId, us
     greeting = '';
     closing = '';
     body = `</br></br>${body}</br></br>`;
-    opening = `Dear NAME, ${greeting}`;
+    opening = `Hi NAME, ${greeting}`;
   } else {
     body = `</br></br>${body}</br></br>`;
     closing = `${closing}</br></br>`;
-    opening = `Dear NAME, <br/><br/> ${greeting}`;
+    opening = `Hi NAME, <br/><br/> ${greeting}`;
   }
   var signature = getProgramSignature(program, replyEmail, userTeam, folder);
   if (eventId == 'reply') {
@@ -451,14 +539,18 @@ function buildEmail(body, program, replyEmail, greeting, closing, templateId, us
  * Builds signature. Uses userTeam and template program to determine signature
  * @param  {[type]} program    Name of the program associated with the template
  * @param  {[type]} replyEmail The reply e-mail that will be included in the signature
- * @return {String}            Return the complete signature
+ * @return {String} Return the complete signature
  */
 function getProgramSignature(program, replyEmail, userTeam, folder) {
-  var user = document.getElementById('userFirstName').innerHTML;
-  var userEmail = document.getElementById('userEmail').innerHTML;
+  program = program.trim();
+  replyEmail = replyEmail.trim();
+  userTeam = userTeam.trim();
+  folder = folder.trim();
+  var user = document.getElementById('userFirstName').innerHTML.trim();
+  var userEmail = document.getElementById('userEmail').innerHTML.trim();
 
   if ((userTeam == 'techSupport' || userTeam == 'techSupportCSE') && (program == 'IXL' || program == 'IXLT')) {
-    var valediction = `Sincerely,</br>`;
+    var valediction = ``;
     var name = `<b>${user}</b></br>`;
     var department = 'IXL Support</br></br>';
     var email = `E-mail: ${replyEmail}</br>`;
@@ -469,12 +561,12 @@ function getProgramSignature(program, replyEmail, userTeam, folder) {
     return `${valediction} ${name} ${department} ${email} ${phone} ${website} ${logo}`;
 
   } else if ((userTeam == 'techSupport' || userTeam == 'techSupportCSE') && (program == 'QW' || program == 'QB' || program == 'QBT')) {
-    var valediction = `Sincerely,</br>`;
+    var valediction = ``;
     var name = `${user}</br>Quia Support</br>`;
     return `${valediction} ${name} ${replyEmail}`;
 
   } else if (userTeam == 'family') {
-    var valediction = `Sincerely,</br></br>`;
+    var valediction = ``;
     var name = `<b>${user}</b></br>`;
     var department = 'IXL Membership Specialist</br></br>';
     var email = `E-mail: support@ixl.com</br>`;
@@ -484,7 +576,7 @@ function getProgramSignature(program, replyEmail, userTeam, folder) {
     var phone = 'Phone: 855.255.8800</br>';
 
   } else if (userTeam == 'techSupportCSE') {
-    var valediction = `Sincerely,</br>`;
+    var valediction = ``;
     var name = `<b>${user}</b></br>`;
     var department = 'Customer Support Engineer</br></br>';
     var email = `E-mail: ${userEmail} </br>`;
@@ -601,6 +693,7 @@ function editTemplate(templateId) {
   let closingField = document.getElementById('closing');
   let replyEmailField = document.getElementById('replyEmail');
 
+
   // Grab this templates information
   let name = document.getElementById(templateId).querySelector('#templateName');
   let body = document.getElementById(templateId).querySelector('#templateBody');
@@ -623,8 +716,6 @@ function editTemplate(templateId) {
       versionTab.innerHTML = versionDescription.innerHTML.trim();
     }
   }
-
-
   let today = new Date().toDateInputValue();
   // Set all form fields equal to this templates fields
   idField.value = templateId;
@@ -632,14 +723,13 @@ function editTemplate(templateId) {
   bodyField.innerHTML = body.innerHTML.trim();
   categoryField.value = category.textContent.trim();
   programField.value = program.textContent.trim();
-  tagsField.value = tags.textContent;
-  teamField.value = team.textContent;
-  publicStatusField.value = publicStatus.textContent;
-  vettedField.value = vetted.textContent;
-
-  greetingField.value = greeting.textContent;
-  closingField.value = closing.textContent;
-  replyEmailField.value = replyEmail.textContent;
+  tagsField.value = tags.textContent.trim();
+  teamField.value = team.textContent.trim();
+  publicStatusField.value = publicStatus.textContent.trim();
+  vettedField.value = vetted.textContent.trim();
+  greetingField.value = greeting.textContent.trim();
+  closingField.value = closing.textContent.trim();
+  replyEmailField.value = replyEmail.textContent.trim();
   // Removes forms method and action, form handled by update method (below)
   form.method = '';
   form.action = '';
@@ -656,7 +746,7 @@ function update(e) {
   let id = document.querySelector('#id').value;
   let updatedDate = document.querySelector('#updatedDate').value;
   let name = document.querySelector('#name').value;
-  let body = tinymce.get('body').getBody().innerHTML;
+  let body = tinymce.get('body').getBody().innerHTML.trim();
   let category = document.querySelector('#category').value;
   let program = document.querySelector('#program').value;
   let tags = document.querySelector('#tags').value;
@@ -670,8 +760,8 @@ function update(e) {
   for (var i = 0; i < 4; i++) {
     var iFrame = document.querySelector('#version' + i + 'Field_ifr');
     var iFrameContent = iFrame.contentDocument || iframe.contentWindow.document;
-    var versionTabName = document.getElementById('version' + i + 'Title').innerHTML;
-    var versionText = iFrameContent.body.innerHTML;
+    var versionTabName = document.getElementById('version' + i + 'Title').innerHTML.trim();
+    var versionText = iFrameContent.body.innerHTML.trim();
     versionTextFormatted = format(versionText);
     versions.push([versionTabName.trim(), versionTextFormatted.trim()]);
   }
@@ -793,26 +883,353 @@ function rank() {
   }
 }
 
+
+
+
+
 /**
- * Updates search logs by recording searches where no templates were found
- * @param  {[type]} userSearch An array of the users search content
-function updateLogs(userSearch) {
-  let userEmail = document.getElementById('userEmail').innerHTML.toLowerCase();
-  fetch('updateLogs', {
+for (var m = 0; m < objectsArray.length; m++) {
+if (typeof quoteArray[objectsArray[m].objectName] != 'undefined') {
+quoteObj.body = quoteObj.body.replace(new RegExp("\\b" + objectsArray[m].objectName.toUpperCase() + "\\b"), quoteArray[objectsArray[m].objectName]);
+}
+}
+ *
+ */
+
+
+function resetQuote(currentQuoteTemplateId) {
+  quoteArray.countryCode = null;
+  quoteArray.subjectQuantity = null;
+  quoteArray.subjectQuantityName = null;
+  quoteArray.numberLicenses = null;
+  quoteArray.spanishCost = null;
+  quoteArray.rebateEndDate = null;
+  quoteArray.rebateName = null;
+  quoteArray.cost = null;
+  quoteArray.type = null;
+  tempArray = [];
+  elementsToClear = ["accountTypes", "countries", "subjects", "licenses"];
+  for (var i = 0; i < elementsToClear.length; i++) {
+    var element = document.getElementById(currentQuoteTemplateId).querySelector("." + elementsToClear[i]);
+    $(element).children().remove();
+    element.style.display = 'none';
+  }
+  buildingQuote = false;
+  spanishClicked = false;
+  currentQuoteTemplateId = "";
+}
+
+
+function buildQuote(event) {
+  // Gets id of template by looking for closest li element with class name `template`
+  buildingQuote = true;
+  switch (event.target.id) {
+    case "quote":
+      console.log(event.target.innerHTML);
+      break;
+    case "type":
+      // 2nd Click
+      // User clicked on Type (site or bulk) element
+      // Eliminate from TEMP array (keep only ones that match site or bulk)
+      drillDown(event.target.id, event);
+      tempArray = tempArray.sort(function(a, b) {
+        return b.countryCode.localeCompare(a.countryCode);
+      });
+      // Store type choice in quote array
+      quoteArray.type = event.target.innerHTML.trim();
+      // Hide site or bulk options for user (change display to `none`)
+      removeClickedElements("accountTypes", currentQuoteTemplateId);
+      // Display only country codes found in temp array
+      displayQuoteElements("countryCode", "countries", currentQuoteTemplateId);
+      displayInstructions("selectCountry", "countries", currentQuoteTemplateId, "Select the country...");
+      // Create array to check for duplicates
+
+      break;
+    case "countryCode":
+      // 3rd Click
+      // User clicked on countryCode (UK, US, FR, JP) element
+      // Eliminate from temp array (keep only ones that match countryCode)
+      drillDown(event.target.id, event);
+      // Store countryCode choice in QUOTE array
+      quoteArray.countryCode = event.target.innerHTML.trim();
+      // Hide countryCode options for user (change display to `none`)
+      removeClickedElements("countries", currentQuoteTemplateId);
+      // Display only subjects found in temp array (including spanish `add` option)
+      displayQuoteElements("subjectQuantity", "subjects", currentQuoteTemplateId);
+      displayInstructions("selectSubjects", "subjects", currentQuoteTemplateId, "Select the number of subjects...");
+      if (quoteArray.countryCode == "US") {
+        displaySpanishOption("addSpanish", "subjects", currentQuoteTemplateId, "Spanish?");
+
+      }
+      break;
+    case "subjectQuantity":
+      // 4th Click
+      // User clicked on subjectQuantity (1,2,3, etc.) element. Might have selected add-on Spanish
+      // Eliminate from temp array (keep only ones that match subject quantity)
+      drillDown(event.target.id, event);
+      // Store subjectQuantity choice in QUOTE array
+      quoteArray.subjectQuantity = event.target.innerHTML.trim();
+      // Hide subjectQuantity options for user (change display to `none`)
+      removeClickedElements("subjects", currentQuoteTemplateId);
+      // Display only licenses found in temp array
+      displayQuoteElements("numberLicenses", "licenses", currentQuoteTemplateId);
+      displayInstructions("selectLicenses", "licenses", currentQuoteTemplateId, "Select the number of licenses...");
+      break;
+    case "numberLicenses":
+      // 5th Click
+      // User clicked on number of licenses (25, 30, 40, etc.) element.
+      // Eliminate from temp array (keep only ones that match license number)
+      drillDown(event.target.id, event);
+      // Store subjectQuantity choice in QUOTE array
+
+
+      quoteArray.subjectQuantityName = tempArray[0].subjectQuantityName;
+      if (spanishClicked) {
+        var tempCost = parseInt(tempArray[0].cost) + parseInt(tempArray[0].spanishCost);
+        tempArray[0].cost = tempCost;
+        if (quoteArray.subjectQuantity == "1") {
+          quoteArray.subjectQuantityName = "dual-subject";
+        } else if (quoteArray.subjectQuantity == "2") {
+          quoteArray.subjectQuantityName = "3-subject";
+        } else if (quoteArray.subjectQuantity == "3") {
+          quoteArray.subjectQuantityName = "4-subject";
+        } else if (quoteArray.subjectQuantity == "4") {
+          quoteArray.subjectQuantityName = "5-subject";
+        } else {
+          console.log('nothing');
+        }
+      }
+
+      quoteArray.numberLicenses = event.target.innerHTML.trim();
+      if (tempArray[0].currencySymbol == '$' && tempArray[0].countryCode != "US") {
+        //if currency is from a non-US country, then include currency Symbol with cost.
+        quoteArray.cost = tempArray[0].currencySymbol + tempArray[0].cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " " + tempArray[0].currencyCode;
+
+      } else {
+        quoteArray.cost = tempArray[0].currencySymbol + tempArray[0].cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+      quoteArray.spanishCost = tempArray[0].spanishCost;
+      quoteArray.rebateEndDate = tempArray[0].rebateEndDate;
+      quoteArray.rebateName = tempArray[0].rebateName;
+      copyQuote(currentQuoteTemplateId);
+      // Hide numberLicenses options for user (change display to `none`)
+      removeClickedElements("licenses", currentQuoteTemplateId);
+      handleClick(event);
+      resetQuote(currentQuoteTemplateId);
+      break;
+    case "addSpanish":
+      spanishClicked = true;
+      removeClickedElements("subjects", currentQuoteTemplateId);
+      // Display only licenses found in temp array
+      displayQuoteElements("subjectQuantity", "subjects", currentQuoteTemplateId);
+      displayInstructions("selectSubjects", "subjects", currentQuoteTemplateId, "Select the number of additional subjects...");
+      break;
+    default:
+      // First click
+      currentQuoteTemplateId = $(event.target).closest(`li[class^='template']`).attr(`id`);
+      // Store all site/bulk objects in TEMP array
+      convertedArray = JSON.parse(JSON.stringify(licensesArray));
+      for (var i = 0; i < Object.keys(convertedArray).length; i++) {
+        tempArray.push(convertedArray[i]);
+      }
+      tempArray = tempArray.sort(function(a, b) {
+        return a.type.localeCompare(b.type);
+      });
+      // Create QUOTE array
+      displayQuoteElements("type", "accountTypes", currentQuoteTemplateId);
+  }
+}
+
+function displayQuoteElements(key, parentNodeClassName, currentQuoteTemplateId) {
+  var elementsShowing = [];
+  // create and display elements
+  for (var j = 0; j < tempArray.length; j++) {
+    // Check to see if the element has already been shown
+    if (!elementsShowing.includes(tempArray[j][key])) {
+      createElement(key, parentNodeClassName, currentQuoteTemplateId, tempArray[j][key]);
+      elementsShowing.push(tempArray[j][key]);
+    }
+  }
+}
+
+function drillDown(key, event) {
+  var filteredArray = [];
+  for (var k = 0; k < tempArray.length; k++) {
+    if (tempArray[k][key] == event.target.innerHTML) {
+      filteredArray.push(tempArray[k]);
+    }
+  }
+  tempArray = filteredArray;
+}
+
+function createElement(elementId, parentNodeClassName, currentQuoteTemplateId, innerHTML) {
+  var parentNode = document.getElementById(currentQuoteTemplateId).querySelector("." + parentNodeClassName);
+  var div = document.createElement("DIV");
+  div.className = elementId;
+  div.id = elementId;
+  div.innerHTML = innerHTML;
+  div.setAttribute('onclick', 'buildQuote(event)');
+  parentNode.style.display = 'grid';
+  parentNode.appendChild(div);
+}
+
+function displayInstructions(elementId, parentNodeClassName, currentQuoteTemplateId, innerHTML) {
+  var parentNode = document.getElementById(currentQuoteTemplateId).querySelector("." + parentNodeClassName);
+  var span = document.createElement("SPAN");
+  span.className = "instructions";
+  span.id = elementId;
+  span.innerHTML = innerHTML;
+  parentNode.appendChild(span);
+}
+
+function displaySpanishOption(elementId, parentNodeClassName, currentQuoteTemplateId, innerHTML) {
+  var parentNode = document.getElementById(currentQuoteTemplateId).querySelector("." + parentNodeClassName);
+  var div = document.createElement("DIV");
+  div.className = elementId;
+  div.id = elementId;
+  div.setAttribute('onclick', 'buildQuote(event)');
+  div.innerHTML = innerHTML;
+  parentNode.appendChild(div);
+}
+
+
+function removeClickedElements(className, currentQuoteTemplateId) {
+  var parentNode = document.getElementById(currentQuoteTemplateId).querySelector("." + className);
+  $(parentNode).children().remove();
+  parentNode.style.display = "none";
+}
+
+
+function copyQuote(currentQuoteTemplateId) {
+  var quoteObj = new Object();
+  quoteObj.program = $(`#` + currentQuoteTemplateId + ` #templateProgram`).text().trim();
+  quoteObj.greeting = $(`#` + currentQuoteTemplateId).find(`#templateGreeting`).text();
+  quoteObj.closing = $(`#` + currentQuoteTemplateId).find(`#templateClosing`).text();
+  quoteObj.userTeam = document.getElementById('userTeam').innerHTML.trim();
+  quoteObj.body = document.getElementById(currentQuoteTemplateId).querySelector('#templateBody').innerHTML.trim();
+  for (var m = 0; m < objectsArray.length; m++) {
+    if (typeof quoteArray[objectsArray[m].objectName] != 'undefined') {
+      quoteObj.body = quoteObj.body.replace(new RegExp(`\\[${objectsArray[m].objectName.toUpperCase()}\\]`, "gm"), quoteArray[objectsArray[m].objectName]);
+    }
+  }
+  if (((quoteArray.countryCode == "US") && (spanishClicked || quoteArray.subjectQuantity == 1)) || (quoteArray.countryCode != "US")) {
+    quoteObj.body = quoteObj.body.replace(new RegExp(`\\[SPANISHNOTE\\]`, "gm"), ``);
+    quoteObj.body = quoteObj.body.replace(new RegExp(`\\[SPANISHASTERISK\\]`, "gm"), ``);
+  } else {
+    quoteObj.body = quoteObj.body.replace(new RegExp(`\\[SPANISHNOTE\\]`, "gm"), `Pricing does not include Spanish. `);
+    quoteObj.body = quoteObj.body.replace(new RegExp(`\\[SPANISHASTERISK\\]`, "gm"), `*`);
+  }
+  copy(buildEmail(quoteObj.body, quoteObj.program, "None", quoteObj.greeting, quoteObj.closing, currentQuoteTemplateId, quoteObj.userTeam.trim(), "None", "copyFull"));
+}
+
+function loadLicenseFields(event) {
+  licenseId = event.target.id.substring(1);
+  databaseId = licenseId;
+  $('div', '#' + licenseId).each(function() {
+    if (typeof $(this).attr('id') != 'undefined') {
+      var elementValue = $(event.target).closest(`#` + licenseId).find(`#${$(this).attr('id')}`).text().trim();
+      if ($(this).attr('id') == "cost" || $(this).attr('id') == "rebateCost" || $(this).attr('id') == "spanishCost") {
+        var currencySymbol = $(event.target).closest(`#` + licenseId).find(`#currencySymbol`).text().trim();
+        elementValue = elementValue.replace(currencySymbol, "").trim();
+      }
+      var elementField = document.getElementById(`editLicenseFields`).querySelector(`#${$(this).attr('id')}`);
+      elementField.value = elementValue;
+      elementIds.push($(this).attr('id'));
+    }
+  });
+}
+
+
+function addLicense(event) {
+  $('#addLicense').modal('hide');
+  var addLicenseValues = {};
+  var addLicenseElementIds = ["type", "countryCode", "subjectQuantity", "numberLicenses", "cost", "rebateId", "rebateCost", "spanishCost"]
+  for (var k = 0; k < addLicenseElementIds.length; k++) {
+    if (addLicenseElementIds[k] == 'countryCode' || addLicenseElementIds[k] == 'rebateId' || addLicenseElementIds[k] == 'type') {
+      var e = document.getElementById(`addLicenseFields`).querySelector('#' + addLicenseElementIds[k]);
+      addLicenseValues[addLicenseElementIds[k]] = e.options[e.selectedIndex].text.trim();
+    } else {
+      addLicenseValues[addLicenseElementIds[k]] = document.getElementById(`addLicenseFields`).querySelector('#' + addLicenseElementIds[k]).value.trim();
+    }
+  }
+  fetch('addLicense', {
     method: 'put',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      'userEmail': userEmail,
-      'userSearch': userSearch
+      'id': 'DEFAULT',
+      'cost': addLicenseValues.cost.trim(),
+      'countryCode': addLicenseValues.countryCode.trim(),
+      'type': addLicenseValues.type.trim(),
+      'spanishCost': addLicenseValues.spanishCost.trim(),
+      'subjectQuantity': addLicenseValues.subjectQuantity.trim(),
+      'numberLicenses': addLicenseValues.numberLicenses.trim(),
+      'rebateCost': addLicenseValues.rebateCost.trim(),
+      'rebateId': addLicenseValues.rebateId.trim()
+    })
+  }).then(res => {
+    if (res.ok) return res.json()
+  }).then(data => {})
+  document.location.reload();
+}
+
+
+function updateLicense(event) {
+  $('#manageLicenses').modal('hide');
+  for (var k = 0; k < elementIds.length; k++) {
+    if (elementIds[k] == 'countryCode' || elementIds[k] == 'rebateId') {
+      licenseValuesObject[elementIds[k]] = $("#" + elementIds[k] + " :selected").text().trim();
+    } else {
+      licenseValuesObject[elementIds[k]] = document.getElementById(`editLicenseFields`).querySelector('#' + elementIds[k]).value.trim();
+    }
+  }
+  document.location.reload();
+  fetch('updateLicense', {
+    method: 'put',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      'id': databaseId.trim(),
+      'cost': licenseValuesObject.cost.trim(),
+      'countryCode': licenseValuesObject.countryCode.trim(),
+      'type': licenseValuesObject.type.trim(),
+      'spanishCost': licenseValuesObject.spanishCost.trim(),
+      'subjectQuantity': licenseValuesObject.subjectQuantity.trim(),
+      'numberLicenses': licenseValuesObject.numberLicenses.trim(),
+      'rebateCost': licenseValuesObject.rebateCost.trim(),
+      'rebateId': licenseValuesObject.rebateId.trim()
+
+    })
+  }).then(res => {
+    if (res.ok) {
+      console.log(res.json());
+
+    }
+  }).then(data => {})
+}
+
+function deleteLicense() {
+  $('#manageLicenses').modal('hide');
+  document.location.reload();
+  fetch('deleteLicense', {
+    method: 'put',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      'id': databaseId
     })
   }).then(res => {
     if (res.ok) return res.json()
   }).then(data => {})
 }
-*/
 
-
+function removeLicenseFromDOM(id) {
+  console.log(`[id^="${id}"]`);
+  var licenseToRemove = $(`[id^="${id}"]`);
+  licenseToRemove.remove();
+}
 
 initialize()
