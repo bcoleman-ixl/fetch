@@ -245,7 +245,7 @@ h5 {
 }
 
 .templateClicked {
-  border: 1px solid var(--greenAltLight);
+  border: 1.15px solid var(--greenAltLight);
 }
 
 .hide {
