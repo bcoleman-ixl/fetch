@@ -5,16 +5,16 @@
   <meta charset='utf-8'>
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
   <link rel='stylesheet' href='/styles.css'>
-  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js" integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe" crossorigin="anonymous"></script>
   <!-- Bootstrap minified CSS -->
   <link rel='stylesheet' href='bootstrap.min.css'>
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" integrity="sha384-kW+oWsYx3YpxvjtZjFXqazFpA7UP/MbiY4jvs+RWZo2+N94PFZ36T6TFkc9O3qoB" crossorigin="anonymous"></script>
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Oleo+Script|Roboto" rel="stylesheet">
   <% if(user.email == 'mjenkins@ixl.com'){ %>
-    <title>CS3K</title>
-    <% } else {%>
-      <title>Fetch</title>
-      <% }%>
+  <title>CS3K</title>
+  <% } else { %>
+  <title>Fetch</title>
+  <% }%>
 </head>
 
 <body>
@@ -22,51 +22,74 @@
   </div>
   <!-- Manage templates modal -->
   <%- include include/manageTemplatesModal %>
-    <!-- End manage templates modal -->
-    <!-- Begin confirm remove modal -->
-    <%- include include/removeModal %>
-      <!-- End confirm remove modal -->
-      <!-- Begin snippets modal -->
-      <%- include include/snippetsModal %>
-        <!-- End snippets modal -->
-        <!-- Navbar -->
-        <%- include include/navbarUser %>
-          <!-- End navbar -->
-          <!-- Header -->
-          <%- include include/header %>
-            <!-- End header -->
-            <!-- Spacing -->
-            <div class='row space'>
-              <div class='col-lg-3'></div>
-              <div class='col-lg-6'>
-                <div>
-                </div>
-              </div>
-              <div class='col-lg-3'></div>
-            </div>
-            <!-- End spacing -->
-            <!-- Search bar -->
-            <%- include include/searchBar %>
-              <!-- End search bar -->
-              <!-- Templates -->
+  <!-- End manage templates modal -->
+  <!-- Begin confirm remove modal -->
+  <%- include include/removeModal %>
+  <!-- End confirm remove modal -->
+  <!-- Begin snippets modal -->
+  <%- include include/snippetsModal %>
+  <!-- End snippets modal -->
+  <!-- Navbar -->
+  <%- include include/navbar %>
+  <!-- End navbar -->
+  <!-- Header -->
+  <%- include include/header %>
+  <!-- End header -->
+  <!-- Spacing -->
+  <div class='row space'>
+    <div class='col-lg-3'></div>
+    <div class='col-lg-6'>
+      <div>
+      </div>
+    </div>
+    <div class='col-lg-3'></div>
+  </div>
+  <!-- End spacing -->
+  <!-- Search bar -->
+  <%- include include/searchBar %>
+  <!-- End search bar -->
+  <!-- Templates -->
+  <div class="row space">
+    <!-- TODO: Work on adding loading icon here -->
+    <div class="loader" id="loader">
+      <span class="loader1"></span>
+      <span class="loader2"></span>
+      <span class="loader3"></span>
+    </div>
+    <ul id='data-table'>
+      <%- include include/templateAndLogic %>
+    </ul>
+  </div>
+  <!-- End templates -->
+  <div class="row space bottom">
+  </div>
 
-              <div class="row space">
-                <ul id='data-table' class='align'>
-                  <%- include include/templateAndLogic %>
-                </ul>
-              </div>
-
-
-              <!-- End templates -->
-              <div class="row space bottom">
-              </div>
-              <!-- Logout -->
-              <!-- End Logout -->
 </body>
 <script src='tinymce/tinymce.min.js'></script>
 <script src='jquery.min.js'></script>
 <script src='app-main.js'></script>
 <script src='search.js'></script>
 <script src='bootstrap.min.js'></script>
+<script>
+  var currencyArray = <%- JSON.stringify(currency) %>;
+  var licensesArray = <%- JSON.stringify(licenses) %>;
+  var objectsArray = <%- JSON.stringify(objects) %>;
+  var buildingQuote = false;
+  var spanishClicked = false;
+  var templateId = "";
+  var tempArray = [];
+  var quoteArray = [{
+    "countryCode": null,
+    "subjectQuantity": null,
+    "subjectQuantityName": null,
+    "numberLicenses": null,
+    "spanishCost": null,
+    "rebateEndDate": null,
+    "rebateName": null,
+    "cost": null,
+    "currencySymbol": null,
+    "type": null
+  }];
+</script>
 
 </html>
