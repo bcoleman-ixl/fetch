@@ -1489,14 +1489,14 @@ a:hover {
 
 .scruffy-ears:after {
   content: "";
-  width: 50px;
-  height: 30px;
+  width: 39px;
+  height: 18px;
   position: absolute;
   z-index: 0;
-  top: 8px;
-  left: 20px;
+  top: 14px;
+  left: 6px;
   border-radius: 150px 0 150px 0;
-  transform: rotate(-176deg);
+  transform: rotate(-220deg);
   background-color: #fee2d2;
 }
 
