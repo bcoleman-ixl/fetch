@@ -9,6 +9,7 @@ const userSchema = new Schema({
   team: String,
   programs: [String],
   type: String,
+  vettingRights: Boolean,
   email: String
 })
 
