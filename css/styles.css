@@ -783,6 +783,16 @@ h5 {
   border-radius: var(--fivePxRadius);
 }
 
+.menubar:hover .bar {
+  width: 25px;
+  height: 4px;
+  background-color: var(--blue);
+  border: 1px var(--blue) solid;
+  margin: 4px 0;
+  cursor: pointer;
+  border-radius: var(--fivePxRadius);
+}
+
 .vertsidenav {
   height: 100%;
   /* 100% Full-height */
