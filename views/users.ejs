@@ -37,37 +37,23 @@
 
           <div class="userTable">
             <% for(var m = 0; m < users.length; m++) { %>
-              <div class="userProfile">
-                <div class="row">
+              <div class="userProfileContainer">
+                <img class="image" src="<%= users[m].img %>" alt="">
 
-                  <div class="image-container">
-                    <img class="image" src="<%= users[m].img %>" alt="">
+                <%= users[m].name %>
+                <%
+                var userRole = users[m].type;
+                userRole = userRole.charAt(0).toUpperCase() + userRole.slice(1);
+                var userTeam = users[m].team;
+                teamFormatted = userTeam.replace(/([A-Z])/g, '$1').replace(/^./,function(str){ return str.toUpperCase();
+                })
 
-                  </div>
-                  <div class="name-container">
-
-                    <div id="userName">
-                      <%= users[m].name %>
-                    </div>
-                    <div id="userTeam">
-                      <%
-                      var userRole = users[m].type;
-                      userRole = userRole.charAt(0).toUpperCase() + userRole.slice(1);
-                      var userTeam = users[m].team;
-                      teamFormatted = userTeam.replace(/([A-Z])/g, '$1').replace(/^./,function(str){ return str.toUpperCase();
-                      })
-
-                      %>
-                        <%= teamFormatted   %> |  <%= userRole %>
-                    </div>
-
-                  </div>
-                </div>
-
-
+                %>
+                <br>
+                <%= teamFormatted   %> |
+                <%= userRole %>
               </div>
-
-              <% }%>
+              <% } %>
 
           </div>
 
