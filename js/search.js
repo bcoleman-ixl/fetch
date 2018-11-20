@@ -56,7 +56,9 @@ function search() {
     if (filterArr == '') {
       for (var i = 0; i < 24; i++) {
         let item = li[i];
-        item.style.display = '';
+        if (typeof item != "undefined") {
+          item.style.display = '';
+        }
       }
     }
   }
@@ -78,7 +80,9 @@ function reset() {
   let li = ul.getElementsByClassName('template');
   for (k = 0; k < 25; k++) {
     let item = li[k];
-    item.style.display = '';
+    if (typeof item != "undefined") {
+      item.style.display = '';
+    }
   }
   document.getElementById('templateCount').innerHTML = li.length;
 }
