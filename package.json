@@ -31,6 +31,7 @@
     "jsforce": "^1.8.4",
     "mongodb": "^3.0.2",
     "mongoose": "^5.0.12",
+    "mysql": "^2.16.0",
     "nodemon": "^1.14.11",
     "npm": "^5.8.0",
     "passport": "^0.4.0",
