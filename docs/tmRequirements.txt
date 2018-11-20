@@ -1,0 +1,44 @@
+# of subjects (
+["single-subject"], ["dual-subject"], ["3-subject"], ["4-subject"], ["all-access"]
+)
+
+# of licenses (
+[25], [30], [40], [50], [60], [70], [80], [90]
+)
+
+edition (
+["US"], ["UK"], ["CA"], ["AU"], ["BR"], ["DE"], ["FR"], ["IN"], ["IE"], ["NZ"], ["SG"], ["ZA"], ["JP"]
+)
+
+currency
+(
+["AU", "AUD", "Australian Dollar", "$"],
+["NZ", "NZD","New Zealand Dollar", "$"],
+["IE", "EUR","Euro - Ireland", "€"],
+["ZA", "ZAR","South African Rand", "R"],
+["SG", "SGD","Singapore Dollar", "$"],
+
+["BR", "BRL", "Brazilian Real", "R$"],
+["UK", "GBP","British Pound", "£"],
+["US", "USD","United States Dollar", "$"],
+["CA", "CAD", "Canadian Dollar", "$"],
+["DE", "EUR", "Euro - Germany", "€"],
+["FR", "EUR", "Euro - France", "€"],
+["IN", "INR", "India Rupee", "₹"],
+["JP", "JPY","Japan Yen", "$"]
+)
+
+Tables:
+Currency (countryCode, currencyCode, currencyName, currencySymbol, subjectQuantity (ForeignKey))
+Subjects (subjectQuantityName, subjectQuantity(Primary key), )
+Licenses (numberLicenses, countryCode, subjectQuantity (Foreign Key) )
+
+cost
+
+Object Names:
+NUMBERLICENSES
+SUBJECTQUANTITY
+SUBJECTQUANTITYNAME
+COST
+COUNTRYCODE
+CURRENCYNAME
