@@ -431,6 +431,18 @@ h5 {
   font-family: var(--arialFont);
 }
 
+#templateBodyReview {
+  overflow: auto;
+  width: auto;
+  color: #686868 !important;
+  cursor: pointer;
+  margin: 5px 500px 10px 500px;
+  padding-right: 10px;
+  word-wrap: break-word;
+  text-align: left;
+  font-family: var(--arialFont);
+}
+
 #templateBodyError {
   overflow: auto;
   width: auto;
