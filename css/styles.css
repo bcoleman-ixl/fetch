@@ -24,6 +24,7 @@
   --categoryOpacity: 0.6;
   --navbarOpacity: 0.6;
   --fivePxRadius: 7px;
+  --vertSideNavWidth: 350px;
   /* Font for template titles */
   --gothicFont: 'Gothic A1', sans-serif;
   --robotoFont: 'Roboto', sans-serif;
@@ -813,7 +814,7 @@ h5 {
 .menuOptions a {
   padding: 11px 8px 11px 30px;
   display: block;
-  width: 100%;
+  width: var(--vertSideNavWidth);
   background-color: white;
   border-bottom: 1px #DDDDDD solid;
   border-right: 1px #DDDDDD solid;
@@ -882,7 +883,7 @@ h5 {
 /* When you mouse over the navigation links, change their color */
 .profile {
   padding: 75px 0px 75px 0px;
-  width: 100%;
+  width: var(--vertSideNavWidth);
   text-align: center;
   position: relative;
 }
