@@ -13,5 +13,5 @@ db.templates.update({"addedByUser" : "salesforce@salesforce.com"}, {$set : {"vet
 
 ****MySQL****
 1. Open secure connection with Scruffy using PuTTY
-2. run mysql - u bcoleman -p
+2. run the command: mysql - u bcoleman -p
 3. Enter password
