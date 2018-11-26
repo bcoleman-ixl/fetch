@@ -6,9 +6,19 @@
       <span id="clear-search">x</span>
       <span id="templateCount"></span>
     </div>
-    <div class="quickAccess">
-    </div>
   </div>
   <div class='col-lg-4 col-md-2 col-sm-2'>
   </div>
+</div>
+
+<div class="row space">
+  <div class="quickAccess">
+      <% for(k = 0; k < user.toObject().quickAccess.length; k ++){ %>
+        <div class="quickAccessObj" id="<%= user.toObject().quickAccess[k].id %>">
+          <%= user.toObject().quickAccess[k].name.trim() %>
+        </div>
+        <% } %>
+      <br>
+      <br>
+    </div>
 </div>
