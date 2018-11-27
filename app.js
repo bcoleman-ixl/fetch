@@ -622,6 +622,9 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             var scNum = numberSplit[1];
             body = body.toString();
             var result = clean(body, 'IXL');
+            if (name == 'Hiding grade levels') {
+              console.log(result);
+            }
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
@@ -1104,7 +1107,11 @@ function clean(body, id) {
     var foundGreeting = false;
     for (var j = 0; j < result.length; j++) {
       // If it contains !Contact then remove it
-      if (result[j].match(/Dear/) || result[j].match(/Hello/) || result[j].match(/Hi/)) {
+      if (body.includes('hidden') && j == 2) {
+        console.log(j);
+        console.log("???" + result[j]);
+      }
+      if (result[j].match(/Dear/) || result[j].match(/Hello/) || result[j].match(/Hi\s/)) {
         result.splice(j, 1);
       }
       // If it contains Thank you and number of sentences is 1, set it as intro
@@ -1125,6 +1132,8 @@ function clean(body, id) {
         result.splice(j);
       }
     }
+
+
     if (foundGreeting == false) {
       greeting = 'none';
     }
@@ -1137,6 +1146,9 @@ function clean(body, id) {
         continue;
       }
       finalBody.push(result[k] + `<br/><br/>`);
+    }
+    if (body.includes('hidden')) {
+      console.log("^^^^^^^^^^^^^^^^");
     }
     return [greeting, finalBody.join(""), closing];
   } catch (e) {
