@@ -13,11 +13,13 @@
 
 <div class="row space">
   <div class="quickAccess">
-      <% for(k = 0; k < user.toObject().quickAccess.length; k ++){ %>
-        <div class="quickAccessObj" id="<%= user.toObject().quickAccess[k].id %>">
-          <%= user.toObject().quickAccess[k].name.trim() %>
-        </div>
-        <% } %>
+
+    <% for(k = 0; k < user.toObject().quickAccess.length; k ++){ %>
+    <div class="quickAccessObj" id="<%= user.toObject().quickAccess[k].id %>">
+   <%= user.toObject().quickAccess[k].name.trim() %>
+  </div>
+  <% } %>
+
       <br>
       <br>
     </div>
