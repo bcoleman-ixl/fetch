@@ -1,26 +1,29 @@
 <div class='row space'>
-  <div class='col-lg-4 col-md-2 col-sm-2'></div>
-  <div class='col-lg-4 col-md-8 col-sm-8'>
+  <div class="searchBarRow">
     <div class='form-group has-feedback has-clear'>
-      <input type='text' class='form-control input-lg' id='search-bar' autofocus="autofocus" placeholder='Search' spellcheck='false'>
       <span id="clear-search">x</span>
-      <span id="templateCount"></span>
-    </div>
-  </div>
-  <div class='col-lg-4 col-md-2 col-sm-2'>
-  </div>
-</div>
 
-<div class="row space">
-  <div class="quickAccess">
+      <input type='text' class='form-control input-lg' id='search-bar' autofocus="autofocus" placeholder='Search' spellcheck='false'>
+
+      <span id="quickAccess">&#x2039;</span>
+
+      <span id="templateCount">
+      </span>
+    </div>
+
+
 
     <% for(k = 0; k < user.toObject().quickAccess.length; k ++){ %>
     <div class="quickAccessObj" id="<%= user.toObject().quickAccess[k].id %>">
-   <%= user.toObject().quickAccess[k].name.trim() %>
-  </div>
-  <% } %>
-
-      <br>
-      <br>
+      <%= user.toObject().quickAccess[k].name.trim() %>
     </div>
+    <% } %>
+
+
+  </div>
+
+</div>
+
+<div class="row space">
+
 </div>
