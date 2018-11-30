@@ -172,10 +172,10 @@ h5 {
   display: inline-block;
 }
 
-.quickAccessObj {
-  background-color: var(--blue);
+.quickAccessObj, .quickAccessObjEmpty {
   border-radius: var(--fivePxRadius);
   font-family: var(--robotoFont);
+  height: 44px;
   width: 75px;
   font-size: 17px;
   margin: 5px;
@@ -184,9 +184,19 @@ h5 {
   color: white;
   cursor: pointer;
   display: inline-block;
-  position: relative;
-  top: -71px;
-  right: 422px;
+}
+
+.quickAccessObj {
+  background-color: var(--blue);
+  border-radius: var(--fivePxRadius);
+  font-family: var(--robotoFont);
+}
+
+.quickAccessObjEmpty {
+  background-color: white;
+  border-radius: var(--fivePxRadius);
+  border: 1px dashed var(--blue);
+  font-family: var(--robotoFont);
 }
 
 .quickAccessObj:active {
@@ -194,6 +204,37 @@ h5 {
   right: 350px;
 }
 
+.quickAccessObjectsHide {
+  position: relative;
+  top: -71px;
+  right: 166px;
+  z-index: -1;
+  display: inline-flex;
+  -webkit-transition-duration: 0.8s;
+}
+
+.quickAccessObjectsShow {
+  position: relative;
+  top: -71px;
+  right: 505px;
+  display: inline-flex;
+  -webkit-transition-duration: 0.8s;
+  animation: show 0.8s forwards;
+}
+
+@keyframes show {
+  0% {
+    z-index: -1;
+  }
+
+  99% {
+    z-index: -1;
+  }
+
+  100% {
+    z-index: 1;
+  }
+}
 
 #clear-search {
   position: absolute;
@@ -233,6 +274,10 @@ h5 {
   background-color: #e1e1e1;
   border: 1px solid var(--darkGray);
   border-right: 1px solid var(--darkGray);
+}
+
+#quickAccess:hover {
+  cursor: pointer;
 }
 
 #clear-search:active {
@@ -870,7 +915,7 @@ h5 {
   /* 0 width - change this with JavaScript */
   position: fixed;
   /* Stay in place */
-  z-index: 1;
+  z-index: 2;
   /* Stay on top */
   top: 0;
   /* Stay at the top */

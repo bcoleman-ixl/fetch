@@ -146,6 +146,31 @@ $('#clear-search').click(function() {
   $('#search-bar').focus();
 });
 
+
+
+$('#quickAccess').click(function() {
+  quickAccess = document.getElementById("quickAccess");
+  if ($('#quickAccessObjects').hasClass('quickAccessObjectsShow')) {
+
+    quickAccess.innerHTML = '&#x2039;';
+    $('#quickAccessObjects').addClass('quickAccessObjectsHide');
+    $('#quickAccessObjects').removeClass('quickAccessObjectsShow');
+    console.log('working');
+  } else {
+    quickAccess.innerHTML = '&#x203A';
+    $('#quickAccessObjects').addClass('quickAccessObjectsShow');
+    $('#quickAccessObjects').removeClass('quickAccessObjectsHide');
+  }
+});
+
+
+
+function toggleQuickAccess() {
+  // if showing, change to right: 25px and z-index -1 and change icon to >
+  // if not showing, change to right 370px z-index
+
+}
+
 /* Functions for template modal */
 
 /**

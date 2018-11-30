@@ -12,12 +12,21 @@
     </div>
 
 
+<div class="quickAccessObjectsHide" id="quickAccessObjects">
 
-    <% for(k = 0; k < user.toObject().quickAccess.length; k ++){ %>
-    <div class="quickAccessObj" id="<%= user.toObject().quickAccess[k].id %>">
-      <%= user.toObject().quickAccess[k].name.trim() %>
-    </div>
+  <% for(k = 0; k < 4; k ++){ %>
+    <% if (typeof user.toObject().quickAccess[k] === 'undefined') { %>
+      <div class="quickAccessObjEmpty" id="none">
+      </div>
+
+      <% } else { %>
+        <div class="quickAccessObj" id="<%= user.toObject().quickAccess[k].id %>">
+          <%= user.toObject().quickAccess[k].name.trim() %>
+        </div>
+
+        <% } %>
     <% } %>
+</div>
 
 
   </div>
