@@ -1111,7 +1111,7 @@ function clean(body, id) {
         console.log(j);
         console.log("???" + result[j]);
       }
-      if (result[j].match(/Dear/) || result[j].match(/Hello/) || result[j].match(/Hi\s/)) {
+      if (result[j].match(/Dear/) || result[j].match(/Hello/) || result[j].match(/Hi\s/) || result[j].match(/Hi{/)) {
         result.splice(j, 1);
       }
       // If it contains Thank you and number of sentences is 1, set it as intro
