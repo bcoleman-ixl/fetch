@@ -649,56 +649,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       }
     }) // End of query for IXL
 
-  /**
-    conn.sobject("EmailTemplate") // Start of query for IXLTEMP
-      .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
-      .where(
-        tsl1ixl +
-        end)
-      .execute(function(err, records) {
-        try {
-          for (var i = 0; i < records.length; i++) {
-            var record = records[i];
-            if (record.HtmlValue != null && record.IsActive == true) {
-              var folder = record.Folder.Name;
-
-              var longDate = new Date(record.LastModifiedDate);
-              var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
-              var numberRegex = /\d*\.*\d*\s*(.*)/g;
-              var name = numberRegex.exec(record.Name)[1];
-              var body = record.HtmlValue;
-              body = body.replace(/(\r\n|\n|\r)/gm, "");
-              replyEmail = body.match(/([a-zA-Z0-9._-]+@ixl.com+)/gi)[0];
-              var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
-              var numberSplit = numberRegex.exec(record.Name);
-              var name = numberSplit[2];
-              var scNum = numberSplit[1];
-              body = body.toString();
-              var result = clean(body, 'IXL');
-              templatesDb.collection('templates')
-                .update({
-                  id: record.DeveloperName + 'TEMP'
-                }, {
-                  $set: {
-                    body: result[1].toString(),
-                    greeting: result[0].toString(),
-                    closing: result[2].toString(),
-                    updatedDate: date,
-                    addedByUser: 'salesforce@salesforce.com',
-                    team: 'techSupport',
-                    program: 'IXLT',
-                    replyEmail: 'help@ixl.com',
-                    folder: folder,
-                  }
-                }, {
-                  upsert: true
-                }) // End of update statement
-            } // End of if statement
-          } // End of for loop
-        } catch (e) {
-          console.log(e);
-        }
-      })  End of query for IXLTEMP */
 
   conn.sobject("EmailTemplate") // Start of query for QW
     .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
@@ -838,70 +788,8 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
         console.log(e);
       }
     }) // End of query for QB
-  /*
 
-  conn.sobject("EmailTemplate") // Start of query for AS folders
-  //  .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
-  .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name, TemplateType')
-  .where(
-  asfolder +
-  end)
-  .execute(function(err, records) {
-  try {
-  for (var i = 0; i < records.length; i++) {
-  // Get individual record
-  if (records[i].IsActive) {
-  var record = records[i];
-  var folder = record.Folder.Name;
-  // Get and format last modified date
-  var longDate = new Date(record.LastModifiedDate);
-  var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
 
-  // Get the e-mail body in HTML and remove first sentence and after sincerely
-  if (record.HtmlValue == null) {
-  console.log('Body [[null]] for AS ' + record.Name);
-  } else {
-  var numberRegex = /\d*\.*\d*\s*(.*)/g;
-  var name = numberRegex.exec(record.Name)[1];
-  var body = record.HtmlValue;
-  body = body.replace(/(\r\n|\n|\r)/gm, "");
-  body = body.toString();
-  replyEmail = null;
-  var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
-  var numberSplit = numberRegex.exec(record.Name);
-  var name = numberSplit[2];
-  var scNum = numberSplit[1];
-  var result = cleanTest(body);
-  }
-  // fields in Account relationship are fetched
-  if (record.HtmlValue != null && record.IsActive == true) {
-  templatesDb.collection('templates')
-  .update({
-  id: record.DeveloperName
-  }, {
-  $set: {
-  body: result[1].toString(),
-  greeting: result[0].toString(),
-  closing: result[2].toString(),
-  updatedDate: date,
-  addedByUser: 'salesforce@salesforce.com',
-  team: 'accountServices',
-  program: 'AS',
-  folder: folder,
-  name: name
-  }
-  }, {
-  upsert: true
-  }) // End of update statement
-  } // End of if statement
-  } //
-  } // End of for loop
-  } catch (e) {
-  console.log(e);
-  }
-  }) // End of query for AS folders
-
-   */
 
   conn.sobject("EmailTemplate") // Start of query for Quia Books (L2 Only)
     .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
