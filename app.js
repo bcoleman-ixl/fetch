@@ -179,15 +179,14 @@ templatesClient.connect(keys.mongoDb.templatesURI, (err, client) => {
   if (err) return console.log(err);
   templatesDb = client.db('templates');
   templatesDb.collection('templates').find().toArray((err, templatesArr) => {
-    /**
+
     var fs = require('fs');
     var templatesBackupArr = [];
     for (var i = 0; i < templatesArr.length; i++) {
-    templatesBackupArr.unshift(JSON.stringify(templatesArr[i]));
-  }
-  fs.writeFile("./backup/backup.json", templatesBackupArr);
-     *
-     */
+      templatesBackupArr.unshift(JSON.stringify(templatesArr[i]));
+    }
+    fs.writeFile("./backup/backup.json", templatesBackupArr);
+
   });
   // Listen on port 3000
   app.listen(3000);
