@@ -1,0 +1,26 @@
+CREATE TABLE templates(
+  name          VARCHAR(75) NOT NULL
+  ,greeting      VARCHAR(999)
+  ,body          VARCHAR(9999) NOT NULL
+  ,version0Field VARCHAR(9999)
+  ,version1Field VARCHAR(9999)
+  ,version2Field VARCHAR(9999)
+  ,version3Field VARCHAR(9999)
+  ,closing       VARCHAR(999)
+  ,category      VARCHAR(25) NOT NULL
+  ,program       VARCHAR(25) NOT NULL
+  ,id            VARCHAR(99) NOT NULL PRIMARY KEY
+  ,lastUpdatedDate   VARCHAR(99) NOT NULL
+  ,lastUpdatedUser   VARCHAR(99) NOT NULL
+  ,addedByUser   VARCHAR(99) NOT NULL
+  ,ranking       INTEGER NOT NULL
+  ,copyFull      INTEGER NOT NULL
+  ,copyPortion   INTEGER NOT NULL
+  ,team          VARCHAR(99) NOT NULL
+  ,publicStatus  BOOLEAN NOT NULL
+  ,keywords          VARCHAR(99)
+  ,vetted        VARCHAR(3) NOT NULL
+  ,replyEmail    VARCHAR(99)
+  ,quote         BOOLEAN NOT NULL
+  ,folder        VARCHAR(99)
+);
