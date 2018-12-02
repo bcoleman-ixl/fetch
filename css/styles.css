@@ -160,11 +160,12 @@ h5 {
 
 .searchBarRow {
   width: 700px;
+  height: 80px;
   margin: 0 auto;
   position: relative;
   min-height: 1px;
   padding-right: 15px;
-  padding-left: 67px;
+  padding-left: 60px;
 }
 
 .quickAccess {
@@ -176,24 +177,29 @@ h5 {
   border-radius: var(--fivePxRadius);
   font-family: var(--robotoFont);
   height: 44px;
-  width: 75px;
+  width: 65px;
   font-size: 17px;
   margin: 5px;
   padding: 10px;
   opacity: .75;
-  color: white;
   cursor: pointer;
   display: inline-block;
+}
+
+.quickAccessObj:hover, .quickAccessObjEmpty:hover {
+  opacity: 1;
 }
 
 .quickAccessObj {
   background-color: var(--blue);
   border-radius: var(--fivePxRadius);
   font-family: var(--robotoFont);
+  color: white;
 }
 
 .quickAccessObjEmpty {
   background-color: white;
+  color: var(--blue);
   border-radius: var(--fivePxRadius);
   border: 1px dashed var(--blue);
   font-family: var(--robotoFont);
@@ -210,16 +216,17 @@ h5 {
   right: 166px;
   z-index: -1;
   display: inline-flex;
-  -webkit-transition-duration: 0.8s;
+  -webkit-transition-duration: 0.4s;
 }
 
 .quickAccessObjectsShow {
   position: relative;
   top: -71px;
-  right: 505px;
+  right: 490px;
   display: inline-flex;
-  -webkit-transition-duration: 0.8s;
+  -webkit-transition-duration: 0.4s;
   animation: show 0.8s forwards;
+  animation-timing-function: ease-in;
 }
 
 @keyframes show {

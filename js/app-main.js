@@ -163,6 +163,10 @@ $('#quickAccess').click(function() {
   }
 });
 
+$('#empty').click(function() {
+  console.log('testing');
+});
+
 
 
 function toggleQuickAccess() {
