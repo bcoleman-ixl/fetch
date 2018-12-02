@@ -286,7 +286,6 @@ app.get('/admin', authCheck, (req, res) => {
       if (err) return console.log(err)
       // Renders index.ejs and loads templates and user profile
       var userTemplates = [];
-      console.log(result.length);
       for (var i = 0; i < result.length; i++) {
         userTemplates.push(result[i]);
       }
@@ -425,7 +424,6 @@ app.put('/update', (req, res) => {
 
 app.put('/addLicense', (req, res) => {
   var sql = `INSERT INTO licenses (cost, countryCode, type, spanishCost, subjectQuantity, numberLicenses, rebateCost, rebateId) VALUES (${req.body.cost}, "${req.body.countryCode}", "${req.body.type}", ${req.body.spanishCost},${req.body.subjectQuantity}, ${req.body.numberLicenses}, ${req.body.rebateCost},"${req.body.rebateId}")`;
-  console.log(sql);
   con.query(sql, function(err, result) {
     console.log(err);
   });
@@ -435,7 +433,6 @@ app.put('/addLicense', (req, res) => {
 app.put('/updateLicense', (req, res) => {
   var sql = `UPDATE licenses SET cost = ${req.body.cost}, countryCode = "${req.body.countryCode}",  type = "${req.body.type}", subjectQuantity = ${req.body.subjectQuantity}, numberLicenses = ${req.body.numberLicenses}, rebateCost = ${req.body.rebateCost},  rebateId = "${req.body.rebateId}", spanishCost = ${req.body.spanishCost} WHERE id
    = ${req.body.id} `
-  console.log(sql);
   con.query(sql, function(err, result) {
     console.log(err);
   });
@@ -545,11 +542,9 @@ app.get('/authenticate', (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-  console.log(req.session);
   req.session.cookieKey = null;
   req.session.user = null;
   req.logout();
-  console.log(req.session);
   res.redirect('/authenticate');
 });
 
@@ -621,9 +616,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             var scNum = numberSplit[1];
             body = body.toString();
             var result = clean(body, 'IXL');
-            if (name == 'Hiding grade levels') {
-              console.log(result);
-            }
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
@@ -672,9 +664,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
           // Get individual record
           var record = records[i];
 
-          if (record.Folder.Name == 'TS QW Deletion') {
-            console.log(record.Folder.Name);
-          }
+
           var folder = record.Folder.Name;
           // Get and format last modified date
           var longDate = new Date(record.LastModifiedDate);
@@ -858,70 +848,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
         console.log(e);
       }
     }) // End of query for QB
-  /*
-
-  conn.sobject("EmailTemplate") // Start of query for AS folders
-  //  .select('Id, Name, Body, LastModifiedDate, IsActive, DeveloperName, Folder.Name')
-  .select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name, TemplateType')
-  .where(
-  asfolder +
-  end)
-  .execute(function(err, records) {
-  try {
-  for (var i = 0; i < records.length; i++) {
-  // Get individual record
-  if (records[i].IsActive) {
-  var record = records[i];
-  var folder = record.Folder.Name;
-  // Get and format last modified date
-  var longDate = new Date(record.LastModifiedDate);
-  var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
-
-  // Get the e-mail body in HTML and remove first sentence and after sincerely
-  if (record.HtmlValue == null) {
-  console.log('Body [[null]] for AS ' + record.Name);
-  } else {
-  var numberRegex = /\d*\.*\d*\s*(.*)/g;
-  var name = numberRegex.exec(record.Name)[1];
-  var body = record.HtmlValue;
-  body = body.replace(/(\r\n|\n|\r)/gm, "");
-  body = body.toString();
-  replyEmail = null;
-  var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
-  var numberSplit = numberRegex.exec(record.Name);
-  var name = numberSplit[2];
-  var scNum = numberSplit[1];
-  var result = cleanTest(body);
-  }
-  // fields in Account relationship are fetched
-  if (record.HtmlValue != null && record.IsActive == true) {
-  templatesDb.collection('templates')
-  .update({
-  id: record.DeveloperName
-  }, {
-  $set: {
-  body: result[1].toString(),
-  greeting: result[0].toString(),
-  closing: result[2].toString(),
-  updatedDate: date,
-  addedByUser: 'salesforce@salesforce.com',
-  team: 'accountServices',
-  program: 'AS',
-  folder: folder,
-  name: name
-  }
-  }, {
-  upsert: true
-  }) // End of update statement
-  } // End of if statement
-  } //
-  } // End of for loop
-  } catch (e) {
-  console.log(e);
-  }
-  }) // End of query for AS folders
-
-   */
 
   conn.sobject("EmailTemplate").select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name').where(
       famte +
@@ -984,6 +910,37 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
         console.log(e);
       }
     }) // End of query for Family
+
+  // Start query for groups (queues)
+
+  // need to loop through to include each GroupId for the queues I want.
+  var groupIds = ['00G33000002JitjEAC', '00G0b000002QxVwEAK'];
+  for (var i = 0; i < groupIds.length; i++) {
+    var groupIdQuery = 'GroupId =  \'' + groupIds[i] + '\'';
+    conn.sobject("GroupMember").select('UserOrGroupId').where(groupIdQuery).execute(function(err, records) {
+      try {
+        for (var j = 0; j < records.length; j++) {
+          var idQuery = 'Id = ' + "\'" + records[j].UserOrGroupId + "\'";
+          conn.sobject("User").select("Name").where(idQuery).execute(function(error, userRecords) {
+            for (var k = 0; k < userRecords.length; k++) {
+              console.log(userRecords[k].Name);
+              console.log(groupIdQuery);
+            }
+          });
+
+
+
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }) // End of query for queues
+  }
+
+
+
+
+
 }); // End of  conn.login
 
 function clean(body, id) {
@@ -994,10 +951,7 @@ function clean(body, id) {
     var foundGreeting = false;
     for (var j = 0; j < result.length; j++) {
       // If it contains !Contact then remove it
-      if (body.includes('hidden') && j == 2) {
-        console.log(j);
-        console.log("???" + result[j]);
-      }
+
       if (result[j].match(/Dear/) || result[j].match(/Hello/) || result[j].match(/Hi\s/) || result[j].match(/Hi{/)) {
         result.splice(j, 1);
       }
@@ -1034,9 +988,7 @@ function clean(body, id) {
       }
       finalBody.push(result[k] + `<br/><br/>`);
     }
-    if (body.includes('hidden')) {
-      console.log("^^^^^^^^^^^^^^^^");
-    }
+
     return [greeting, finalBody.join(""), closing];
   } catch (e) {
     console.log(e);
