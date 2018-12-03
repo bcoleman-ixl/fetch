@@ -1,0 +1,38 @@
+IXL
+IXL Reports: 00G0b000001xmH7EAI
+IXL Technical Support L1 - Reassign: 00G0b000002JnHtEAK
+IXL Tech Support Contest Questions: 00G0b000002Qu94EAC
+IXL Technical Support L1 low priority: 00G0b000002QxVwEAK
+IXL Technical Support Voicemails: 00G0b000002QtrAEAS
+IXL Technical Support: 00G33000002JitjEAC
+Reassign - IXL Technical Support: 00G0b000002QtqqEAC
+
+QB
+Quia Books Technical Support L1 Reassign: 00G0b000001xkHKEAY
+Reassign - Quia Books Technical Support: 00G0b000002Qtr0EAC
+Quia Books Technical Support Voicemails: 00G0b000002QtrFEAS
+Quia Books Sales Support: 00G33000002JitoEAC
+Quia Books Technical Support: 00G33000002JitpEAC
+Quia Books Technical Support L1: 00G33000002JitqEAC
+
+QW
+Quia Web Account Services: 00G33000002JittEAC
+Quia Web Technical Support: 00G33000002JituEAC
+Quia Web Technical Support L1: 00G33000002JitvEAC
+Reassign - Quia Web Subscriptions: 00G0b000001xgHaEAI
+Reassign - Quia Web Technical Support: 00G0b000002Qtr5EAC
+Quia Web Technical Support Voicemails: 00G0b000002QtrPEAS
+Quia Web Subscriptions: 00G33000002JitrEAC
+Tech Support QW: 00G33000002JivhEAC
+
+DRAFT
+X Draft Group: 00G0b000001xm6OEAQ
+Y Draft Group: 00G0b000001xm6TEAQ
+
+** queue model **
+var queues = {
+  "name": "IXL Reports",
+  "program": "IXL",
+  "id": "00G0b000001xmH7EAI",
+  "users": {"userId": "", userName: ""};
+}
