@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <link rel='stylesheet' href='/styles.css'>
+  <!-- Bootstrap minified CSS -->
+  <link rel='stylesheet' href='bootstrap.min.css'>
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" integrity="sha384-kW+oWsYx3YpxvjtZjFXqazFpA7UP/MbiY4jvs+RWZo2+N94PFZ36T6TFkc9O3qoB" crossorigin="anonymous"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Oleo+Script|Roboto" rel="stylesheet">
+  <% if(user.email == 'mjenkins@ixl.com'){ %>
+  <title>CS3K</title>
+  <% } else { %>
+  <title>Fetch</title>
+  <% }%>
+</head>
+
+<body>
+  <% for (k = 0; k < queues.length; k++) { %>
+      <div class="">
+        <%= queues[k].name %>
+        <%= queues[k].users %>
+      </div>
+
+    <% } %>
+</body>
+<script src='tinymce/tinymce.min.js'></script>
+<script src='jquery.min.js'></script>
+<script src='app-main.js'></script>
+<script src='search.js'></script>
+<script src='bootstrap.min.js'></script>
+
+</html>

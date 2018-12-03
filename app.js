@@ -89,6 +89,7 @@ const end = 'Folder.Name = \'End of the query\'';
 var currency = [];
 var licenses = [];
 var subjects = [];
+var queues = [];
 
 /* Programs for the application
 IXL - IXL
@@ -278,6 +279,20 @@ app.get('/review', authCheckAdmin, (req, res) => {
       })
     });
   })
+});
+
+app.get('/queues', authCheckAdmin, (req, res) => {
+
+  // Renders review.ejs and loads templates and user profile
+  var userTemplates = [];
+
+  res.render('queues.ejs', {
+    templatesArr: userTemplates,
+    user: req.user,
+    programs: programs,
+    queues: queues
+  })
+
 });
 
 app.get('/admin', authCheck, (req, res) => {
@@ -914,28 +929,51 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
   // Start query for groups (queues)
 
   // need to loop through to include each GroupId for the queues I want.
-  var groupIds = ['00G33000002JitjEAC', '00G0b000002QxVwEAK'];
-  for (var i = 0; i < groupIds.length; i++) {
-    var groupIdQuery = 'GroupId =  \'' + groupIds[i] + '\'';
-    conn.sobject("GroupMember").select('UserOrGroupId').where(groupIdQuery).execute(function(err, records) {
-      try {
-        for (var j = 0; j < records.length; j++) {
-          var idQuery = 'Id = ' + "\'" + records[j].UserOrGroupId + "\'";
-          conn.sobject("User").select("Name").where(idQuery).execute(function(error, userRecords) {
-            for (var k = 0; k < userRecords.length; k++) {
-              console.log(userRecords[k].Name);
-              console.log(groupIdQuery);
-            }
-          });
+
+
+  var groupIds = ['00G33000002JitjEAC', '00G0b000002JnHtEAK'];
+
+  for (var l = 0; l < groupIds.length; l++) {
 
 
 
-        }
-      } catch (e) {
-        console.log(e);
+
+    conn.sobject("Group").select("*").where("Id =" + "\'" + groupIds[l] + "\'").execute(function(err, groupRecords) {
+      for (var m = 0; m < groupRecords.length; m++) {
+        queues.push({
+          "name": groupRecords[m].Name,
+          "program": "IXL",
+          "id": groupRecords[m].Id,
+          "users": []
+        });
+
       }
-    }) // End of query for queues
+    })
+    var groupIdQuery = 'GroupId = ' + '\'' + groupIds[l] + '\'';
+    for (var i = 0; i < groupIds.length; i++) {
+      console.log(l);
+      conn.sobject("GroupMember").select("*").where(groupIdQuery).execute(function(err, records) {
+        try {
+          for (var j = 0; j < records.length; j++) {
+            var idQuery = 'Id = ' + "\'" + records[j].UserOrGroupId + "\'";
+            conn.sobject("User").select("Name").where(idQuery).execute(function(error, userRecords) {
+              for (var k = 0; k < userRecords.length; k++) {
+                queues[l].users.push(userRecords[k].Name);
+              }
+            });
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      })
+    }
+
+
   }
+
+
+
+
 
 
 
