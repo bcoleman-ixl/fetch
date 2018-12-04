@@ -354,8 +354,23 @@ h5 {
   border: 1.15px solid #a9a9a9;
 }
 
-.templateClicked {
-  border: 1.15px solid var(--greenAltLight);
+.copyBanner {
+  position: absolute;
+  border-bottom: 25px solid var(--green);
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  height: 0;
+  left: -37px;
+  top: -1px;
+  width: 100px;
+  color: white;
+  font-family: var(--gothicfont);
+  transform: rotate(-45deg);
+  display: none;
+}
+
+.copied {
+  display: inline;
 }
 
 .hide {

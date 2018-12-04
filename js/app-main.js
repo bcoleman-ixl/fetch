@@ -387,11 +387,11 @@ function loadSnippetsModal(obj) {
 
 function copiedAlert(e) {
   let templateObjId = $(e.target).closest(`li[class^='template']`).attr('id');
-  let templateObj = document.getElementById(templateObjId);
-  $('#' + templateObjId).addClass('templateClicked');
+  var copyBanner = document.getElementById(templateObjId).querySelector('#copyBanner');
+  $(copyBanner).addClass('copied');
   setTimeout(function() {
-    $('#' + templateObjId).removeClass('templateClicked');
-  }, 500);
+    $(copyBanner).removeClass('copied');
+  }, 1000);
 }
 
 function handleFilterClick(e) {
