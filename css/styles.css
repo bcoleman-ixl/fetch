@@ -354,23 +354,44 @@ h5 {
   border: 1.15px solid #a9a9a9;
 }
 
-.copyBanner {
-  position: absolute;
-  border-bottom: 25px solid var(--green);
-  border-left: 25px solid transparent;
-  border-right: 25px solid transparent;
-  height: 0;
-  left: -37px;
-  top: -1px;
-  width: 100px;
+.alerts {
+  position: fixed;
+  right: 1em;
+  width: 170px;
+  background-color: #86cd4d;
+  height: 35px;
+  z-index: 10;
+  border-radius: 5px;
+  display: inline;
   color: white;
-  font-family: var(--gothicfont);
-  transform: rotate(-45deg);
-  display: none;
+  opacity: 1;
+  font-size: 15px;
+  text-align: center;
+  font-family: 'Roboto';
+  padding: 6px 0px 0px 0px;
+  font-size: 17px;
+  opacity: 0;
+}
+
+.alertsIcon {
+  position: absolute;
+  width: 27px;
+  height: 35px;
+  background-color: #afe275;
+  border-top-left-radius: var(--fivePxRadius);
+  border-bottom-left-radius: var(--fivePxRadius);
+  top: 0px;
+  left: -1px;
+  font-size: 31px;
+  font-weight: 900;
+  padding-left: 3px;
+  line-height: 32px;
+  opacity: 0;
 }
 
 .copied {
   display: inline;
+  opacity: 1;
 }
 
 .hide {

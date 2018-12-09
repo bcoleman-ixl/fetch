@@ -386,11 +386,13 @@ function loadSnippetsModal(obj) {
 }
 
 function copiedAlert(e) {
-  let templateObjId = $(e.target).closest(`li[class^='template']`).attr('id');
-  var copyBanner = document.getElementById(templateObjId).querySelector('#copyBanner');
-  $(copyBanner).addClass('copied');
+  var alerts = document.getElementById('alerts');
+  var alertsIcon = document.getElementById('alertsIcon');
+  $(alerts).addClass('copied');
+  $(alertsIcon).addClass('copied');
   setTimeout(function() {
-    $(copyBanner).removeClass('copied');
+    $(alerts).removeClass('copied');
+    $(alertsIcon).removeClass('copied');
   }, 1000);
 }
 
