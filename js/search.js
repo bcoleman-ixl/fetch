@@ -65,6 +65,24 @@ function search() {
 }
 
 function test(filterArr, content) {
+  var searchString = filterArr.join(" ");
+
+  // For string which has quotes surrounding it
+  if (searchString[0] == "\"" && searchString[searchString.length - 1] == "\"") {
+    searchString = searchString.replace("\"", "");
+    for (let m = 0; m < filterArr.length; m++) {
+      // If at any point item content doesn't match the filter, return false
+      inputString = "\\b" + searchString.replace(" ", "\\b \\b") + "\\b";
+      console.log(inputString);
+      if (content.toUpperCase().match(inputString.toUpperCase()) == null) {
+        return false;
+      }
+    }
+    // If item content does match filter, return true
+    return true;
+  }
+
+  // For string which has no quotes surrounding it
   for (let m = 0; m < filterArr.length; m++) {
     // If at any point item content doesn't match the filter, return false
     if (content.toUpperCase().indexOf(filterArr[m]) == -1) {
