@@ -347,6 +347,8 @@ h5 {
 
 .template {
   display: inline-block;
+  position: relative;
+  z-index: 5;
   padding: 1em 2em 2em 2em;
   margin: 10px 5px 5px 5px;
   border-radius: var(--fivePxRadius);
@@ -354,44 +356,38 @@ h5 {
   border: 1.15px solid #a9a9a9;
 }
 
-.alerts {
-  position: fixed;
-  right: 1em;
-  width: 170px;
-  background-color: #86cd4d;
-  height: 35px;
-  z-index: 10;
-  border-radius: 5px;
-  display: inline;
-  color: white;
-  opacity: 1;
-  font-size: 15px;
-  text-align: center;
-  font-family: 'Roboto';
-  padding: 6px 0px 0px 0px;
-  font-size: 17px;
+.copiedAlert {
+  position: relative;
+  left: -80px;
+  top: -160px;
+  display: block;
   opacity: 0;
+  height: 0;
+  z-index: -1
 }
 
-.alertsIcon {
-  position: absolute;
-  width: 27px;
-  height: 35px;
-  background-color: #afe275;
-  border-top-left-radius: var(--fivePxRadius);
-  border-bottom-left-radius: var(--fivePxRadius);
-  top: 0px;
-  left: -1px;
-  font-size: 31px;
-  font-weight: 900;
-  padding-left: 3px;
-  line-height: 32px;
-  opacity: 0;
+.animateCopied {
+  animation-name: grow;
+  animation-duration: 0.5s;
 }
 
-.copied {
-  display: inline;
-  opacity: 1;
+@keyframes grow {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+#thumbsUp {
+  fill: var(--green);
+  font-size: 6em;
+  height: 1em;
+  vertical-align: -.125em;
 }
 
 .hide {

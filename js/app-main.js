@@ -28,8 +28,6 @@ $('.versionTabs').on('keydown', function(event) {
   }
 });
 
-
-
 // NOTE: Side navbar
 /* Set the width of the side navigation to 250px */
 function openNav() {
@@ -386,14 +384,10 @@ function loadSnippetsModal(obj) {
 }
 
 function copiedAlert(e) {
-  var alerts = document.getElementById('alerts');
-  var alertsIcon = document.getElementById('alertsIcon');
-  $(alerts).addClass('copied');
-  $(alertsIcon).addClass('copied');
-  setTimeout(function() {
-    $(alerts).removeClass('copied');
-    $(alertsIcon).removeClass('copied');
-  }, 1000);
+  let templateObjId = $(e.target).closest(`li[class^='template']`).attr('id');
+  let templateObj = document.getElementById(templateObjId).querySelector('#copiedAlert');
+  console.log(templateObj);
+  $(templateObj).addClass('animateCopied');
 }
 
 function handleFilterClick(e) {
