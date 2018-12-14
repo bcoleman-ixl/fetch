@@ -954,7 +954,7 @@ h5 {
   /* 0 width - change this with JavaScript */
   position: fixed;
   /* Stay in place */
-  z-index: 2;
+  z-index: 6;
   /* Stay on top */
   top: 0;
   /* Stay at the top */
