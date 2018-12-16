@@ -358,8 +358,8 @@ h5 {
 
 .copiedAlert {
   position: relative;
-  left: -80px;
-  top: -160px;
+  left: -120px;
+top: -170px;
   display: block;
   opacity: 0;
   height: 0;
