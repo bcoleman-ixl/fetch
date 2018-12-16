@@ -280,8 +280,8 @@ function handleClick(e) {
      * 4. Updates the ranking of this template.
      */
     if (e.target !== e.currentTarget && (obj.eventId == 'templateBody' || obj.eventId == 'copyFull')) {
-      copiedAlert(e);
       copy(buildEmail(obj.body, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
+      copiedAlert(e);
       updateRanking(obj.templateId, obj.eventId);
       /**
        * If copyPortion is clicked, then execute the following:
@@ -290,16 +290,16 @@ function handleClick(e) {
        * 4. Updates the ranking of this template.
        */
     } else if (e.target !== e.currentTarget && obj.eventId == 'reply') {
-      copiedAlert(e);
       copy(buildEmail(obj.body, obj.program, obj.replyEmail, "Thank you for your reply.", obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
+      copiedAlert(e);
       updateRanking(obj.templateId, obj.eventId);
 
     } else if (e.target !== e.currentTarget && obj.eventId == 'share') {
       copy("http://scruffy.quiacorp.com:3000/templates" + "#" + obj.templateId);
 
     } else if (e.target !== e.currentTarget && obj.eventId == 'copyPortion') {
-      copiedAlert(e);
       copy(obj.body);
+      copiedAlert(e);
       updateRanking(obj.templateId, obj.eventId);
 
       /* If trash (or remove) button was clicked */
@@ -388,6 +388,11 @@ function copiedAlert(e) {
   let templateObj = document.getElementById(templateObjId).querySelector('#copiedAlert');
   console.log(templateObj);
   $(templateObj).addClass('animateCopied');
+  setTimeout(function() {
+      $(templateObj).removeClass('animateCopied');
+    },
+    1000);
+
 }
 
 function handleFilterClick(e) {
