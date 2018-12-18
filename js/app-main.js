@@ -99,7 +99,7 @@ function initialize() {
 document.addEventListener('DOMContentLoaded', function() {
   dataTable = document.getElementById('data-table');
   loader = document.getElementById('loader');
-  dataTable.style.display = 'inline-block';
+  dataTable.style.display = 'flex';
   $("#loader").children().css({
     "display": "none"
   });
@@ -107,6 +107,17 @@ document.addEventListener('DOMContentLoaded', function() {
   search();
 }, false);
 
+
+// Scrolls to top, focuses on search box and highlights text
+$(document).on('keydown', function(e) {
+  var kc = e.which || e.keyCode;
+  if (e.ctrlKey && String.fromCharCode(kc).toUpperCase() == "K") {
+    e.preventDefault();
+    document.body.scrollTop = document.documentElement.scrollTop = 0;
+    $('#search-bar').focus();
+    $('#search-bar').select();
+  }
+});
 
 Date.prototype.toDateInputValue = (function() {
   let local = new Date(this);
@@ -153,7 +164,6 @@ $('#quickAccess').click(function() {
     quickAccess.innerHTML = '&#x2039;';
     $('#quickAccessObjects').addClass('quickAccessObjectsHide');
     $('#quickAccessObjects').removeClass('quickAccessObjectsShow');
-    console.log('working');
   } else {
     quickAccess.innerHTML = '&#x203A';
     $('#quickAccessObjects').addClass('quickAccessObjectsShow');
@@ -161,9 +171,7 @@ $('#quickAccess').click(function() {
   }
 });
 
-$('#empty').click(function() {
-  console.log('testing');
-});
+$('#empty').click(function() {});
 
 
 
@@ -386,7 +394,6 @@ function loadSnippetsModal(obj) {
 function copiedAlert(e) {
   let templateObjId = $(e.target).closest(`li[class^='template']`).attr('id');
   let templateObj = document.getElementById(templateObjId).querySelector('#copiedAlert');
-  console.log(templateObj);
   $(templateObj).addClass('animateCopied');
   setTimeout(function() {
       $(templateObj).removeClass('animateCopied');
@@ -510,7 +517,6 @@ function buildEmail(body, program, replyEmail, greeting, closing, templateId, us
     var website = 'Website: www.ixl.com</br>';
     var logoLocation = `'https://c.na57.content.force.com/servlet/servlet.ImageServer?id=0150b0000027zq8&oid=00D300000001FBU&lastMod=1495736864000'`
     var logo = `<img src= ${logoLocation} alt='ixl-logo'>`;
-    console.log(templateId);
     var signature = `${valediction} ${name} ${email} ${phone} ${website} ${logo}`;
     if (eventId == 'reply') {
       return `Hi NAME, </br></br>Thank you for your reply.</br></br>${body} ${closing}</br></br>${signature}`;
