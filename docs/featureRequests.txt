@@ -1,25 +1,26 @@
 *****Pending Feature requests*****
-2. Change backup from mLab (third party server) to IXL server. Train Admins on how to restore data using backup on IXL server. Create google doc that automatically inserts templates for users to access in case site crashes.
-6. Search by folders using #l1 #skillissues #l2)
-9. Let users select what team and program they are doing.
-11. Data tracking (when were templates used, by whom, how many times);
-12. Quick Access to templates
-14. Folders? Better ways to search?
-Creating a place for "notes" on templates so people who are unfamiliar with them have some more context as to where they'd be appropriate
+Change backup from mLab (third party server) to IXL server. Train Admins on how to restore data using backup on IXL server. Create google doc that automatically inserts templates for users to access in case site crashes.
+Let users select what team and program they are doing when signing up the first time.
+Data tracking (when were templates used, by whom, how many times);
+Add drill down feature (click on categories, click on vetted icons, etc) as a way to drill down.
 
+*****Building Feature requests*****
+Quotation marks for searching
+Quick Access to templates
+Change backup from mLab (third party server) to IXL server. Train Admins on how to restore data using backup on IXL server. Create google doc that automatically inserts templates for users to access in case site crashes.
 
 *****Completed Feature requests*****
-Increase speed - reorganized how templates are passed through from server to client
+Increase speed reorganized how templates are passed through from server to client
 Copy link to share with others on your team.
 Make system bulletproof by adding try/catch statements to handle errors.
 Hold down CTRL key to show alternate copy that when clicked changes greeting to Hello NAME, Thank you for your reply.
 Make it so SSO doesn't have to be every time
 Removed update logs on 10/8
--Make it easier to identify platform for estudio, HLC, QuiaBooks, etc. in QB templates. (Versions).
--Debbie suggested adding the template numbers as tags. For example, the skill error template will have a tag `07`. So if you want to look for that template, you could just type `07` in the search bar and it would come up. I'm going to add this to a list of feature requests. Please let me know if you have any other thoughts.
--Add number next to search bar that shows total number of templates found
--Have each EJS do the rank computation, rather than the javascript. (Speed!)
--Make a way to paste in the username and pw link into the user/pass request e-mail and have it generate an e-mail with the username and link to be ready to copy and paste. Have it identify if the username is a custom domain, if so, then include that in the sign in link.
--Doraly suggested adding different shape and color for personal templates
--Updated verified icons to circles
--Add @mjenkins to search feature.
+Make it easier to identify platform for estudio, HLC, QuiaBooks, etc. in QB templates. (Versions).
+Debbie suggested adding the template numbers as tags. For example, the skill error template will have a tag `07`. So if you want to look for that template, you could just type `07` in the search bar and it would come up. I'm going to add this to a list of feature requests. Please let me know if you have any other thoughts.
+Add number next to search bar that shows total number of templates found
+Have each EJS do the rank computation, rather than the javascript. (Speed!)
+Make a way to paste in the username and pw link into the user/pass request email and have it generate an email with the username and link to be ready to copy and paste. Have it identify if the username is a custom domain, if so, then include that in the sign in link.
+Doraly suggested adding different shape and color for personal templates
+Updated verified icons to circles
+Add @mjenkins to search feature.
