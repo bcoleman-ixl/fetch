@@ -69,12 +69,10 @@ function test(filterArr, content) {
 
   // For string which has quotes surrounding it
   if (searchString[0] == "\"" && searchString[searchString.length - 1] == "\"") {
-    searchString = searchString.replace("\"", "");
+    searchString = searchString.replace(/\"/g, "");
     for (let m = 0; m < filterArr.length; m++) {
       // If at any point item content doesn't match the filter, return false
-      inputString = "\\b" + searchString.replace(" ", "\\b \\b") + "\\b";
-      console.log(inputString);
-      if (content.toUpperCase().match(inputString.toUpperCase()) == null) {
+      if (content.toUpperCase().match(searchString.toUpperCase()) == null) {
         return false;
       }
     }
