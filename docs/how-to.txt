@@ -10,6 +10,9 @@ db.users.update({}, {$set : {"vettingRights": false}}, {upsert: false, multi:tru
 Update current field with condition
 db.templates.update({"addedByUser" : "salesforce@salesforce.com"}, {$set : {"vetted": "Yes"}}, {upsert: false, multi:true})
 
+Update current field where field is null
+db.templates.update({"ranking" : {"$exists": false}}, {$set : {"ranking": 0}}, {upsert: false, multi:true})
+
 
 ****MySQL****
 1. Open secure connection with Scruffy using PuTTY
