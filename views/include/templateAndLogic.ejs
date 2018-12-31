@@ -39,14 +39,19 @@ errorMessage = e %>
   <% } else { %>
 <li id='<%= templates[i].id %>' class='template user <%= errorStatus %>' style="display:none">
   <% } %>
+  <div class="copiedAlert" id="copiedAlert">
+    <svg class="<%= i %>" viewBox="0 0 512 512" id="thumbsUp">
+      <path d="M104 224H24c-13.255 0-24 10.745-24 24v240c0 13.255 10.745 24 24 24h80c13.255 0 24-10.745 24-24V248c0-13.255-10.745-24-24-24zM64 472c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24zM384 81.452c0 42.416-25.97 66.208-33.277 94.548h101.723c33.397 0 59.397 27.746 59.553 58.098.084 17.938-7.546 37.249-19.439 49.197l-.11.11c9.836 23.337 8.237 56.037-9.308 79.469 8.681 25.895-.069 57.704-16.382 74.757 4.298 17.598 2.244 32.575-6.148 44.632C440.202 511.587 389.616 512 346.839 512l-2.845-.001c-48.287-.017-87.806-17.598-119.56-31.725-15.957-7.099-36.821-15.887-52.651-16.178-6.54-.12-11.783-5.457-11.783-11.998v-213.77c0-3.2 1.282-6.271 3.558-8.521 39.614-39.144 56.648-80.587 89.117-113.111 14.804-14.832 20.188-37.236 25.393-58.902C282.515 39.293 291.817 0 312 0c24 0 72 8 72 81.452z">
+      </path>
+    </svg>
+  </div>
+  <div class="templateNameSection">
 
-  <div class="row">
-    <div class="col-lg-11 col-md-11 col-sm-11 nameCol">
-      <h2 id='templateName'>
-        <%= templates[i].name %>
-      </h2>
-    </div>
-    <div class="col-lg-1 col-md-1 col-sm-1 vettedCol">
+    <h2 id='templateName'>
+      <%= templates[i].name %>
+    </h2>
+
+    <div class="vettedCol">
       <span class="tooltiptext"> Updated:
         <%= templates[i].updatedDate %>
         <br> Clicks:
@@ -68,201 +73,194 @@ errorMessage = e %>
       <% } %>
     </div>
   </div>
-  <div class="details">
-    <span id='templateRanking' hidden>
-      <%= templates[i].ranking %></span>
-    <span id='templateCopyFull' hidden>
-      <%= templates[i].copyFull %></span>
-    <span id='templateCopyPortion' hidden>
-      <%= templates[i].copyPortion %></span>
-    <span id='templateCopyPortion' hidden>
-      <%= templates[i].id %></span>
-    <span id='templateProgramWithHash'>
-      <%= "#" + program.toString().trim()%>
-    </span>
-    <div id="copyPortion">
-      <button class="buttonStyle" type="button" name="button" id="copyPortionBtn">
-        <svg viewBox="0 0 576 512">
-          <path d="M569.354 231.631C512.969 135.949 407.81 72 288 72 168.14 72 63.004 135.994 6.646 231.631a47.999 47.999 0 0 0 0 48.739C63.031 376.051 168.19 440 288 440c119.86 0 224.996-63.994 281.354-159.631a47.997 47.997 0 0 0 0-48.738zM288 392c-75.162 0-136-60.827-136-136 0-75.162 60.826-136 136-136 75.162 0 136 60.826 136 136 0 75.162-60.826 136-136 136zm104-136c0 57.438-46.562 104-104 104s-104-46.562-104-104c0-17.708 4.431-34.379 12.236-48.973l-.001.032c0 23.651 19.173 42.823 42.824 42.823s42.824-19.173 42.824-42.823c0-23.651-19.173-42.824-42.824-42.824l-.032.001C253.621 156.431 270.292 152 288 152c57.438 0 104 46.562 104 104z">
-          </path>
-        </svg>
-      </button>
-    </div>
-    <div id="snippets">
-      <button class="buttonStyle" type="button" name="button" id="snippetsBtn">
-        <svg viewBox="0 0 576 512">
-          <path d="M288 12.3V240h227.7c6.9 0 12.3-5.8 12-12.7-6.4-122.4-104.5-220.6-227-227-6.9-.3-12.7 5.1-12.7 12zM552.7 288c6.9 0 12.3 5.8 12 12.7-2.8 53.2-23.2 105.6-61.2 147.8-4.6 5.1-12.6 5.4-17.5.5L325 288h227.7zM401 433c4.8 4.8 4.7 12.8-.4 17.3-42.6 38.4-99 61.7-160.8 61.7C107.6 511.9-.2 403.8 0 271.5.2 143.4 100.8 38.9 227.3 32.3c6.9-.4 12.7 5.1 12.7 12V272l161 161z"></path>
-        </svg>
-      </button>
-    </div>
-    <div id="reply">
-      <button class="buttonStyle" type="button" name="button" id="replyBtn">
-        <svg viewBox="0 0 512 512">
-          <path d="M8.309 189.836L184.313 37.851C199.719 24.546 224 35.347 224 56.015v80.053c160.629 1.839 288 34.032 288 186.258 0 61.441-39.581 122.309-83.333 154.132-13.653 9.931-33.111-2.533-28.077-18.631 45.344-145.012-21.507-183.51-176.59-185.742V360c0 20.7-24.3 31.453-39.687 18.164l-176.004-152c-11.071-9.562-11.086-26.753 0-36.328z"></path>
-        </svg>
-      </button>
-    </div>
-    <% if(user.team == "teacherMemberships" &&  templates[i].quote) { %>
-    <div id="quote">
-      <button class="buttonStyle" type="button" name="button" id="quoteBtn">
-        <svg viewBox="0 0 512 512">
-          <path d="M464 256h-80v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8c-88.4 0-160 71.6-160 160v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48zm-288 0H96v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8C71.6 32 0 103.6 0 192v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48z"></path>
-        </svg>
-      </button>
-    </div>
-    <%} %>
+  <div class="templateButtonsSection">
+    <div class="details">
+      <span id='templateRanking' hidden>
+        <%= templates[i].ranking %></span>
+      <span id='templateCopyFull' hidden>
+        <%= templates[i].copyFull %></span>
+      <span id='templateCopyPortion' hidden>
+        <%= templates[i].copyPortion %></span>
+      <span id='templateCopyPortion' hidden>
+        <%= templates[i].id %></span>
+      <span id='templateProgramWithHash'>
+        <%= "#" + program.toString().trim()%>
+      </span>
+      <div id="copyPortion">
+        <button class="buttonStyle" type="button" name="button" id="copyPortionBtn">
+          <svg viewBox="0 0 576 512">
+            <path d="M569.354 231.631C512.969 135.949 407.81 72 288 72 168.14 72 63.004 135.994 6.646 231.631a47.999 47.999 0 0 0 0 48.739C63.031 376.051 168.19 440 288 440c119.86 0 224.996-63.994 281.354-159.631a47.997 47.997 0 0 0 0-48.738zM288 392c-75.162 0-136-60.827-136-136 0-75.162 60.826-136 136-136 75.162 0 136 60.826 136 136 0 75.162-60.826 136-136 136zm104-136c0 57.438-46.562 104-104 104s-104-46.562-104-104c0-17.708 4.431-34.379 12.236-48.973l-.001.032c0 23.651 19.173 42.823 42.824 42.823s42.824-19.173 42.824-42.823c0-23.651-19.173-42.824-42.824-42.824l-.032.001C253.621 156.431 270.292 152 288 152c57.438 0 104 46.562 104 104z">
+            </path>
+          </svg>
+        </button>
+      </div>
+      <div id="snippets">
+        <button class="buttonStyle" type="button" name="button" id="snippetsBtn">
+          <svg viewBox="0 0 576 512">
+            <path d="M288 12.3V240h227.7c6.9 0 12.3-5.8 12-12.7-6.4-122.4-104.5-220.6-227-227-6.9-.3-12.7 5.1-12.7 12zM552.7 288c6.9 0 12.3 5.8 12 12.7-2.8 53.2-23.2 105.6-61.2 147.8-4.6 5.1-12.6 5.4-17.5.5L325 288h227.7zM401 433c4.8 4.8 4.7 12.8-.4 17.3-42.6 38.4-99 61.7-160.8 61.7C107.6 511.9-.2 403.8 0 271.5.2 143.4 100.8 38.9 227.3 32.3c6.9-.4 12.7 5.1 12.7 12V272l161 161z"></path>
+          </svg>
+        </button>
+      </div>
+      <div id="reply">
+        <button class="buttonStyle" type="button" name="button" id="replyBtn">
+          <svg viewBox="0 0 512 512">
+            <path d="M8.309 189.836L184.313 37.851C199.719 24.546 224 35.347 224 56.015v80.053c160.629 1.839 288 34.032 288 186.258 0 61.441-39.581 122.309-83.333 154.132-13.653 9.931-33.111-2.533-28.077-18.631 45.344-145.012-21.507-183.51-176.59-185.742V360c0 20.7-24.3 31.453-39.687 18.164l-176.004-152c-11.071-9.562-11.086-26.753 0-36.328z"></path>
+          </svg>
+        </button>
+      </div>
+      <% if(user.team == "teacherMemberships" &&  templates[i].quote) { %>
+      <div id="quote">
+        <button class="buttonStyle" type="button" name="button" id="quoteBtn">
+          <svg viewBox="0 0 512 512">
+            <path d="M464 256h-80v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8c-88.4 0-160 71.6-160 160v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48zm-288 0H96v-64c0-35.3 28.7-64 64-64h8c13.3 0 24-10.7 24-24V56c0-13.3-10.7-24-24-24h-8C71.6 32 0 103.6 0 192v240c0 26.5 21.5 48 48 48h128c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48z"></path>
+          </svg>
+        </button>
+      </div>
+      <%} %>
 
-    <% if(templates[i].versions != null ) {
+      <% if(templates[i].versions != null ) {
 var isEmpty = true;
 for(r = 0; r < templates[i].versions.length; r++) {
 if(templates[i].versions[r][1] != '') {
 var isEmpty = false;
 break;}} %>
-    <% if(!isEmpty) { %>
-    <div id="versions">
-      <button class="buttonStyle" type="button" name="button" id="versionsBtn">
-        <svg viewBox="0 0 512 512">
-          <path d="M296 32h192c13.255 0 24 10.745 24 24v160c0 13.255-10.745 24-24 24H296c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24zm-80 0H24C10.745 32 0 42.745 0 56v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zM0 296v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm296 184h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H296c-13.255 0-24 10.745-24 24v160c0 13.255 10.745 24 24 24z">
-          </path>
-        </svg>
-      </button>
+      <% if(!isEmpty) { %>
+      <div id="versions">
+        <button class="buttonStyle" type="button" name="button" id="versionsBtn">
+          <svg viewBox="0 0 512 512">
+            <path d="M296 32h192c13.255 0 24 10.745 24 24v160c0 13.255-10.745 24-24 24H296c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24zm-80 0H24C10.745 32 0 42.745 0 56v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zM0 296v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm296 184h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H296c-13.255 0-24 10.745-24 24v160c0 13.255 10.745 24 24 24z">
+            </path>
+          </svg>
+        </button>
+      </div>
+      <% } %>
+      <% } %>
+      <% if (templates[i].addedByUser != user.email || templates[i].publicStatus != 'false') { %>
+      <div id="share">
+        <button class="buttonStyle" type="button" name="button" id="shareBtn">
+          <svg viewBox="0 0 512 512">
+            <path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z">
+            </path>
+          </svg>
+        </button>
+      </div>
+      <% } %>
+      <% if (templates[i].publicStatus == 'false' || user.type == 'admin' || templates[i].addedByUser == user.email) { %>
+      <% if (templates[i].addedByUser == user.email || user.type == 'admin') { %>
+      <div id="edit">
+        <button class="buttonStyle" type="button" name="button" id="editBtn">
+          <svg viewBox="0 0 512 512">
+            <path d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z">
+            </path>
+          </svg>
+        </button>
+      </div>
+      <% } %>
+      <% if (templates[i].addedByUser == user.email || user.type == 'admin') { %>
+      <div id="removeConfirm">
+        <button class="buttonStyle" type="button" name="button" id="removeConfirmBtn">
+          <svg viewBox="0 0 448 512">
+            <path d="M192 188v216c0 6.627-5.373 12-12 12h-24c-6.627 0-12-5.373-12-12V188c0-6.627 5.373-12 12-12h24c6.627 0 12 5.373 12 12zm100-12h-24c-6.627 0-12 5.373-12 12v216c0 6.627 5.373 12 12 12h24c6.627 0 12-5.373 12-12V188c0-6.627-5.373-12-12-12zm132-96c13.255 0 24 10.745 24 24v12c0 6.627-5.373 12-12 12h-20v336c0 26.51-21.49 48-48 48H80c-26.51 0-48-21.49-48-48V128H12c-6.627 0-12-5.373-12-12v-12c0-13.255 10.745-24 24-24h74.411l34.018-56.696A48 48 0 0 1 173.589 0h100.823a48 48 0 0 1 41.16 23.304L349.589 80H424zm-269.611 0h139.223L276.16 50.913A6 6 0 0 0 271.015 48h-94.028a6 6 0 0 0-5.145 2.913L154.389 80zM368 128H80v330a6 6 0 0 0 6 6h276a6 6 0 0 0 6-6V128z">
+            </path>
+          </svg>
+        </button>
+      </div>
+      <% } %>
+      <% } %>
     </div>
-    <% } %>
-    <% } %>
-    <% if (templates[i].addedByUser != user.email || templates[i].publicStatus != 'false') { %>
-    <div id="share">
-      <button class="buttonStyle" type="button" name="button" id="shareBtn">
-        <svg viewBox="0 0 512 512">
-          <path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z">
-          </path>
-        </svg>
-      </button>
-    </div>
-    <% } %>
-    <% if (templates[i].publicStatus == 'false' || user.type == 'admin' || templates[i].addedByUser == user.email) { %>
-    <% if (templates[i].addedByUser == user.email || user.type == 'admin') { %>
-    <div id="edit">
-      <button class="buttonStyle" type="button" name="button" id="editBtn">
-        <svg viewBox="0 0 512 512">
-          <path d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z">
-          </path>
-        </svg>
-      </button>
-    </div>
-    <% } %>
-    <% if (templates[i].addedByUser == user.email || user.type == 'admin') { %>
-    <div id="removeConfirm">
-      <button class="buttonStyle" type="button" name="button" id="removeConfirmBtn">
-        <svg viewBox="0 0 448 512">
-          <path d="M192 188v216c0 6.627-5.373 12-12 12h-24c-6.627 0-12-5.373-12-12V188c0-6.627 5.373-12 12-12h24c6.627 0 12 5.373 12 12zm100-12h-24c-6.627 0-12 5.373-12 12v216c0 6.627 5.373 12 12 12h24c6.627 0 12-5.373 12-12V188c0-6.627-5.373-12-12-12zm132-96c13.255 0 24 10.745 24 24v12c0 6.627-5.373 12-12 12h-20v336c0 26.51-21.49 48-48 48H80c-26.51 0-48-21.49-48-48V128H12c-6.627 0-12-5.373-12-12v-12c0-13.255 10.745-24 24-24h74.411l34.018-56.696A48 48 0 0 1 173.589 0h100.823a48 48 0 0 1 41.16 23.304L349.589 80H424zm-269.611 0h139.223L276.16 50.913A6 6 0 0 0 271.015 48h-94.028a6 6 0 0 0-5.145 2.913L154.389 80zM368 128H80v330a6 6 0 0 0 6 6h276a6 6 0 0 0 6-6V128z">
-          </path>
-        </svg>
-      </button>
-    </div>
-    <% } %>
-    <% } %>
   </div>
-  <div class="row">
-    <div class="col-lg-12 col-md-12 col-sm-12">
-      <% if(errorStatus == 'error') { %>
-      <div class='<%= templates[i].category %> templateBodyUser' ondragover="allowDrop(event)" id="templateBodyError">
-        <br> Error message:
-        <%= errorMessage %>
-        <br> Template Id:
-        <%= templates[i].id %>
-        <br> Template Name:
-        <%= templates[i].name %>
-        <br> Template Category:
-        <%= templates[i].category %>
-        <br> Template Program:
-        <%= templates[i].program %>
-        <div class='<%= templates[i].category %> templateBodyUser' ondragover="allowDrop(event)" id='templateBody' hidden>
-          <%- templates[i].body %>
-        </div>
-      </div>
-      <% } else { %>
-      <div class="accountTypes" id="accountTypes">
-      </div>
-      <div class="countries" id="countries">
-
-      </div>
-      <div class="subjects" id="subjects">
-      </div>
-      <div class="licenses" id="licenses">
-      </div>
-      <div class='<%= templates[i].category %> templateBodyUser' ondragover="allowDrop(event)" id='templateBody'>
+  <div class="templateBodySection">
+    <% if(errorStatus == 'error') { %>
+    <div class='<%= templates[i].category %> templateBodyUser' ondragover="allowDrop(event)" id="templateBodyError">
+      <br> Error message:
+      <%= errorMessage %>
+      <br> Template Id:
+      <%= templates[i].id %>
+      <br> Template Name:
+      <%= templates[i].name %>
+      <br> Template Category:
+      <%= templates[i].category %>
+      <br> Template Program:
+      <%= templates[i].program %>
+      <div class='<%= templates[i].category %> templateBodyUser' ondragover="allowDrop(event)" id='templateBody' hidden>
         <%- templates[i].body %>
       </div>
-      <% if(templates[i].versions != null) { %>
-      <% var empty = true;
+    </div>
+    <% } else { %>
+    <div class="accountTypes" id="accountTypes">
+    </div>
+    <div class="countries" id="countries">
+
+    </div>
+    <div class="subjects" id="subjects">
+    </div>
+    <div class="licenses" id="licenses">
+    </div>
+    <div class='<%= templates[i].category %> templateBodyUser' ondragover="allowDrop(event)" id='templateBody'>
+      <%- templates[i].body %>
+    </div>
+    <% if(templates[i].versions != null) { %>
+    <% var empty = true;
       for(r = 0; r < templates[i].versions.length; r++) {
         if(templates[i].versions[r][1] != '') {
           var empty = false;
           break;
         }
       } %>
-      <% if(!empty) { %>
-      <div class="versions">
-        <% for(k = 0; k < templates[i].versions.length; k++) { %>
-        <div class="<%= 'version' + k %>">
-          <div class="versionDescription" id="<%= 'versionDescription' + k %>">
-            <%= templates[i].versions[k][0];%>
-          </div>
-          <div id="<%= 'versionBody' + k %>" hidden>
-            <%- templates[i].versions[k][1];%>
-          </div>
+    <% if(!empty) { %>
+    <div class="versions">
+      <% for(k = 0; k < templates[i].versions.length; k++) { %>
+      <div class="<%= 'version' + k %>">
+        <div class="versionDescription" id="<%= 'versionDescription' + k %>">
+          <%= templates[i].versions[k][0];%>
         </div>
-        <% } %>
+        <div id="<%= 'versionBody' + k %>" hidden>
+          <%- templates[i].versions[k][1];%>
+        </div>
       </div>
       <% } %>
-      <% } %>
-      <% } %>
     </div>
+    <% } %>
+    <% } %>
+    <% } %>
+
   </div>
-  <div class='row'>
-    <div class='col-lg-7 col-md-7 col-sm-7'>
-      <h3 class='tags' id="templateTags">
-        <%= templates[i].tags %>
-      </h3>
-      <h3 class='type' id='templateTeam' hidden>
-        <%= templates[i].team %>
-      </h3>
-      <h3 class='type' id='templateProgram' hidden>
-        <%= templates[i].program %>
-      </h3>
-      <h3 class='type' id='templateAddedByUser' hidden>
-        <%= "@" + templates[i].addedByUser %>
-      </h3>
-      <h3 class='type' id='templatePublicStatus' hidden>
-        <%= templates[i].publicStatus %>
-      </h3>
-      <h3 class='type' id='templateReplyEmail' hidden>
-        <%= templates[i].replyEmail %>
-      </h3>
-      <h3 class='type' id='templateGreeting' hidden>
-        <%= templates[i].greeting %>
-      </h3>
-      <h3 class='type' id='templateClosing' hidden>
-        <%= templates[i].closing %>
-      </h3>
-      <h3 class='type' id='templateFolder' hidden>
-        <%= templates[i].folder %>
-      </h3>
-      <h3 class='type' id='templateVetted' hidden>
-        <%= templates[i].vetted %>
-      </h3>
-    </div>
-    <div class='col-lg-5 col-md-5 col-sm-5 alignRight'>
-      <div class="copiedAlert" id="copiedAlert">
-        <svg class="<%= i %>" viewBox="0 0 512 512" id="thumbsUp">
-          <path d="M104 224H24c-13.255 0-24 10.745-24 24v240c0 13.255 10.745 24 24 24h80c13.255 0 24-10.745 24-24V248c0-13.255-10.745-24-24-24zM64 472c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24zM384 81.452c0 42.416-25.97 66.208-33.277 94.548h101.723c33.397 0 59.397 27.746 59.553 58.098.084 17.938-7.546 37.249-19.439 49.197l-.11.11c9.836 23.337 8.237 56.037-9.308 79.469 8.681 25.895-.069 57.704-16.382 74.757 4.298 17.598 2.244 32.575-6.148 44.632C440.202 511.587 389.616 512 346.839 512l-2.845-.001c-48.287-.017-87.806-17.598-119.56-31.725-15.957-7.099-36.821-15.887-52.651-16.178-6.54-.12-11.783-5.457-11.783-11.998v-213.77c0-3.2 1.282-6.271 3.558-8.521 39.614-39.144 56.648-80.587 89.117-113.111 14.804-14.832 20.188-37.236 25.393-58.902C282.515 39.293 291.817 0 312 0c24 0 72 8 72 81.452z">
-          </path>
-        </svg>
-      </div>
-      <h3 class='category' id="templateCategory"><span class="<%= category %>" id="categorySpan">
-          <%= templates[i].category %> </span></h3>
-    </div>
+  <div class='templateFooterSection'>
+    <span class='tags' id="templateTags">
+      <%= templates[i].tags %>
+    </span>
+    <span class='category' id="templateCategory"><span class="<%= category %>" id="categorySpan">
+        <%= templates[i].category %> </span>
+    </span>
+    <h3 class='type' id='templateTeam' hidden>
+      <%= templates[i].team %>
+    </h3>
+    <h3 class='type' id='templateProgram' hidden>
+      <%= templates[i].program %>
+    </h3>
+    <h3 class='type' id='templateAddedByUser' hidden>
+      <%= "@" + templates[i].addedByUser %>
+    </h3>
+    <h3 class='type' id='templatePublicStatus' hidden>
+      <%= templates[i].publicStatus %>
+    </h3>
+    <h3 class='type' id='templateReplyEmail' hidden>
+      <%= templates[i].replyEmail %>
+    </h3>
+    <h3 class='type' id='templateGreeting' hidden>
+      <%= templates[i].greeting %>
+    </h3>
+    <h3 class='type' id='templateClosing' hidden>
+      <%= templates[i].closing %>
+    </h3>
+    <h3 class='type' id='templateFolder' hidden>
+      <%= templates[i].folder %>
+    </h3>
+    <h3 class='type' id='templateVetted' hidden>
+      <%= templates[i].vetted %>
+    </h3>
   </div>
+
 </li>
 <% } else { %>
 <% errorCount = errorCount + 1;%>
