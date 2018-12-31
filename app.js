@@ -113,6 +113,12 @@ const programs = [
   'QW',
   'TM'
 ];
+
+
+
+
+
+
 /**
  * Checking if users have been authenticated
  * Redirect to authenticate if user is null
@@ -124,6 +130,7 @@ const authCheck = (req, res, next) => {
     next();
   }
 }
+
 
 /**
  * Checking if users have been authenticated
@@ -145,6 +152,7 @@ const authCheckAdmin = (req, res, next) => {
     next();
   }
 }
+
 
 /**
  * Use embedded Javascript as the view engine
@@ -517,8 +525,8 @@ passport.use(new GoogleStrategy({
           name: profile.name.givenName,
           googleID: profile.id,
           img: profile._json.image.url,
-          team: 'teacherMemberships',
-          programs: ['TM'],
+          team: 'null',
+          programs: ['NULL'],
           type: 'user',
           vettingRights: false,
           email: profile.emails[0].value
@@ -768,7 +776,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
           }
           // fields in Account relationship are fetched
           if (record.Body != null && record.IsActive == true) {
-
+            console.log(record.Name);
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
@@ -806,6 +814,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       tsqbstolen +
       tsqbdeletion +
       tsalkitaab +
+      tsestudio +
       end)
     .execute(function(err, records) {
       try {
@@ -839,6 +848,8 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
           }
           // fields in Account relationship are fetched
           if (record.Body != null && record.IsActive == true) {
+            console.log(record.Name);
+
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
