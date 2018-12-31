@@ -145,6 +145,8 @@ h5 {
   display: none;
   padding: 0px;
   text-align: center;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 #search-bar {
@@ -164,8 +166,14 @@ h5 {
   margin: 0 auto;
   position: relative;
   min-height: 1px;
-  padding-right: 15px;
-  padding-left: 60px;
+  padding-right: 20px;
+  padding-left: 40px;
+}
+
+@media screen and (max-width: 700px) {
+  .searchBarRow {
+    width: 450px;
+  }
 }
 
 .quickAccess {
@@ -350,20 +358,21 @@ h5 {
   position: relative;
   z-index: 5;
   padding: 1em 2em 2em 2em;
-  margin: 10px 5px 5px 5px;
   border-radius: var(--fivePxRadius);
   box-shadow: 0px 4px 10px gainsboro;
   border: 1.15px solid #a9a9a9;
+  max-width: 100%;
+  margin: 10px;
 }
 
 .copiedAlert {
   position: relative;
-  left: -120px;
-top: -170px;
+  top: 120px;
   display: block;
   opacity: 0;
   height: 0;
-  z-index: -1
+  z-index: -1;
+  right: 15px;
 }
 
 .animateCopied {
@@ -403,11 +412,28 @@ top: -170px;
   box-shadow: 0px 4px 10px var(--lightGray);
 }
 
+.templateNameSection, .templateButtonsSection, .templateBodySection, .templateFooterSection {
+  display: inline;
+}
+
+.templateNameSection {}
+
+.templateButtonsSection {}
+
+.templateBodySection {
+  height: 100px;
+}
+
+.templateFooterSection {
+  width: 100vw;
+}
+
 .vettedCol {
-  padding-top: 13px !important;
-  padding-right: 13px !important;
-  padding-left: 0px !important;
   cursor: pointer;
+  position: relative;
+  width: 20px;
+  float: right;
+  top: -55px;
 }
 
 .overflow {
@@ -459,6 +485,13 @@ top: -170px;
   height: 80px;
   padding: 10px 13px 10px 13px;
   position: absolute;
+  position: relative;
+  /* left: 0px; */
+  top: 125px;
+  display: block;
+  opacity: 1;
+  height: 0;
+  z-index: -1;
   background-color: #E0E0E0;
   border-radius: var(--fivePxRadius);
   text-align: left;
@@ -607,10 +640,6 @@ top: -170px;
   cursor: text;
 }
 
-.versions {
-  display: none;
-}
-
 .instructions {
   display: inline-block;
   position: absolute;
@@ -660,7 +689,13 @@ top: -170px;
   opacity: 1;
 }
 
+.versions {
+  position: relative;
+  display: inline-block;
+}
+
 .version0, .version1, .version2, .version3 {
+  display: inline-block;
   position: absolute;
   font: var(--arialFont);
   color: var(--gray);
@@ -728,17 +763,21 @@ top: -170px;
 }
 
 /* Tag colors */
-.tags, .category {
+.tags {
   font-family: var(--gothicFont);
   font-size: 14px !important;
-  text-align: right;
-}
-
-.tags {
-  color: var(--lightGray);
   text-align: left;
+  float: left;
+  color: var(--lightGray);
   white-space: nowrap;
   text-overflow: ellipsis;
+  margin: 20px 0px 10px 0px;
+}
+
+.category {
+  text-align: right;
+  float: right;
+  margin: 20px 0px 10px 0px;
 }
 
 #categorySpan {
@@ -811,7 +850,7 @@ top: -170px;
 }
 
 .space {
-  width: 100vw;
+  width: 99vw;
   text-align: center;
 }
 
@@ -1183,17 +1222,17 @@ top: -170px;
 /* END Navbar styling  */
 /* Customize scroll bar */
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 6.5px;
 }
 
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.1);
   border-radius: var(--fivePxRadius);
 }
 
 ::-webkit-scrollbar-thumb {
   border-radius: var(--fivePxRadius);
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 /* Styles for admin portal */
