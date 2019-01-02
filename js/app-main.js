@@ -418,7 +418,7 @@ function showOptions() {
 function versionsDisplay(versionsElement) {
   if (versionsElement.style.opacity < 1) {
     versionsElement.style.opacity = 1;
-    versionsElement.style.display = 'inline';
+    versionsElement.style.display = 'table-row';
 
   } else {
     versionsElement.style.opacity = 0;
