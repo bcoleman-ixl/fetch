@@ -108,6 +108,38 @@ document.addEventListener('DOMContentLoaded', function() {
 }, false);
 
 
+var searchByClick = document.getElementsByClassName("searchByClick");
+
+for (var i = 0; i < searchByClick.length; i++) {
+  searchByClick[i].addEventListener('click', handleSearchByClick, false);
+}
+
+function handleSearchByClick(e) {
+  console.log(e.target.id);
+  if (e.target.id == "vetted" || e.target.id == "vettedSvg") {
+    appendSearch('#vetted=yes');
+  } else if (e.target.id == "templateCategoryText") {
+    var target = e.target || e.srcElement;
+    appendSearch('#category=' + target.innerHTML.trim().toLowerCase());
+  } else if (e.target.id == 'notVettedUser') {
+    userEmail = document.getElementById('userEmail').innerHTML.trim();
+    appendSearch('#user=' + userEmail + ' #public=false');
+  } else if (e.target.id == 'templateProgramWithHash') {
+    var target = e.target || e.srcElement;
+    appendSearch('#program=' + target.innerHTML.replace('#', '').trim().toLowerCase());
+  } else {
+    appendSearch('#vetted=no #public=true');
+    console.log("else: " + e.target.id);
+  }
+}
+
+function appendSearch(textToAppend) {
+  $('#search-bar').val($('#search-bar').val() + " " + textToAppend);
+  document.body.scrollTop = document.documentElement.scrollTop = 0;
+  search();
+}
+
+
 // Scrolls to top, focuses on search box and highlights text
 $(document).on('keydown', function(e) {
   var kc = e.which || e.keyCode;
@@ -158,17 +190,22 @@ $('#clear-search').click(function() {
 
 
 $('#quickAccess').click(function() {
+
+
+  /**
+
   quickAccess = document.getElementById("quickAccess");
   if ($('#quickAccessObjects').hasClass('quickAccessObjectsShow')) {
 
-    quickAccess.innerHTML = '&#x2039;';
-    $('#quickAccessObjects').addClass('quickAccessObjectsHide');
-    $('#quickAccessObjects').removeClass('quickAccessObjectsShow');
-  } else {
-    quickAccess.innerHTML = '&#x203A';
-    $('#quickAccessObjects').addClass('quickAccessObjectsShow');
-    $('#quickAccessObjects').removeClass('quickAccessObjectsHide');
-  }
+  quickAccess.innerHTML = '&#x2039;';
+  $('#quickAccessObjects').addClass('quickAccessObjectsHide');
+  $('#quickAccessObjects').removeClass('quickAccessObjectsShow');
+} else {
+quickAccess.innerHTML = '&#x203A';
+$('#quickAccessObjects').addClass('quickAccessObjectsShow');
+$('#quickAccessObjects').removeClass('quickAccessObjectsHide');
+}
+  */
 });
 
 $('#empty').click(function() {});
@@ -353,6 +390,10 @@ function handleClick(e) {
     } else if (e.target !== e.currentTarget && obj.eventId == 'versions') {
       let versionsElement = document.getElementById(obj.templateId).querySelector('.versions');
       versionsDisplay(versionsElement);
+      /* If info button was clicked */
+    } else if (e.target !== e.currentTarget && obj.eventId == 'info') {
+      let infoElement = document.getElementById(obj.templateId).querySelector('.tooltiptext');
+      infoDisplay(infoElement);
       /* If edit button was clicked */
     } else if (e.target !== e.currentTarget && obj.eventId == 'edit') {
       //  Show manage teampltes modal
@@ -423,6 +464,19 @@ function versionsDisplay(versionsElement) {
   } else {
     versionsElement.style.opacity = 0;
     versionsElement.style.display = 'none';
+  }
+}
+
+function infoDisplay(infoElement) {
+  if (infoElement.style.opacity < 1) {
+    infoElement.style.opacity = 1;
+    infoElement.style.display = 'inline';
+    infoElement.style.zIndex = 1;
+
+  } else {
+    infoElement.style.opacity = 0;
+    infoElement.style.zIndex = 0;
+    infoElement.style.display = 'none';
   }
 }
 
@@ -958,6 +1012,7 @@ function resetQuote(currentQuoteTemplateId) {
 
 function buildQuote(event) {
   // Gets id of template by looking for closest li element with class name `template`
+
   buildingQuote = true;
   switch (event.target.id) {
     case "quote":
