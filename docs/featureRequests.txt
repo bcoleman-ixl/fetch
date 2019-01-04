@@ -2,9 +2,10 @@
 Change backup from mLab (third party server) to IXL server. Train Admins on how to restore data using backup on IXL server. Create google doc that automatically inserts templates for users to access in case site crashes.
 Let users select what team and program they are doing when signing up the first time.
 Data tracking (when were templates used, by whom, how many times);
-Add drill down feature (click on categories, click on vetted icons, etc) as a way to drill down.
+
 
 *****Building Feature requests*****
+Add drill down feature (click on categories, click on vetted icons, etc) as a way to drill down.
 Quotation marks for searching
 Quick Access to templates
 Change backup from mLab (third party server) to IXL server. Train Admins on how to restore data using backup on IXL server. Create google doc that automatically inserts templates for users to access in case site crashes.
