@@ -161,7 +161,7 @@ h5 {
 }
 
 .searchBarRow {
-  width: 700px;
+  width: 950px;
   height: 80px;
   margin: 0 auto;
   position: relative;
@@ -179,6 +179,16 @@ h5 {
 .quickAccess {
   height: 60px;
   display: inline-block;
+}
+
+.quickAccess a {
+  color: var(--darkGray);
+  text-decoration: none;
+}
+
+.quickAccess a:hover {
+  width: 100%;
+  color: var(--gray);
 }
 
 .quickAccessObj, .quickAccessObjEmpty {
@@ -271,6 +281,10 @@ h5 {
   border-right: 1px solid var(--darkGray);
 }
 
+#clear-search:hover {
+  color: var(--gray);
+}
+
 #quickAccess {
   position: absolute;
   color: var(--darkGray);
@@ -279,12 +293,12 @@ h5 {
   bottom: 0;
   width: 24px;
   height: 60px;
-  font-size: 28px;
+  font-size: 23px;
   font-weight: bold;
   cursor: pointer;
   font-family: var(--gothicFont);
   border-radius: 5px 0px 0px 5px;
-  padding-top: 8px;
+  padding-top: 14px;
   padding-bottom: 15px;
   background-color: #e1e1e1;
   border: 1px solid var(--darkGray);
@@ -367,17 +381,17 @@ h5 {
 
 .copiedAlert {
   position: relative;
-  top: 120px;
+  top: -31px;
   display: block;
   opacity: 0;
   height: 0;
   z-index: -1;
-  right: 15px;
+  right: -201px;
 }
 
 .animateCopied {
   animation-name: grow;
-  animation-duration: 0.5s;
+  animation-duration: 0.7s;
 }
 
 @keyframes grow {
@@ -387,14 +401,14 @@ h5 {
   }
 
   to {
-    transform: scale(1.3);
-    opacity: 0;
+    transform: scale(1.2);
+    opacity: 1;
   }
 }
 
 #thumbsUp {
   fill: var(--green);
-  font-size: 6em;
+  font-size: 2em;
   height: 1em;
   vertical-align: -.125em;
 }
@@ -480,41 +494,39 @@ h5 {
 
 .tooltiptext {
   top: -80px;
-  left: -125px;
-  width: 200px;
+  left: -343px;
+  width: 365px;
   height: 80px;
   padding: 10px 13px 10px 13px;
   position: absolute;
-  /* position: relative; */
-  /* left: 0px; */
-  top: -95px;
-  display: block;
-  opacity: 1;
-  height: 83px;
-  /* z-index: 9999999999999999; */
-  background-color: #E0E0E0;
-  border-radius: var(--fivePxRadius);
+  top: 67px;
+  display: inline;
+  opacity: 0;
+  font-size: 15px;
+  height: 203px;
+  background-color: #f0f0f0;
   text-align: left;
-  visibility: hidden;
+  z-index: 0;
 }
 
-.tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 65%;
-  border: 1px solid black;
-  margin-left: -5px;
-  border-width: 9px;
-  border-style: solid;
-  border-color: #e0e0e0 transparent transparent transparent;
+#templateProgramWithHash {
+  color: #2b2b2b;
+  background-color: #d0d0d0;
+  font-weight: 600;
+  border-radius: 5px;
+  padding: 3px 2px 3px 8px;
+  font-size: 13px;
+  margin-right: 7px;
+  opacity: 0.7;
+  letter-spacing: 1.5px;
 }
 
-.vettedCol:active .tooltiptext {
-  visibility: visible;
+#templateProgramWithHash:hover {
+  color: #171717;
+  background-color: #dedede;
 }
 
-#copyPortionBtn svg, #editBtn svg, #removeConfirmBtn svg, #snippetsBtn svg, #replyBtn svg, #shareBtn svg, #quoteBtn svg {
+#copyPortionBtn svg, #editBtn svg, #removeConfirmBtn svg, #snippetsBtn svg, #replyBtn svg, #shareBtn svg, #quoteBtn svg, #infoBtn svg {
   height: 18px;
   margin: 0px 3px 0px 3px;
   vertical-align: middle;
@@ -528,7 +540,7 @@ h5 {
   fill: var(--greenAlt);
 }
 
-#copyPortionBtn svg:active, #editBtn svg:active, #removeConfirmBtn svg:active, #versionsBtn svg:active, #snippetsBtn svg:active, #replyBtn svg:active, #shareBtn svg:active, #quoteBtn svg:active {
+#copyPortionBtn svg:active, #editBtn svg:active, #removeConfirmBtn svg:active, #versionsBtn svg:active, #snippetsBtn svg:active, #replyBtn svg:active, #shareBtn svg:active, #quoteBtn svg:active, #infoBtn svg:active {
   opacity: 0.5 !important;
 }
 
@@ -544,6 +556,11 @@ h5 {
 
 #removeConfirmBtn svg:hover {
   fill: var(--red);
+  opacity: 0.8;
+}
+
+#infoBtn svg:hover {
+  fill: var(--lightGray);
   opacity: 0.8;
 }
 
@@ -644,8 +661,9 @@ h5 {
   display: inline-block;
   position: absolute;
   left: 15px;
-  top: -5px;
-  color: var(--drkorange)
+  top: -9px;
+  color: var(--drkorange);
+  margin-bottom: 66px;
 }
 
 .accountTypes, .countries, .subjects, .licenses {
@@ -659,7 +677,8 @@ h5 {
   padding: 12px;
   display: none;
   width: 360px;
-  margin-top: 5px;
+  margin-top: 33px;
+  z-index: 999;
 }
 
 .accountTypes, .countries, .subjects, .licenses {
@@ -766,7 +785,7 @@ h5 {
   cursor: pointer;
 }
 
-#copyPortion, #removeConfirm, #edit, #versions, #snippets, #reply, #share, #quote {
+#copyPortion, #removeConfirm, #edit, #versions, #snippets, #reply, #share, #quote, #info {
   display: inline-block;
   padding: 0px;
 }
@@ -789,72 +808,72 @@ h5 {
   margin: 20px 0px 10px 0px;
 }
 
-#categorySpan {
+.categorySpan {
   text-align: right;
   color: white;
   border-radius: var(--fivePxRadius);
   opacity: var(--categoryOpacity);
-  border: 1.15px solid black;
+  cursor: pointer;
 }
 
 .audio, .quia {
-  padding: 3px 11px 3px 11px !important;
+  padding: 5px 11px 5px 11px !important;
   background: var(--cyan);
 }
 
 .analy {
-  padding: 3px 11px 3px 11px !important;
+  padding: 5px 11px 5px 11px !important;
   background: var(--green);
 }
 
 .diagn, .licen {
-  padding: 3px 11px 3px 11px !important;
+  padding: 5px 11px 5px 11px !important;
   background: var(--purple);
 }
 
 .netwo, .purch {
-  padding: 3px 11px 3px 11px !important;
+  padding: 5px 11px 5px 11px !important;
   background: var(--drkorange);
 }
 
 .repor, .activ {
-  padding: 3px 11px 3px 11px !important;
+  padding: 5px 11px 5px 11px !important;
   background: var(--yellow);
 }
 
 .roste, .trial {
-  padding: 3px 11px 3px 11px !important;
+  padding: 5px 11px 5px 11px !important;
   background: var(--red);
 }
 
 .signi, .site {
-  padding: 3px 11px 3px 11px !important;
+  padding: 5px 11px 5px 11px !important;
   background: var(--orange);
 }
 
 .skill {
-  padding: 3px 11px 3px 11px !important;
+  padding: 5px 11px 5px 11px !important;
   background: var(--blue);
 }
 
 .getti, .resou {
-  padding: 3px 11px 3px 11px !important;
+  padding: 5px 11px 5px 11px !important;
   background: var(--drkyellow);
 }
 
 .smart, .quote {
-  padding: 3px 11px 3px 11px !important;
+  padding: 5px 11px 5px 11px !important;
   background: var(--green);
 }
 
 .keys, .class {
-  padding: 3px 11px 3px 11px !important;
+  padding: 5px 11px 5px 11px !important;
   background: var(--pink);
 }
 
 .cours, .gradi, .media, .repor, .quizz, .surve, .sso, .auto, .cance, .refun, .other {
   color: white;
-  padding: 3px 11px 3px 11px !important;
+  padding: 5px 11px 5px 11px !important;
   background: var(--gray);
 }
 
@@ -880,6 +899,10 @@ h5 {
 #notVettedUser {
   fill: var(--teal);
   opacity: 0.7;
+}
+
+.searchByClickHover:hover {
+  opacity: 0.3 !important;
 }
 
 /* Change glow of search box */
