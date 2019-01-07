@@ -380,28 +380,34 @@ h5 {
 }
 
 .copiedAlert {
-  position: relative;
-  top: -31px;
-  display: block;
+  top: 20px;
+  display: inline;
   opacity: 0;
-  height: 0;
+  background-color: #ffffff;
+  height: 26px;
   z-index: -1;
-  right: -201px;
+  right: 20px;
+  position: absolute;
+  width: 80px;
+  color: #52b700;
+  border-radius: 5px;
+  border: 1px solid #52b700;
+  padding-top: 2px;
+  font-size: 15px;
 }
 
 .animateCopied {
   animation-name: grow;
   animation-duration: 0.7s;
+  z-index: 9;
 }
 
 @keyframes grow {
   from {
-    transform: scale(1);
     opacity: 1;
   }
 
   to {
-    transform: scale(1.2);
     opacity: 1;
   }
 }
@@ -878,7 +884,7 @@ h5 {
 }
 
 .space {
-  width: 99vw;
+  width: 98vw;
   text-align: center;
 }
 

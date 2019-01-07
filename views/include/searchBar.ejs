@@ -5,32 +5,18 @@
 
       <input type='text' class='form-control input-lg' id='search-bar' autofocus="autofocus" placeholder='Search' spellcheck='false'>
 
-      <span id="quickAccess">&#x2039;</span>
+
+      <span class="quickAccess" id="quickAccess">
+        <a href='#manageTemplates' data-toggle='modal' data-target='#manageTemplates' onclick='setTemplateId()'>
+
+          &#x2b;
+        </a>
+      </span>
 
       <span id="templateCount">
       </span>
     </div>
-
-
-    <div class="quickAccessObjectsHide" id="quickAccessObjects">
-
-      <% for(k = 0; k < 4; k ++){ %>
-      <% if (typeof user.toObject().quickAccess[k] === 'undefined') { %>
-      <div class="quickAccessObjEmpty" id="empty">
-      </div>
-
-      <% } else { %>
-      <div class="quickAccessObj" id="<%= user.toObject().quickAccess[k].id %>">
-        <%= user.toObject().quickAccess[k].name.trim() %>
-      </div>
-
-      <% } %>
-      <% } %>
-    </div>
-
-
   </div>
-
 </div>
 
 <div class="row space">
