@@ -23,7 +23,7 @@
   --pink: #e7188d;
   --categoryOpacity: 0.6;
   --navbarOpacity: 0.6;
-  --fivePxRadius: 7px;
+  --pxRadius: 15px;
   --vertSideNavWidth: 350px;
   /* Font for template titles */
   --gothicFont: 'Gothic A1', sans-serif;
@@ -115,12 +115,12 @@ h5 {
 
 #title {
   text-align: center;
-  font-size: 120px;
+  font-size: 131px;
   font-family: var(--titleFont);
-  padding: 0 3% 0 3%;
-  margin: 0 auto;
   cursor: pointer;
   color: #585858;
+  margin: 0px 0px 0px auto;
+  height: 155px;
 }
 
 .wordWall {
@@ -135,8 +135,8 @@ h5 {
   font-size: 18px !important;
   font-family: var(--arialFont);
   font-weight: 100;
-  padding: 0 3% 5px 3%;
-  letter-spacing: 1px;
+  padding: 0 4% 5px 3%;
+  letter-spacing: 7px;
   margin: 0;
 }
 
@@ -157,7 +157,10 @@ h5 {
   margin-top: 15px;
   margin-bottom: 15px;
   box-shadow: 0px 5px 10px #E8E8E8;
-  border-radius: 0px 5px 5px 0px !important;
+  border-top-left-radius: 0px;
+  border-top-right-radius: var(--pxRadius);
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: var(--pxRadius);
 }
 
 .searchBarRow {
@@ -192,7 +195,7 @@ h5 {
 }
 
 .quickAccessObj, .quickAccessObjEmpty {
-  border-radius: var(--fivePxRadius);
+  border-radius: var(--pxRadius);
   font-family: var(--robotoFont);
   height: 44px;
   width: 65px;
@@ -210,7 +213,7 @@ h5 {
 
 .quickAccessObj {
   background-color: var(--blue);
-  border-radius: var(--fivePxRadius);
+  border-radius: var(--pxRadius);
   font-family: var(--robotoFont);
   color: white;
 }
@@ -218,7 +221,7 @@ h5 {
 .quickAccessObjEmpty {
   background-color: white;
   color: var(--blue);
-  border-radius: var(--fivePxRadius);
+  border-radius: var(--pxRadius);
   border: 1px dashed var(--blue);
   font-family: var(--robotoFont);
 }
@@ -273,7 +276,10 @@ h5 {
   font-weight: bold;
   cursor: pointer;
   font-family: var(--gothicFont);
-  border-radius: 0px 5px 5px 0px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: var(--pxRadius);
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: var(--pxRadius);
   padding-top: 8px;
   padding-bottom: 15px;
   background-color: #e1e1e1;
@@ -291,13 +297,16 @@ h5 {
   left: -23px;
   top: 0px;
   bottom: 0;
-  width: 24px;
+  width: 30px;
   height: 60px;
   font-size: 23px;
   font-weight: bold;
   cursor: pointer;
   font-family: var(--gothicFont);
-  border-radius: 5px 0px 0px 5px;
+  border-top-left-radius: var(--pxRadius);
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: var(--pxRadius);
+  border-bottom-right-radius: 0px;
   padding-top: 14px;
   padding-bottom: 15px;
   background-color: #e1e1e1;
@@ -372,7 +381,7 @@ h5 {
   position: relative;
   z-index: 5;
   padding: 1em 2em 2em 2em;
-  border-radius: var(--fivePxRadius);
+  border-radius: var(--pxRadius);
   box-shadow: 0px 4px 10px gainsboro;
   border: 1.15px solid #a9a9a9;
   max-width: 100%;
@@ -425,7 +434,7 @@ h5 {
 
 .error {
   border: 2px solid red !important;
-  border-radius: var(--fivePxRadius) !important;
+  border-radius: var(--pxRadius) !important;
 }
 
 .template:hover {
@@ -492,7 +501,7 @@ h5 {
   color: #E94E3D;
   border: solid 1px #E94E3D;
   outline: none;
-  border-radius: var(--fivePxRadius);
+  border-radius: var(--pxRadius);
   ;
   padding: 5px;
   font-size: 15px;
@@ -694,7 +703,7 @@ h5 {
 
 .type, .countryCode, .subjectQuantity, .numberLicenses, .addSpanish {
   background-color: var(--green);
-  border-radius: var(--fivePxRadius);
+  border-radius: var(--pxRadius);
   border: 1px solid var(--green);
   margin: 2px;
   opacity: .75;
@@ -817,67 +826,67 @@ h5 {
 .categorySpan {
   text-align: right;
   color: white;
-  border-radius: var(--fivePxRadius);
+  border-radius: var(--pxRadius);
   opacity: var(--categoryOpacity);
   cursor: pointer;
 }
 
 .audio, .quia {
   padding: 5px 11px 5px 11px !important;
-  background: var(--cyan);
+  background: var(--cyan) !important;
 }
 
-.analy {
+.analy, .refun {
   padding: 5px 11px 5px 11px !important;
-  background: var(--green);
+  background: var(--green) !important;
 }
 
 .diagn, .licen {
   padding: 5px 11px 5px 11px !important;
-  background: var(--purple);
+  background: var(--purple) !important;
 }
 
 .netwo, .purch {
   padding: 5px 11px 5px 11px !important;
-  background: var(--drkorange);
+  background: var(--drkorange) !important;
 }
 
 .repor, .activ {
   padding: 5px 11px 5px 11px !important;
-  background: var(--yellow);
+  background: var(--yellow) !important;
 }
 
 .roste, .trial {
   padding: 5px 11px 5px 11px !important;
-  background: var(--red);
+  background: var(--red) !important;
 }
 
 .signi, .site {
   padding: 5px 11px 5px 11px !important;
-  background: var(--orange);
+  background: var(--orange) !important;
 }
 
 .skill {
   padding: 5px 11px 5px 11px !important;
-  background: var(--blue);
+  background: var(--blue) !important;
 }
 
 .getti, .resou {
   padding: 5px 11px 5px 11px !important;
-  background: var(--drkyellow);
+  background: var(--drkyellow) !important;
 }
 
 .smart, .quote {
   padding: 5px 11px 5px 11px !important;
-  background: var(--green);
+  background: var(--green) !important;
 }
 
-.keys, .class {
+.keys, .class, .cance {
   padding: 5px 11px 5px 11px !important;
-  background: var(--pink);
+  background: var(--pink) !important;
 }
 
-.cours, .gradi, .media, .repor, .quizz, .surve, .sso, .auto, .cance, .refun, .other {
+.cours, .gradi, .media, .repor, .quizz, .surve, .sso, .auto, .other, .categoryFallback {
   color: white;
   padding: 5px 11px 5px 11px !important;
   background: var(--gray);
@@ -889,7 +898,10 @@ h5 {
 }
 
 .bottom {
-  padding-top: 5em;
+  padding-top: 2em;
+  padding-bottom: 100em;
+  padding-left: 30em;
+  padding-right: 30em;
 }
 
 #vetted {
@@ -941,7 +953,7 @@ h5 {
 
 #addLicenseBtn {
   color: white;
-  border-radius: var(--fivePxRadius);
+  border-radius: var(--pxRadius);
   padding: 7px 15px 7px 15px;
   background: var(--blue);
 }
@@ -1011,7 +1023,7 @@ h5 {
   border: 1px var(--darkGray) solid;
   margin: 4px 0;
   cursor: pointer;
-  border-radius: var(--fivePxRadius);
+  border-radius: var(--pxRadius);
 }
 
 .menubar:hover .bar {
@@ -1021,7 +1033,7 @@ h5 {
   border: 1px var(--blue) solid;
   margin: 4px 0;
   cursor: pointer;
-  border-radius: var(--fivePxRadius);
+  border-radius: var(--pxRadius);
 }
 
 .vertsidenav {
@@ -1204,14 +1216,10 @@ h5 {
   display: inline;
 }
 
-#scruffy {
-  height: 200px;
-  display: none;
-}
-
 #scruffyMessage {
   font-size: 20px;
-  margin: 0px 40px 20px 40px;
+  font-family: var(--arialFont);
+  margin: 0px auto;
   display: none;
 }
 
@@ -1265,11 +1273,11 @@ h5 {
 
 ::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.1);
-  border-radius: var(--fivePxRadius);
+  border-radius: var(--pxRadius);
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: var(--fivePxRadius);
+  border-radius: var(--pxRadius);
   background: rgba(0, 0, 0, 0.2);
 }
 
@@ -1355,7 +1363,7 @@ hr {
   background-color: white;
   text-align: center;
   margin: -250px 0 0 -200px;
-  border-radius: var(--fivePxRadius);
+  border-radius: var(--pxRadius);
   box-shadow: 0px 20px 80px rgba(0, 0, 0, 1);
 }
 
@@ -1456,7 +1464,7 @@ hr {
   display: grid;
   grid-template-columns: 1fr 2fr;
   border: 1px solid black;
-  border-radius: var(--fivePxRadius);
+  border-radius: var(--pxRadius);
   margin: 10px;
 }
 
@@ -1612,6 +1620,12 @@ a:hover {
   padding: 10px;
 }
 
+.header {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
 /* Styling for scruffy */
 .container {
   width: 100%;
@@ -1621,144 +1635,33 @@ a:hover {
   align-items: center;
 }
 
-.scruffy {
-  width: 300px;
-  height: 200px;
-  position: relative;
+.scruffy-the-dog {
+  margin: 0px auto 0px 0px;
+  padding: 24px 0px 0px 12px;
 }
 
-.scruffy-head {
-  width: 150px;
-  height: 140px;
-  position: absolute;
-  z-index: 5;
-  top: 30px;
-  left: calc(50% - 50px);
-  background-color: #efc092;
-  border-radius: 50%;
+.scruffy-the-dog .scruffy {
+  width: 100px;
+  height: 118px;
 }
 
-.scruffy-head:before,
-.scruffy-head:after {
-  content: "";
-  width: 80px;
-  height: 78px;
-  position: absolute;
-  z-index: 5;
-  top: 53px;
-  background-color: #efc092;
-  border-radius: 50%;
+.scruffy-the-dog .scruffy-surprised {
+  width: 100px;
+  height: 118px;
 }
 
-.scruffy-head:before {
-  left: -7px;
-  transform: rotate(50deg);
+.scruffy-the-dog .scruffy-surprised {
+  display: none;
 }
 
-.scruffy-head:after {
-  right: -7px;
-  transform: rotate(-49deg);
+.scruffy-the-dog:hover {
+  cursor: grab;
 }
 
-.scruffy-mouth {
-  width: 91px;
-  height: 61px;
-  background-color: #fee2d2;
-  position: absolute;
-  bottom: -2px;
-  left: 29px;
-  z-index: 10;
-  border-radius: 50%;
+.scruffy-the-dog:active .scruffy {
+  display: none;
 }
 
-.scruffy-eye-left {
-  width: 26px;
-  height: 30px;
-  background-color: #000;
-  position: absolute;
-  top: 44px;
-  left: 34px;
-  border-radius: 50%;
-  z-index: 10;
-  transform: rotate(28deg);
-}
-
-.scruffy-eye-right {
-  width: 26px;
-  height: 30px;
-  background-color: #000;
-  position: absolute;
-  top: 44px;
-  left: 90px;
-  border-radius: 50%;
-  z-index: 10;
-  transform: rotate(-28deg);
-}
-
-.scruffy-eye-right-white {
-  width: 11px;
-  height: 10px;
-  background-color: #fff;
-  position: absolute;
-  top: 60px;
-  left: 103px;
-  border-radius: 50%;
-  z-index: 10;
-  transform: rotate(-28deg);
-}
-
-.scruffy-eye-left-white {
-  width: 11px;
-  height: 10px;
-  background-color: #fff;
-  position: absolute;
-  top: 60px;
-  left: 36px;
-  border-radius: 50%;
-  z-index: 10;
-  transform: rotate(28deg);
-}
-
-.scruffy-ears {
-  width: 43px;
-  height: 77px;
-  position: absolute;
-  z-index: 0;
-  top: -11px;
-  left: 99px;
-  border-radius: 150px 0 150px 0;
-  background-color: #efc092;
-}
-
-.scruffy-ears:after {
-  content: "";
-  width: 39px;
-  height: 18px;
-  position: absolute;
-  z-index: 0;
-  top: 14px;
-  left: 6px;
-  border-radius: 150px 0 150px 0;
-  transform: rotate(-220deg);
-  background-color: #fee2d2;
-}
-
-.scruffy-tongue {
-  width: 25px;
-  height: 25px;
-  position: absolute;
-  top: 24px;
-  left: calc(50% - 13px);
-  background-color: #f4a4ad;
-  border-radius: 0 0 10px 10px;
-}
-
-.scruffy-nose {
-  width: 16px;
-  height: 10px;
-  position: absolute;
-  top: 8px;
-  left: calc(50% - 8px);
-  background-color: #000;
-  border-radius: 50%;
+.scruffy-the-dog:active .scruffy-surprised {
+  display: block;
 }
