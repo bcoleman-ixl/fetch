@@ -339,6 +339,14 @@ app.get('/quotes', authCheck, (req, res) => {
   });
 });
 
+app.get('/scruffy', authCheck, (req, res) => {
+
+  res.render('scruffy.ejs', {
+
+  })
+
+});
+
 
 app.get('/errors', authCheckAdmin, (req, res) => {
   templatesDb.collection('templates').find().toArray((err, result) => {
@@ -776,7 +784,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
           }
           // fields in Account relationship are fetched
           if (record.Body != null && record.IsActive == true) {
-            console.log(record.Name);
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
@@ -848,8 +855,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
           }
           // fields in Account relationship are fetched
           if (record.Body != null && record.IsActive == true) {
-            console.log(record.Name);
-
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
@@ -875,69 +880,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       }
     }) // End of query for QB
 
-  conn.sobject("EmailTemplate").select('Id, Name, HtmlValue, LastModifiedDate, IsActive, DeveloperName, Folder.Name').where(
-      famte +
-      famacct +
-      famalt +
-      famcancel +
-      famfaq +
-      famhsbc +
-      fammobile +
-      famquote +
-      famspa +
-      end)
-    .execute(function(err, records) {
-      try {
-        // Select program based on Folder name
-        for (var i = 0; i < records.length; i++) {
-          // Get individual record
-          var record = records[i];
-          var body = record.HtmlValue;
-          var folder = record.Folder.Name;
-          // Get and format last modified date
-          var longDate = new Date(record.LastModifiedDate);
-          var date = MONTH_NAMES[longDate.getMonth()] + ' ' + longDate.getDate() + ', ' + longDate.getFullYear();
-
-          // Get the e-mail body in HTML and remove first sentence and after sincerely
-          if (body == null) {
-            console.log("********Error - null*********");
-          } else {
-            var numberRegex = /(\d*\.*\d*\s*)(.*)/g;
-            var numberSplit = numberRegex.exec(record.Name);
-            var name = numberSplit[2];
-            var scNum = numberSplit[1];
-            body = body.toString();
-            var result = clean(body, 'FAM');
-          }
-          // fields in Account relationship are fetched
-          if (record.IsActive == true) {
-            templatesDb.collection('templates')
-              .update({
-                id: record.DeveloperName
-              }, {
-                $set: {
-                  name: name,
-                  body: result[1].toString(),
-                  greeting: result[0].toString(),
-                  closing: result[2].toString(),
-                  updatedDate: date,
-                  addedByUser: 'salesforce@salesforce.com',
-                  team: 'family',
-                  program: 'FAM',
-                  replyEmail: 'support@ixl.com',
-                  folder: folder
-                }
-              }, {
-                upsert: true
-              }) // End of update statemnt
-          } // End of if statement
-        } // End of for loop
-      } catch (e) {
-        console.log(e);
-      }
-    }) // End of query for Family
-
-  // Start query for groups (queues)
+  // Start query for groups (Salesforce queues)
 
   // need to loop through to include each GroupId for the queues I want.
 
@@ -945,10 +888,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
   var groupIds = ['00G33000002JitjEAC', '00G0b000002JnHtEAK'];
 
   for (var l = 0; l < groupIds.length; l++) {
-
-
-
-
     conn.sobject("Group").select("*").where("Id =" + "\'" + groupIds[l] + "\'").execute(function(err, groupRecords) {
       for (var m = 0; m < groupRecords.length; m++) {
         queues.push({
@@ -962,7 +901,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
     })
     var groupIdQuery = 'GroupId = ' + '\'' + groupIds[l] + '\'';
     for (var i = 0; i < groupIds.length; i++) {
-      console.log(l);
       conn.sobject("GroupMember").select("*").where(groupIdQuery).execute(function(err, records) {
         try {
           for (var j = 0; j < records.length; j++) {
@@ -978,18 +916,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
         }
       })
     }
-
-
   }
-
-
-
-
-
-
-
-
-
 }); // End of  conn.login
 
 function clean(body, id) {
