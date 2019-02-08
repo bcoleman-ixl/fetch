@@ -348,18 +348,6 @@ app.get('/scruffy', authCheck, (req, res) => {
 });
 
 
-app.get('/errors', authCheckAdmin, (req, res) => {
-  templatesDb.collection('templates').find().toArray((err, result) => {
-    if (err) return console.log(err)
-    // Renders index.ejs and loads templates and user profile
-    res.render('errors.ejs', {
-      templatesArr: result,
-      user: req.user,
-      programs: programs
-    })
-  })
-});
-
 app.get('/userGuide', function(req, res) {
   res.sendFile(__dirname + '/user_guide.pdf');
 });
