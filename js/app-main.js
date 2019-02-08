@@ -83,17 +83,6 @@ function initialize() {
   dataTable.addEventListener('click', handleClick, false);
   dataTable.addEventListener('drop', handleDrop, false);
   var userType = document.getElementById('userType').innerHTML.trim();
-  if (userType == 'admin') {
-    var totalErrorCount = parseInt(document.getElementById('totalErrorCount').innerHTML);
-    var errorCount = document.getElementById('errorCount');
-    if (totalErrorCount > 0) {
-      errorCount.innerHTML = "Errors" + " - " + totalErrorCount;
-    } else if (totalErrorCount == 0) {
-      errorCount.innerHTML = "Errors" + " - " + "None";
-    } else {
-      errorCount.style.display = 'none';
-    }
-  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
