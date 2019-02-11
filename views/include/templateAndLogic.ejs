@@ -1,10 +1,9 @@
 <% var templateCount = 0; %>
 <% for(var i = templatesArr.length - 1; i >= 0; i--) { %>
-<% if ( templatesArr[i].publicStatus == 'true' || (templatesArr[i].publicStatus == 'false' && templatesArr[i].addedByUser == user.email)) { %>
 <% var category = templatesArr[i].category.substr(0, 5).toLowerCase(); %>
 <% var program = templatesArr[i].program.toUpperCase(); %>
 <% templateCount = templateCount + 1; %>
-<% if(templateCount < 17) { %>
+<% if(templateCount < countLimit) { %>
 <li id='<%= templatesArr[i].id %>' class='template user '>
   <% } else { %>
 <li id='<%= templatesArr[i].id %>' class='template user' style="display:none">
@@ -235,5 +234,4 @@
 
 </li>
 
-<% } %>
 <% } %>

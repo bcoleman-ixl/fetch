@@ -192,7 +192,10 @@ templatesClient.connect(keys.mongoDb.templatesURI, (err, client) => {
     var fs = require('fs');
     var templatesBackupArr = [];
     for (var i = 0; i < templatesArr.length; i++) {
-      templatesBackupArr.unshift(JSON.stringify(templatesArr[i]));
+      if (templatesArr[i].program == "CSE") {
+
+        templatesBackupArr.unshift(JSON.stringify(templatesArr[i], null, 4));
+      }
     }
     fs.writeFile("./backup/backup.json", templatesBackupArr);
 
@@ -235,7 +238,7 @@ usersClient.connect(keys.mongoDb.usersURI, (err, client) => {
 /* Connects to users database*/
 mongoose.connect(keys.mongoDb.usersURI);
 
-app.get('/templates', authCheck, (req, res) => {
+app.get('/home', authCheck, (req, res) => {
   templatesDb.collection('templates').find().toArray((err, result) => {
     con.query(query, [1, 2, 3, 4], function(error, results, fields) {
 
@@ -245,10 +248,14 @@ app.get('/templates', authCheck, (req, res) => {
       for (var i = 0; i < result.length; i++) {
         for (var m = 0; m < req.user.programs.length; m++) {
           if (result[i].program == req.user.programs[m]) {
-            userTemplates.push(result[i]);
+            if (result[i].publicStatus == 'true' || (result[i].publicStatus == 'false' && result[i].addedByUser == req.user.email)) {
+
+              userTemplates.push(result[i]);
+            }
           }
         }
       }
+      userTemplates.sort(compare);
       res.render('index.ejs', {
         templatesArr: userTemplates,
         user: req.user,
@@ -256,11 +263,52 @@ app.get('/templates', authCheck, (req, res) => {
         licenses: results[0],
         currency: results[1],
         subjects: results[2],
-        objects: results[3]
+        objects: results[3],
+        route: 'home',
+        countLimit: 17
       })
     });
   })
 });
+app.get('/admin', authCheck, (req, res) => {
+  templatesDb.collection('templates').find().toArray((err, result) => {
+    con.query(query, [1, 2, 3, 4], function(error, results, fields) {
+
+      if (err) return console.log(err)
+      // Renders index.ejs and loads templates and user profile
+      var userTemplates = [];
+      for (var i = 0; i < result.length; i++) {
+        for (var m = 0; m < req.user.programs.length; m++) {
+          if (result[i].program == req.user.programs[m] && result[i].publicStatus == 'false') {
+            userTemplates.push(result[i]);
+          }
+        }
+      }
+      userTemplates.sort(compare);
+      res.render('index.ejs', {
+        templatesArr: userTemplates,
+        user: req.user,
+        programs: programs,
+        licenses: results[0],
+        currency: results[1],
+        subjects: results[2],
+        objects: results[3],
+        route: 'admin',
+        countLimit: 1000
+      })
+    });
+  })
+});
+
+function compare(a, b) {
+  if (a.ranking < b.ranking) {
+    return -1;
+  }
+  if (a.ranking > b.ranking) {
+    return 1;
+  }
+  return 0;
+}
 
 app.get('/review', authCheckAdmin, (req, res) => {
   templatesDb.collection('templates').find().toArray((err, result) => {
@@ -303,27 +351,7 @@ app.get('/queues', authCheckAdmin, (req, res) => {
 
 });
 
-app.get('/admin', authCheck, (req, res) => {
-  templatesDb.collection('templates').find().toArray((err, result) => {
-    con.query(query, [1, 2, 3, 4], function(error, results, fields) {
-      if (err) return console.log(err)
-      // Renders index.ejs and loads templates and user profile
-      var userTemplates = [];
-      for (var i = 0; i < result.length; i++) {
-        userTemplates.push(result[i]);
-      }
-      res.render('admin.ejs', {
-        templatesArr: userTemplates,
-        user: req.user,
-        programs: programs,
-        licenses: results[0],
-        currency: results[1],
-        subjects: results[2],
-        objects: results[3]
-      })
-    });
-  })
-});
+
 
 app.get('/quotes', authCheck, (req, res) => {
   con.query(query, [1, 2, 3, 4, 5], function(error, results, fields) {
@@ -641,8 +669,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
               }, {
                 $set: {
                   body: result[1].toString(),
-                  greeting: result[0].toString(),
-                  closing: result[2].toString(),
                   updatedDate: date,
                   addedByUser: 'salesforce@salesforce.com',
                   team: 'techSupport',
