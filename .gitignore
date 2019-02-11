@@ -1,3 +1,4 @@
 /node_modules
 **/config/keys.js
 **/docs/requirements.txt
+**/backup/backup.json
