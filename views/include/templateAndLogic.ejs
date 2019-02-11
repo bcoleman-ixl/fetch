@@ -1,43 +1,13 @@
-<%
-function compare(a,b) {
-if (a.ranking < b.ranking) {
-return -1;
-}
-if (a.ranking > b.ranking){
-return 1;
-}
-return 0;
-}
-%>
-<% templatesArr.sort(compare); %>
-<% templates = templatesArr; %>
-<% var errorCount = 0; %>
 <% var templateCount = 0; %>
-<% for(var i = templates.length - 1; i >= 0; i--) { %>
-<% if (templates[i].publicStatus == 'true' ||
-templates[i].addedByUser == 'salesforce@salesforce.com' ||
-templates[i].addedByUser == user.email) { %>
-<% if ((templates[i].publicStatus == 'false' && templates[i].addedByUser == user.email) || (templates[i].publicStatus == 'true')) { %>
-<% try {
-var errorStatus = 'noError';
-var errorMessage = '';
-var category = templates[i].category.substr(0, 5).toLowerCase();
-var program = templates[i].program.toUpperCase();
-if(templates[i].name == '' || templates[i].name == null){
-throw 'Template name is blank or null';
-} else if (templates[i].category == ""){
-throw 'Category is blank or null'
-}
- } catch (e) {
-errorStatus = 'error';
-errorMessage = e %>
-<% } %>
-<%if(errorStatus != 'error') { %>
-<%templateCount = templateCount + 1; %>
-<%if(templateCount < 17) { %>
-<li id='<%= templates[i].id %>' class='template user <%= errorStatus %>'>
+<% for(var i = templatesArr.length - 1; i >= 0; i--) { %>
+<% if ( templatesArr[i].publicStatus == 'true' || (templatesArr[i].publicStatus == 'false' && templatesArr[i].addedByUser == user.email)) { %>
+<% var category = templatesArr[i].category.substr(0, 5).toLowerCase(); %>
+<% var program = templatesArr[i].program.toUpperCase(); %>
+<% templateCount = templateCount + 1; %>
+<% if(templateCount < 17) { %>
+<li id='<%= templatesArr[i].id %>' class='template user '>
   <% } else { %>
-<li id='<%= templates[i].id %>' class='template user <%= errorStatus %>' style="display:none">
+<li id='<%= templatesArr[i].id %>' class='template user' style="display:none">
   <% } %>
   <div class="copiedAlert" id="copiedAlert">
     Copied
@@ -45,26 +15,26 @@ errorMessage = e %>
   <div class="templateNameSection">
 
     <h2 class="templateName" id='templateName'>
-      <%= templates[i].name %>
+      <%= templatesArr[i].name %>
     </h2>
 
     <div class="vettedCol">
       <span class="tooltiptext"> Updated:
-        <%= templates[i].updatedDate %>
+        <%= templatesArr[i].updatedDate %>
         <br> Clicks:
-        <%= templates[i].ranking %>
+        <%= templatesArr[i].ranking %>
         <br> Added by user:
-        <%= templates[i].addedByUser %>
+        <%= templatesArr[i].addedByUser %>
         <br> Public status:
-        <%= templates[i].publicStatus %>
+        <%= templatesArr[i].publicStatus %>
         <br> Folder (if present):
-        <%= templates[i].folder %>
+        <%= templatesArr[i].folder %>
       </span>
-      <% if(templates[i].vetted == 'Yes'){ %>
+      <% if(templatesArr[i].vetted == 'Yes'){ %>
       <svg class="overflow searchByClick searchByClickHover" viewBox="0 0 448 512" data-fa-i2svg="" id="vettedSvg">
         <path id="vetted" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>
       </svg>
-      <% } else if (templates[i].addedByUser == user.email && templates[i].publicStatus == 'false'){ %>
+      <% } else if (templatesArr[i].addedByUser == user.email && templatesArr[i].publicStatus == 'false'){ %>
       <svg class="searchByClick searchByClickHover" viewBox="0 0 448 512" id="notVettedUserSvg">
         <path id="notVettedUser" d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z"></path>
       </svg>
@@ -78,13 +48,14 @@ errorMessage = e %>
   <div class="templateButtonsSection">
     <div class="details">
       <span id='templateRanking' hidden>
-        <%= templates[i].ranking %></span>
+        <%= templatesArr[i].ranking %></span>
       <span id='templateCopyFull' hidden>
-        <%= templates[i].copyFull %></span>
+        <%= templatesArr[i].copyFull %></span>
       <span id='templateCopyPortion' hidden>
-        <%= templates[i].copyPortion %></span>
+        <%= templatesArr[i].copyPortion %></span>
       <span id='templateCopyPortion' hidden>
-        <%= templates[i].id %></span>
+        <%= templatesArr[i].id %></span>
+
       <span class="searchByClick" id='templateProgramWithHash'>
         <%= "#" + program.toString().trim()%>
       </span>
@@ -110,7 +81,7 @@ errorMessage = e %>
           </svg>
         </button>
       </div>
-      <% if(user.team == "teacherMemberships" &&  templates[i].quote) { %>
+      <% if(user.team == "teacherMemberships" &&  templatesArr[i].quote) { %>
       <div id="quote">
         <button class="buttonStyle" type="button" name="button" id="quoteBtn">
           <svg viewBox="0 0 512 512">
@@ -120,12 +91,14 @@ errorMessage = e %>
       </div>
       <%} %>
 
-      <% if(templates[i].versions != null ) {
-var isEmpty = true;
-for(r = 0; r < templates[i].versions.length; r++) {
-if(templates[i].versions[r][1] != '') {
-var isEmpty = false;
-break;}} %>
+      <% if(templatesArr[i].versions != null ) {
+        var isEmpty = true;
+        for(r = 0; r < templatesArr[i].versions.length; r++) {
+          if(templatesArr[i].versions[r][1] != '') {
+            var isEmpty = false;
+            break;
+          }
+        } %>
       <% if(!isEmpty) { %>
       <div id="versions">
         <button class="buttonStyle" type="button" name="button" id="versionsBtn">
@@ -137,7 +110,7 @@ break;}} %>
       </div>
       <% } %>
       <% } %>
-      <% if (templates[i].addedByUser != user.email || templates[i].publicStatus != 'false') { %>
+      <% if (templatesArr[i].addedByUser != user.email || templatesArr[i].publicStatus != 'false') { %>
       <div id="share">
         <button class="buttonStyle" type="button" name="button" id="shareBtn">
           <svg viewBox="0 0 512 512">
@@ -147,8 +120,8 @@ break;}} %>
         </button>
       </div>
       <% } %>
-      <% if (templates[i].publicStatus == 'false' || user.type == 'admin' || templates[i].addedByUser == user.email) { %>
-      <% if (templates[i].addedByUser == user.email || user.type == 'admin') { %>
+      <% if (templatesArr[i].publicStatus == 'false' || user.type == 'admin' || templatesArr[i].addedByUser == user.email) { %>
+      <% if (templatesArr[i].addedByUser == user.email || user.type == 'admin') { %>
       <div id="edit">
         <button class="buttonStyle" type="button" name="button" id="editBtn">
           <svg viewBox="0 0 512 512">
@@ -158,7 +131,7 @@ break;}} %>
         </button>
       </div>
       <% } %>
-      <% if (templates[i].addedByUser == user.email || user.type == 'admin') { %>
+      <% if (templatesArr[i].addedByUser == user.email || user.type == 'admin') { %>
       <div id="removeConfirm">
         <button class="buttonStyle" type="button" name="button" id="removeConfirmBtn">
           <svg viewBox="0 0 448 512">
@@ -179,23 +152,6 @@ break;}} %>
     </div>
   </div>
   <div class="templateBodySection">
-    <% if(errorStatus == 'error') { %>
-    <div class='<%= templates[i].category %> templateBodyUser' ondragover="allowDrop(event)" id="templateBodyError">
-      <br> Error message:
-      <%= errorMessage %>
-      <br> Template Id:
-      <%= templates[i].id %>
-      <br> Template Name:
-      <%= templates[i].name %>
-      <br> Template Category:
-      <%= templates[i].category %>
-      <br> Template Program:
-      <%= templates[i].program %>
-      <div class='<%= templates[i].category %> templateBodyUser' ondragover="allowDrop(event)" id='templateBody' hidden>
-        <%- templates[i].body %>
-      </div>
-    </div>
-    <% } else { %>
     <div class="accountTypes" id="accountTypes">
     </div>
     <div class="countries" id="countries">
@@ -205,89 +161,79 @@ break;}} %>
     </div>
     <div class="licenses" id="licenses">
     </div>
-    <div class='<%= templates[i].category %> templateBodyUser' ondragover="allowDrop(event)" id='templateBody'>
-      <%- templates[i].body %>
+    <div class='<%= templatesArr[i].category %> templateBodyUser' ondragover="allowDrop(event)" id='templateBody'>
+      <%- templatesArr[i].body %>
     </div>
-    <% if(templates[i].versions != null) { %>
+    <% if(templatesArr[i].versions != null) { %>
     <% var empty = true;
-      for(r = 0; r < templates[i].versions.length; r++) {
-        if(templates[i].versions[r][1] != '') {
+      for(r = 0; r < templatesArr[i].versions.length; r++) {
+        if(templatesArr[i].versions[r][1] != '') {
           var empty = false;
           break;
         }
       } %>
     <% if(!empty) { %>
     <div class="versions">
-      <% for(k = 0; k < templates[i].versions.length; k++) { %>
+      <% for(k = 0; k < templatesArr[i].versions.length; k++) { %>
       <div class="<%= 'version' + k %>">
         <div class="versionDescription" id="<%= 'versionDescription' + k %>">
-          <%= templates[i].versions[k][0];%>
+          <%= templatesArr[i].versions[k][0];%>
         </div>
         <div id="<%= 'versionBody' + k %>" hidden>
-          <%- templates[i].versions[k][1];%>
+          <%- templatesArr[i].versions[k][1];%>
         </div>
       </div>
       <% } %>
     </div>
     <% } %>
     <% } %>
-    <% } %>
+
 
   </div>
   <div class='templateFooterSection'>
     <span class='tags' id="templateTags">
-      <%= templates[i].tags %>
+      <%= templatesArr[i].tags %>
     </span>
-    <span class='category' id="templateCategory"><span class="<%= category %> categorySpan searchByClick searchByClickHover" id="templateCategoryText">
-        <%= templates[i].category %></span>
+    <span class='category' id="templateCategory"><span class="<%= category %> categorySpan categoryFallback searchByClick searchByClickHover" id="templateCategoryText">
+        <%= templatesArr[i].category %></span>
     </span>
     <h3 class='type' id='templateTeam' hidden>
-      <%= templates[i].team %>
+      <%= templatesArr[i].team %>
     </h3>
     <h3 class='type' id='templateProgram' hidden>
-      <%=  templates[i].program %>
+      <%=  templatesArr[i].program %>
     </h3>
     <h3 class='type' id='templateAddedByUser' hidden>
-      <%= templates[i].addedByUser %>
+      <%= templatesArr[i].addedByUser %>
     </h3>
     <h3 class='type' id='templatePublicStatus' hidden>
-      <%= templates[i].publicStatus %>
+      <%= templatesArr[i].publicStatus %>
     </h3>
     <h3 class='type' id='templateReplyEmail' hidden>
-      <%= templates[i].replyEmail %>
+      <%= templatesArr[i].replyEmail %>
     </h3>
     <h3 class='type' id='templateGreeting' hidden>
-      <%= templates[i].greeting %>
+      <%= templatesArr[i].greeting %>
     </h3>
     <h3 class='type' id='templateClosing' hidden>
-      <%= templates[i].closing %>
+      <%= templatesArr[i].closing %>
     </h3>
     <h3 class='type' id='templateFolder' hidden>
-      <%= templates[i].folder %>
+      <%= templatesArr[i].folder %>
     </h3>
     <h3 class='type' id='templateVetted' hidden>
-      <%= templates[i].vetted %>
+      <%= templatesArr[i].vetted %>
     </h3>
     <span hidden id="hashtagSearchText">
-      <%= "#program=" + templates[i].program %>
-      <%= "#user=" + templates[i].addedByUser %>
-      <%= "#public=" + templates[i].publicStatus %>
-      <%= "#vetted=" + templates[i].vetted %>
-      <%= "#category=" + templates[i].category %>
+      <%= "#program=" + templatesArr[i].program %>
+      <%= "#user=" + templatesArr[i].addedByUser %>
+      <%= "#public=" + templatesArr[i].publicStatus %>
+      <%= "#vetted=" + templatesArr[i].vetted %>
+      <%= "#category=" + templatesArr[i].category %>
     </span>
   </div>
 
 </li>
-<% } else { %>
-<% errorCount = errorCount + 1;%>
-<% }%>
+
 <% } %>
 <% } %>
-<% } %>
-<div class='row'>
-  <div class='col-lg-7 col-md-7 col-sm-7'>
-    <h3 class='tags' id="totalErrorCount" hidden>
-      <%= errorCount %>
-    </h3>
-  </div>
-</div>
