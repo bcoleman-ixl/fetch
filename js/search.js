@@ -39,10 +39,8 @@ function search() {
         }
       }
 
-
-
-      document.getElementById('templateCount').innerHTML = $('#data-table').children(':visible').length - 1;
-      if (($('#data-table').children(':visible').length - 1) == 0) {
+      document.getElementById('templateCount').innerHTML = $('#data-table').children(':visible').length;
+      if (($('#data-table').children(':visible').length) == 0) {
         let searchContents = document.getElementById('search-bar').value;
         scruffy.style.display = 'none';
         scruffySurprised.style.display = 'flex';
