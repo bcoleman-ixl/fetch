@@ -40,7 +40,8 @@
             "Version4",
             ""
         ]
-    ]
+    ],
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5bd0d8d8e087c654677a9022",
     "name": "MDM Template for Roland",
@@ -64,7 +65,8 @@
     "replyEmail": " ",
     "tags": " ",
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b76d375cb122d0ec9c706a2",
     "name": "FTP Enabled",
@@ -88,7 +90,8 @@
     "replyEmail": " ",
     "tags": "FTP, AR, Auto-Rostering",
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b60db6182949631d2f4f54c",
     "name": "AR Enabled kickoff 4",
@@ -112,7 +115,8 @@
     "replyEmail": " ",
     "tags": "Auto-Rostering, AR",
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b5b1af182949631d2f4f546",
     "name": "failed_by_num_changes summer",
@@ -128,9 +132,9 @@
     "id": "Q4S2I4V2O2A6R4D7C9",
     "updatedDate": "Jul 27, 2018",
     "addedByUser": "restrada@ixl.com",
-    "ranking": 42,
+    "ranking": 43,
     "copyFull": 0,
-    "copyPortion": 42,
+    "copyPortion": 43,
     "team": "techSupportCSE",
     "publicStatus": "false",
     "replyEmail": [
@@ -156,7 +160,8 @@
         ]
     ],
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b5b1ad282949631d2f4f545",
     "name": "failed_by_num_changes grade level",
@@ -180,7 +185,8 @@
     "replyEmail": " ",
     "tags": "Auto-Rostering, AR, num changes",
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b59ff9582949631d2f4f542",
     "name": "Auto-Rostering Kickoff 3",
@@ -196,9 +202,9 @@
     "id": "M1M9T4F3G3L8A7D6B3",
     "updatedDate": "Sep 20, 2018",
     "addedByUser": "restrada@ixl.com",
-    "ranking": 71,
-    "copyFull": 2,
-    "copyPortion": 69,
+    "ranking": 73,
+    "copyFull": 3,
+    "copyPortion": 70,
     "team": "techSupportCSE",
     "publicStatus": "false",
     "replyEmail": [
@@ -224,7 +230,8 @@
         ]
     ],
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b5760d9564c382382f2a0f7",
     "name": "Failed by bundle overflow",
@@ -268,7 +275,8 @@
         ]
     ],
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b572e0a564c382382f2a0f5",
     "name": "Auto-Rostering Template 2 kickoff",
@@ -312,7 +320,8 @@
         ]
     ],
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b572a8d564c382382f2a0f3",
     "name": "Switch to OneRoster data standard",
@@ -336,7 +345,8 @@
     "replyEmail": " ",
     "tags": "OneRoster, ClassLink, Data Standard",
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b51e6f88e76e066bfac4640",
     "name": "Auto-Roster Manual Confirmation",
@@ -360,7 +370,8 @@
     "replyEmail": " ",
     "tags": "Auto-Roster, Auto Roster, Confirmation, Sync",
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b50f2b78e76e066bfac463e",
     "name": "Auto-Rostering ClassLink Kickoff 2",
@@ -384,7 +395,8 @@
     "replyEmail": " ",
     "tags": " ",
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b50dabc8e76e066bfac463d",
     "name": "Auto-Rostering ClassLink Kickoff",
@@ -408,7 +420,8 @@
     "replyEmail": " ",
     "tags": "ClassLink, OneRoster, Auto-Rostering",
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b4f7ab98e76e066bfac4631",
     "name": "SFTP Setup",
@@ -452,7 +465,8 @@
         ]
     ],
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b4356e0c2743b05afac0a19",
     "name": "Blank auto-roster",
@@ -492,7 +506,8 @@
         ]
     ],
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b3254d5b256236f6d44b989",
     "name": "No Clever Auto-roster intro",
@@ -532,7 +547,8 @@
         ]
     ],
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b1a9c5610c5d77c7df62dab",
     "name": "failed_by_num_changes blank",
@@ -554,7 +570,8 @@
     ],
     "tags": "blank, num changes, csv, empty",
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b19389710c5d77c7df62da8",
     "name": "failed_by_num_changes",
@@ -576,7 +593,8 @@
     ],
     "tags": "num change",
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b16dd8a10c5d77c7df62da0",
     "name": "Google SSO High Level",
@@ -598,7 +616,8 @@
     ],
     "tags": "SSO, Sign-On, Sign On, SAML, LDAP",
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 },{
     "_id": "5b16d80f10c5d77c7df62d9f",
     "name": "Google SSO Detailed",
@@ -638,5 +657,6 @@
         ]
     ],
     "vetted": "No",
-    "quote": false
+    "quote": false,
+    "lastUpdatedByUser": "null"
 }
