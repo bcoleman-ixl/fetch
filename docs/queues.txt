@@ -34,5 +34,27 @@ var queues = {
   "name": "IXL Reports",
   "program": "IXL",
   "id": "00G0b000001xmH7EAI",
-  "users": {"userId": "", userName: ""};
+  "users": [{"userId": "1234", userName: "Bryce Coleman"}, {"userId": "1234", userName: "Bryce Coleman"}];
 }
+
+
+
+
+  for (var i = 0; i < groupIds.length; i++) {
+    conn.sobject("GroupMember").select("*").where(groupIdQuery).execute(function(err, records) {
+      try {
+        for (var j = 0; j < records.length; j++) {
+          var idQuery = 'Id = ' + "\'" + records[j].UserOrGroupId + "\'";
+          conn.sobject("User").select("Name").where(idQuery).execute(function(error, userRecords) {
+            for (var k = 0; k < userRecords.length; k++) {
+              console.log(userRecords[k].Name);
+            }
+          });
+
+
+
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }) // End of query for queues
