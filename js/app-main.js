@@ -839,9 +839,9 @@ function editTemplate(templateId) {
 
 // TODO: Remove e from function parameter
 function update(e) {
-  s
   let id = document.querySelector('#id').value;
   let updatedDate = document.querySelector('#updatedDate').value;
+  let updatedByUser = document.querySelector('#userEmail').innerHTML.trim();
   let name = document.querySelector('#name').value;
   let body = tinymce.get('body').getBody().innerHTML.trim();
   let category = document.querySelector('#category').value;
@@ -871,6 +871,7 @@ function update(e) {
     body: JSON.stringify({
       'id': id,
       'updatedDate': updatedDate,
+      'updatedByUser': updatedByUser,
       'name': name,
       'body': body,
       'category': category,

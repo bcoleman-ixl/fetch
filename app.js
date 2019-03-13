@@ -444,6 +444,7 @@ app.put('/update', (req, res) => {
       $set: {
         id: req.body.id,
         updatedDate: req.body.updatedDate,
+        lastUpdatedByUser: req.body.updatedByUser,
         name: req.body.name,
         body: req.body.body,
         category: req.body.category,
