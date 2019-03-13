@@ -197,7 +197,7 @@ templatesClient.connect(keys.mongoDb.templatesURI, (err, client) => {
         templatesBackupArr.unshift(JSON.stringify(templatesArr[i], null, 4));
       }
     }
-    fs.writeFile("./backup/backup.json", templatesBackupArr);
+    //fs.writeFile("./backup/backup.json", templatesBackupArr);
 
   });
   // Listen on port 3000
@@ -902,7 +902,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
           // fields in Account relationship are fetched
           if (record.Body != null && record.IsActive == true) {
             var fs = require('fs');
-            fs.writeFile("./backup/templates.txt", record.DeveloperName);
+            //fs.writeFile("./backup/templates.txt", record.DeveloperName);
             //console.log(record.DeveloperName + "***" + result[1].toString());
             templatesDb.collection('templates')
               .update({
