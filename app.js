@@ -1,6 +1,6 @@
 /**
  * Node.js app for curating and copying
- * tempaltes for customer facing e-mails.
+ * templates for customer facing e-mails.
  *
  * By Bryce Coleman
  *
@@ -259,6 +259,7 @@ app.get('/home', authCheck, (req, res) => {
       res.render('index.ejs', {
         templatesArr: userTemplates,
         user: req.user,
+        settings: JSON.parse(JSON.stringify(req.user)).settings,
         programs: programs,
         licenses: results[0],
         currency: results[1],
@@ -270,6 +271,8 @@ app.get('/home', authCheck, (req, res) => {
     });
   })
 });
+
+
 app.get('/admin', authCheck, (req, res) => {
   templatesDb.collection('templates').find().toArray((err, result) => {
     con.query(query, [1, 2, 3, 4], function(error, results, fields) {
@@ -339,11 +342,7 @@ app.get('/review', authCheckAdmin, (req, res) => {
 
 app.get('/queues', authCheckAdmin, (req, res) => {
 
-  // Renders review.ejs and loads templates and user profile
-  var userTemplates = [];
-
   res.render('queues.ejs', {
-    templatesArr: userTemplates,
     user: req.user,
     programs: programs,
     queues: queues
@@ -377,7 +376,8 @@ app.get('/scruffy', authCheck, (req, res) => {
 
 
 app.get('/userGuide', function(req, res) {
-  res.sendFile(__dirname + '/user_guide.pdf');
+  res.redirect('https://docs.google.com/document/d/12taMlvNPy3oJe8amdPj7wn_uwSssGF0UC_Z82I3cYUQ/edit#heading=h.qwiv98ort26c');
+
 });
 
 app.get('/users', authCheck, (req, res) => {
@@ -516,6 +516,30 @@ app.put('/updateRanking', (req, res) => {
     })
 });
 
+/**
+ * Finds user by email and
+ * updates darkMode.
+ */
+app.put('/updateDarkMode', (req, res) => {
+  console.log(req.body.darkModeValue);
+  usersDb.collection('users')
+    .findOneAndUpdate({
+      email: req.body.email
+    }, {
+      $set: {
+        "settings.darkMode": req.body.darkModeValue
+      }
+    }, {
+      sort: {
+        _id: -1
+      },
+      upsert: true
+    }, (err, result) => {
+      if (err) return res.send(err)
+      res.send(result)
+    })
+});
+
 
 
 
@@ -553,6 +577,10 @@ passport.use(new GoogleStrategy({
           programs: ['NULL'],
           type: 'user',
           vettingRights: false,
+          settings: {
+            darkMode: false,
+            signature: true
+          },
           email: profile.emails[0].value
         }).save().then((newUser) => {
           done(null, newUser);
@@ -582,6 +610,9 @@ app.get('/auth/google/callback',
   }
 );
 
+app.get('/templates', (req, res) => {
+  res.redirect('/home');
+});
 
 app.get('/authenticate', (req, res) => {
   // renders authenticate.ejs
@@ -596,7 +627,7 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.redirect('/templates');
+  res.redirect('/home');
 });
 
 /**
@@ -798,6 +829,7 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
           }
           // fields in Account relationship are fetched
           if (record.Body != null && record.IsActive == true) {
+
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
@@ -869,6 +901,9 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
           }
           // fields in Account relationship are fetched
           if (record.Body != null && record.IsActive == true) {
+            var fs = require('fs');
+            fs.writeFile("./backup/templates.txt", record.DeveloperName);
+            //console.log(record.DeveloperName + "***" + result[1].toString());
             templatesDb.collection('templates')
               .update({
                 id: record.DeveloperName
@@ -917,10 +952,13 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
     for (var i = 0; i < groupIds.length; i++) {
       conn.sobject("GroupMember").select("*").where(groupIdQuery).execute(function(err, records) {
         try {
+
+
           for (var j = 0; j < records.length; j++) {
             var idQuery = 'Id = ' + "\'" + records[j].UserOrGroupId + "\'";
             conn.sobject("User").select("Name").where(idQuery).execute(function(error, userRecords) {
               for (var k = 0; k < userRecords.length; k++) {
+                console.log(userRecords[k].Name);
                 queues[l].users.push(userRecords[k].Name);
               }
             });
@@ -931,6 +969,8 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
       })
     }
   }
+
+
 }); // End of  conn.login
 
 function clean(body, id) {
@@ -963,8 +1003,6 @@ function clean(body, id) {
         result.splice(j);
       }
     }
-
-
     if (foundGreeting == false) {
       greeting = 'none';
     }
