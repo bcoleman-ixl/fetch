@@ -9,7 +9,7 @@
   <link rel='stylesheet' href='bootstrap.min.css'>
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" integrity="sha384-kW+oWsYx3YpxvjtZjFXqazFpA7UP/MbiY4jvs+RWZo2+N94PFZ36T6TFkc9O3qoB" crossorigin="anonymous"></script>
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Oleo+Script|Roboto" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Oleo+Script" rel="stylesheet">
   <% if(user.email == 'mjenkins@ixl.com'){ %>
   <title>CS3K</title>
   <% } else { %>
@@ -18,8 +18,6 @@
 </head>
 
 <body>
-  <div class='signIn'>
-  </div>
   <!-- Manage templates modal -->
   <%- include include/manageTemplatesModal %>
   <!-- End manage templates modal -->
@@ -34,6 +32,7 @@
   <!-- End navbar -->
   <!-- Header -->
   <%- include include/header %>
+
   <!-- End header -->
   <!-- Spacing -->
   <div class='row space'>
@@ -49,7 +48,8 @@
   <%- include include/searchBar %>
   <!-- End search bar -->
   <!-- Templates -->
-  <div class="row space">
+  <div class="space">
+
     <!-- TODO: Work on adding loading icon here -->
     <div class="loader" id="loader">
       <span class="loader1"></span>
@@ -57,11 +57,12 @@
       <span class="loader3"></span>
     </div>
     <ul id='data-table'>
-      <%- include include/templateAndLogicAdmin %>
+      <%- include include/template %>
     </ul>
   </div>
   <!-- End templates -->
   <div class="row space bottom">
+    <h3 id="scruffyMessage">Uh-oh! Scruffy couldn't find what you were looking for.</h3>
   </div>
 
 </body>
@@ -75,6 +76,9 @@
   var licensesArray = <%- JSON.stringify(licenses) %>;
   var objectsArray = <%- JSON.stringify(objects) %>;
   var buildingQuote = false;
+  var spanishClicked = false;
+  var templateId = "";
+  var tempArray = [];
   var quoteArray = [{
     "countryCode": null,
     "subjectQuantity": null,
@@ -84,17 +88,9 @@
     "rebateEndDate": null,
     "rebateName": null,
     "cost": null,
+    "currencySymbol": null,
     "type": null
   }];
-  /** Needs to have same objects as licenses array;
-  "type": null,
-  "subjectQuantityMax": null,
-  "subjectQuantity": null,
-  "subjectQuantityName": null,
-  "numberLicenses": null,
-  "cost": null
-  */
-  var tempArray = [];
 </script>
 
 </html>
