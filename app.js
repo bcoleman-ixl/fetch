@@ -70,19 +70,6 @@ const tsestudio = 'Folder.Name = \'TS eStudio\' OR ';
 const tsalkitaab = 'Folder.Name = \'TS Al Kitaab\' OR ';
 const tsqbdeletion = 'Folder.Name = \'TS QB Deletion\' OR ';
 
-/* Family folders */
-const famte = 'Folder.Name = \'Family Translated Editions\' OR ';
-const famacct = 'Folder.Name = \'Family Account Changes\' OR ';
-const famalt = 'Folder.Name = \'Family Alternative Payments\' OR ';
-const famcancel = 'Folder.Name = \'Family Cancellations/Refund\' OR ';
-const famfaq = 'Folder.Name = \'Family FAQs\' OR ';
-const famhsbc = 'Folder.Name = \'Family HSBC\' OR ';
-const fammobile = 'Folder.Name = \'Family Mobile Subscriptions\' OR ';
-const famquote = 'Folder.Name = \'Family Quotes\' OR ';
-const famspa = 'Folder.Name = \'Family Spanish\' OR ';
-
-/* Account services folders */
-const asfolder = 'Folder.Name = \'Account Services\' OR ';
 
 const end = 'Folder.Name = \'End of the query\'';
 
