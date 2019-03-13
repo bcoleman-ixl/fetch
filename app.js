@@ -269,7 +269,8 @@ app.get('/admin', authCheck, (req, res) => {
       var userTemplates = [];
       for (var i = 0; i < result.length; i++) {
         for (var m = 0; m < req.user.programs.length; m++) {
-          if (result[i].program == req.user.programs[m] && result[i].publicStatus == 'false') {
+          if (result[i].program == req.user.programs[m] && (result[i].publicStatus == 'false' || result[i].publicStatus == 'hide')) {
+            console.log(result[i].publicStatus);
             userTemplates.push(result[i]);
           }
         }
