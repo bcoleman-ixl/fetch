@@ -5,6 +5,9 @@
   <meta charset='utf-8'>
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
   <link rel='stylesheet' href='/styles.css'>
+  <% if(settings.darkMode){ %>
+    <link rel='stylesheet' href='/dark.css'>
+  <% } %>
   <!-- Bootstrap minified CSS -->
   <link rel='stylesheet' href='bootstrap.min.css'>
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" integrity="sha384-kW+oWsYx3YpxvjtZjFXqazFpA7UP/MbiY4jvs+RWZo2+N94PFZ36T6TFkc9O3qoB" crossorigin="anonymous"></script>
@@ -13,11 +16,18 @@
   <% if(user.email == 'mjenkins@ixl.com'){ %>
   <title>CS3K</title>
   <% } else { %>
-  <title>Fetch</title>
+  <title>Fetch!</title>
   <% }%>
 </head>
 
 <body>
+  <div class="copiedAlert" id="copiedAlert">
+    Copied
+  </div>
+  <!-- Settings -->
+
+  <!-- End Settings -->
+
   <!-- Manage templates modal -->
   <%- include include/manageTemplatesModal %>
   <!-- End manage templates modal -->
@@ -55,7 +65,7 @@
       <span class="loader3"></span>
     </div>
     <ul id='data-table'>
-      <%- include include/templateAndLogic %>
+      <%- include include/template %>
     </ul>
   </div>
   <!-- End templates -->
@@ -67,6 +77,7 @@
 <script src='tinymce/tinymce.min.js'></script>
 <script src='jquery.min.js'></script>
 <script src='app-main.js'></script>
+<script src='quotes.js'></script>
 <script src='search.js'></script>
 <script src='bootstrap.min.js'></script>
 <script>
