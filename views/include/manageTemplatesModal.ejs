@@ -24,7 +24,7 @@
           </div>
           <div class='form-group'>
             <ul class="nav nav-pills">
-              <li class="active"><a data-toggle="pill" href="#originalTab" id="versionOriginalPill">Original</a></li>
+              <li class="active"><a data-toggle="pill" href="#originalTab" id="versionOriginalPill">Main Version</a></li>
               <li>
                 <a data-toggle="pill" href="#version0Tab" id="version0Pill">
                   <div class='versionTabs' spellcheck=false contenteditable="true" id="version0Title">
@@ -102,10 +102,14 @@
                 <option>SSO</option>
                 <option>Auto Rostering</option>
                 <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
-                <option>Quote</option>
+                <option>Acct. Changes</option>
+                <option>Alt Pay</option>
                 <option>Cancel</option>
-                <option>Refund</option>
+                <option>HSBC</option>
+                <option>Mobile</option>
                 <option>Other</option>
+                <option>Quotes</option>
+                <option>Refund</option>
                 <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
                 <option>Keys</option>
                 <option>Courses</option>
@@ -164,8 +168,13 @@
                 <% } %>
                 <% if(user.programs[m] == 'FAM'){ %>
                 <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
-                <option>Quote</option>
+                <option>Acct. Changes</option>
+                <option>Alt Pay</option>
                 <option>Cancel</option>
+                <option>HSBC</option>
+                <option>Mobile</option>
+                <option>Other</option>
+                <option>Quotes</option>
                 <option>Refund</option>
                 <% } %>
                 <% if(user.programs[m] == 'QB'){ %>
@@ -261,7 +270,7 @@
           </div>
           <div class="row">
             <div class='form-group col-lg-6 col-md-6'>
-              <input type='text' class='form-control' id='tags' name='tags' required='true' placeholder='Tags' maxlength='45'>
+              <input type='text' class='form-control' id='tags' name='tags' required='true' placeholder='Keywords' maxlength='45'>
             </div>
             <% if(user.vettingRights == true) { %>
             <div class='form-group col-lg-6 col-md-6'>
