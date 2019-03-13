@@ -1,0 +1,30 @@
+:root {
+  --black: #202123;
+  --white: white;
+  --opacity: 1 !important;
+}
+
+#templateProgramWithHash, #quickAccess, #clear-search {
+  background-color: var(--white) !important;
+  opacity: 1 !important;
+}
+
+#copyPortionBtn svg, #editBtn svg, #removeConfirmBtn svg, #snippetsBtn svg, #replyBtn svg, #shareBtn svg, #quoteBtn svg, #infoBtn svg {
+  fill: var(--white);
+}
+
+html, body, #data-table, #search-bar, .header, .menubar {
+  background-color: var(--black) !important;
+}
+
+#title, #subtitle, #search-bar {
+  color: var(--white) !important;
+}
+
+.template, .templateBodyUser {
+  color: var(--white) !important;
+}
+
+#search-bar, .template {
+  box-shadow: none !important;
+}
