@@ -101,11 +101,6 @@ const programs = [
   'TM'
 ];
 
-
-
-
-
-
 /**
  * Checking if users have been authenticated
  * Redirect to authenticate if user is null
@@ -258,6 +253,39 @@ app.get('/home', authCheck, (req, res) => {
     });
   })
 });
+app.get('/review', authCheck, (req, res) => {
+  templatesDb.collection('templates').find().toArray((err, result) => {
+    con.query(query, [1, 2, 3, 4], function(error, results, fields) {
+
+      if (err) return console.log(err)
+      // Renders index.ejs and loads templates and user profile
+      var userTemplates = [];
+      for (var i = 0; i < result.length; i++) {
+        for (var m = 0; m < req.user.programs.length; m++) {
+          if (result[i].program == req.user.programs[m]) {
+            if (result[i].publicStatus == 'true' || result[i].publicStatus == 'false') {
+
+              userTemplates.push(result[i]);
+            }
+          }
+        }
+      }
+      userTemplates.sort(reviewCompare);
+      res.render('review.ejs', {
+        templatesArr: userTemplates,
+        user: req.user,
+        settings: JSON.parse(JSON.stringify(req.user)).settings,
+        programs: programs,
+        licenses: results[0],
+        currency: results[1],
+        subjects: results[2],
+        objects: results[3],
+        route: 'home',
+        countLimit: 17
+      })
+    });
+  })
+});
 
 
 app.get('/admin', authCheck, (req, res) => {
@@ -301,7 +329,20 @@ function compare(a, b) {
   return 0;
 }
 
-app.get('/review', authCheckAdmin, (req, res) => {
+function reviewCompare(a, b) {
+  if (a.folder < b.folder) {
+    return 1;
+  }
+  if (a.folder > b.folder) {
+    return -1;
+  }
+  return 0;
+}
+
+
+// NOTE: Old review
+
+/*app.get('/review', authCheckAdmin, (req, res) => {
   templatesDb.collection('templates').find().toArray((err, result) => {
     con.query(query, [1, 2, 3, 4], function(error, results, fields) {
 
@@ -327,6 +368,7 @@ app.get('/review', authCheckAdmin, (req, res) => {
     });
   })
 });
+*/
 
 app.get('/queues', authCheckAdmin, (req, res) => {
 
@@ -947,7 +989,6 @@ conn.login(keys.salesforce.username, keys.salesforce.password, function(err, use
             var idQuery = 'Id = ' + "\'" + records[j].UserOrGroupId + "\'";
             conn.sobject("User").select("Name").where(idQuery).execute(function(error, userRecords) {
               for (var k = 0; k < userRecords.length; k++) {
-                console.log(userRecords[k].Name);
                 queues[l].users.push(userRecords[k].Name);
               }
             });
