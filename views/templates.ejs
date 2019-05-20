@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <link rel='stylesheet' href='/styles.css'>
+  <!-- Bootstrap minified CSS -->
+  <link rel='stylesheet' href='bootstrap.min.css'>
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" integrity="sha384-kW+oWsYx3YpxvjtZjFXqazFpA7UP/MbiY4jvs+RWZo2+N94PFZ36T6TFkc9O3qoB" crossorigin="anonymous"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Oleo+Script|Roboto" rel="stylesheet">
+  <% if(user.email == 'mjenkins@ixl.com'){ %>
+  <title>CS3K</title>
+  <% } else {%>
+  <title>Fetch</title>
+  <% }%>
+</head>
+
+<body>
+  <div class='signIn'>
+  </div>
+  <!-- Manage templates modal -->
+  <%- include include/saveTemplatesModal %>
+  <!-- End manage templates modal -->
+  <!-- Begin confirm remove modal -->
+  <%- include include/removeModal %>
+  <!-- End confirm remove modal -->
+  <!-- Begin snippets modal -->
+  <%- include include/snippetsModal %>
+  <!-- End snippets modal -->
+  <!-- Navbar -->
+  <%- include include/navbar %>
+  <!-- End navbar -->
+  <!-- Header -->
+  <div class="userTable">
+    <% for(var m = 0; m < users.length; m++) { %>
+    <div id="<%= users[m].googleID %>">
+      <!-- <img class="image" src="<%= users[m].img %>" alt=""> -->
+      <pre class="json" style="margin-bottom: 5px" contenteditable="true"><% delete users[m]._id; %><%= JSON.stringify(users[m], undefined, 2)%></pre>
+      <button id="updateUser">Update</button>
+      <button id="deleteUser">Delete</button>
+    </div>
+  </div>
+  <br>
+  <% } %>
+  </div>
+  <!-- End header -->
+  <!-- Spacing -->
+  <div class='row space'>
+    <div class='col-lg-3'></div>
+    <div class='col-lg-6'>
+      <div>
+      </div>
+    </div>
+    <div class='col-lg-3'></div>
+  </div>
+  <!-- End spacing -->
+  <!-- Search bar -->
+</body>
+<script src='tinymce/tinymce.min.js'></script>
+<script src='jquery.min.js'></script>
+<script src='app-main.js'></script>
+<script src='nav.js'></script>
+<script src='crud.js'></script>
+<script src='search.js'></script>
+<script src='bootstrap.min.js'></script>
+
+</html>

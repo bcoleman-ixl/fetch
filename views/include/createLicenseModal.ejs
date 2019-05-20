@@ -1,0 +1,94 @@
+<!-- Manage templates modal -->
+<div class='modal' id='addLicense' tabindex='-1' role='dialog' aria-labelledby='Manage templates' aria-hidden='true'>
+  <div class='modal-dialog' role='document' id="modalLicenses">
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <span id='addLicenseTitle'>Edit License</span>
+        <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+          <span aria-hidden='true'>&times;</span>
+        </button>
+      </div>
+      <div class="addLicenseGroupLabels">
+        <div class="">
+          Type
+        </div>
+        <div class="">
+          Country Code
+        </div>
+        <div class="">
+          Subjects
+        </div>
+        <div class="">
+          Licenses
+        </div>
+        <div class="">
+          Cost
+        </div>
+        <div class="">
+          Rebate ID
+        </div>
+        <div class="">
+          Rebate Cost
+        </div>
+        <div class="">
+          Spanish Cost
+        </div>
+      </div>
+
+      <div class="addLicenseGroup" id="addLicenseFields">
+        <select class='form-control' id='type' name='type' required='true'>
+          <option>Bulk</option>
+          <option>Site</option>
+        </select>
+        <select class='form-control' id='countryCode' name='countryCode' required='true'>
+          <% var elementsShowing = []; %>
+          <% for(var k = 0; k < currency.length; k++ ) { %>
+          <% if (!elementsShowing.includes(currency[k].countryCode)) { %>
+          <% console.log(currency[k].countryCode); %>
+          <option>
+            <%=  currency[k].countryCode; %>
+          </option>
+          <% elementsShowing.push(currency[k].countryCode); %>
+          <% } %>
+          <% } %>
+        </select>
+        <select class="form-control" id='subjectQuantity'>
+          <% for(var k = 0; k < 4; k++ ) { %>
+          <option>
+            <%= k + 1 %>
+          </option>
+          <% } %>
+        </select>
+
+        <div class='form-group'>
+          <input class='form-control' id='numberLicenses' name='numberLicenses' autocomplete='off' required='true' maxlength='6' pattern="\d+">
+        </div>
+        <div class='form-group'>
+          <input class='form-control' id='cost' name='Cost' autocomplete='off' required='true' maxlength='6' pattern="\d+">
+        </div>
+        <select class='form-control' id='rebateId' name='rebateId' required='true'>\
+          <% var elementsShowing = []; %>
+          <% for(var k = 0; k < rebates.length; k++ ) { %>
+          <option>
+            <%   if (!elementsShowing.includes(rebates[k].rebateId)) { %>
+            <%=  rebates[k].rebateId; %>
+            <% elementsShowing.push(rebates[k].rebateId); %>
+            <%   } %>
+          </option>
+          <% } %>
+        </select>
+        <div class='form-group'>
+          <input class='form-control' id='rebateCost' name='rebateCost' autocomplete='off' required='true'>
+        </div>
+        <div class='form-group'>
+          <input class='form-control' id='spanishCost' name='spanishCost' autocomplete='off' required='true'>
+        </div>
+      </div>
+      <div class="licenseModalButtons">
+        <button class='btn btn-primary' id='updateLicenseBtn' onclick="addLicense(event)">Submit</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- End manage templates modal -->

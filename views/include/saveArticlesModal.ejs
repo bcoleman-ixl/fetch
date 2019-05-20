@@ -1,0 +1,100 @@
+<!-- Manage articles modal -->
+<div class='modal' id='saveArticles' tabindex='-1' role='dialog' aria-labelledby='Save articles' aria-hidden='true'>
+  <div class='modal-dialog' role='document' id="modalArticles">
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <span id='saveArticlesTitle'>Create new article (Use Ctrl-Shift-V when pasting)</span>
+        <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+          <span aria-hidden='true'>&times;</span>
+        </button>
+      </div>
+      <div class='new-article'>
+        <div id='articlesForm' action='/createArticle' autocomplete='off' id='articlesForm'>
+          <div class='row'>
+            <div class='col-lg-12'>
+              <div class='form-group' style='padding-right: 0px;'>
+                <input type='text' class='form-control' id='name' name='name' autocomplete='off' required='true' placeholder='Article Name' maxlength='35'>
+              </div>
+            </div>
+          </div>
+
+          <div class='form-group'>
+
+            <div class="tab-content">
+              <div id="version0Tab" class="tab-pane fade in active">
+                <textarea id="version0Field" rows='0' cols='80' class="editor" name='body0'></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class='row'>
+            <div class='form-group col-lg-6 col-md-6'>
+              <select class='form-control' id='category' name='category' required='true'>
+                <option disabled selected value> --Select category-- </option>
+                <option>Accessibility</option>
+                <option>Analytics/Reports</option>
+                <option>Diagnostic</option>
+                <option>Enhancement/Feature Request</option>
+                <option>Internal/Third Party</option>
+                <option>Product/Technical errors</option>
+                <option>Recommendations</option>
+                <option>Roster</option>
+                <option>Signing in</option>
+                <option>Skills/Practice</option>
+                <option>SmartScore</option>
+                <option>Students (PreK-12) No survey</option>
+                <option>Roster Import</option>
+              </select>
+            </div>
+            <div class='form-group col-lg-6 col-md-6'>
+              <select class='form-control' id='program' name='program' required='true'>
+                <option disabled selected value> --Select program-- </option>
+                <% for(var k = 0; k < programs.length; k++) { %>
+                <% for(var m = 0; m < user.programs.length; m++) { %>
+                <% if(programs[k] == user.programs[m]){ %>
+                <% if(user.programs[m] == 'IXL' && user.team == 'family'){ %>
+                <% } else { %>
+                <option>
+                  <%= programs[k] %>
+                </option>
+                <% } %>
+                <% } %>
+                <% } %>
+                <% } %>
+              </select>
+            </div>
+            <div class='form-group'>
+              <input type='hidden' class='form-control' id='id' name='id' required='true'>
+              <input type='hidden' id='updatedDate' name='updatedDate' value='error'>
+              <input type='hidden' id='ranking' name='ranking' value=0>
+              <input type='hidden' id='copyFull' name='copyFull' value=0>
+              <input type='hidden' id='copyPortion' name='copyPortion' value=0>
+              <input type='hidden' id='team' name='team' value='<%= user.team %>'>
+            </div>
+          </div>
+          <div class="row">
+            <% if (user.type == 'admin') { %>
+            <div class="form-group col-lg-6 col-md-6">
+              <select class='form-control' id='publicStatus' name='publicStatus' required='true'>
+                <option disabled selected value> --Select public status-- </option>
+                <option>true</option>
+                <option>false</option>
+                <option>hide</option>
+              </select>
+            </div>
+            <% } else { %>
+            <input type='hidden' id='publicStatus' name='publicStatus' value='false'>
+            <% } %>
+
+            <div class='form-group col-lg-6 col-md-6'>
+              <input type='text' class='form-control' id='tags' name='tags' required='true' placeholder='Keywords' maxlength='45'>
+            </div>
+
+          </div>
+          <button type='submit' class='btn btn-primary' id='saveArticle' onclick='saveArticle(event)'>Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End manage articles modal -->

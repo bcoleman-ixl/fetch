@@ -1,0 +1,9 @@
+<% for(var i = 0; i < knowledgeBase.length; i++) { %>
+<li id='<%= knowledgeBase[i].id %>' class='article user '>
+
+  <%- knowledgeBase[i].name %><br>
+  <%- knowledgeBase[i].program %><br>
+  <%- knowledgeBase[i].category %><br>
+</li>
+
+<% } %>

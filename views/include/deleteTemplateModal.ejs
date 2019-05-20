@@ -1,0 +1,15 @@
+<div class='modal fade' id='confirmRemoveDialog' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+  <div class='modal-dialog'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <p>Are you sure you want to remove the template:
+          <b><span id='confirmRemoveName'>*error*</span></b>? This action cannot be undone.
+        </p>
+      </div>
+      <div class='modal-footer' id='confirmRemoveModal'>
+        <button type='button' class='btn btn-default' data-dismiss='modal'>Cancel</button>
+        <a class='btn btn-danger btn-ok' id='confirmRemoveBtn' onclick='deleteTemplate(event)'>Delete</a>
+      </div>
+    </div>
+  </div>
+</div>

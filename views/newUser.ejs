@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta name="google-signin-client_id" content="576807313160-uaslvsnfdms05fq2082qq8a6sns7ebkm.apps.googleusercontent.com">
+  <link rel='stylesheet' href='/styles.css'>
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Oleo+Script|Gothic+A1:200|Roboto:100" rel="stylesheet">
+  <title>Fetch - New User</title>
+</head>
+
+<body>
+  <div>
+    <div>
+      <div class="createAccount">
+
+        <h1 id="welcome">Welcome,
+          <%= user.name %>!
+        </h1>
+        <hr>
+        <div id="descriptionBody">
+          There are just a few more things we need from you in order to create your Fetch account. Please select your team and choose which programs you'll be working with. This will help add the right templates to your account. If you're not sure
+          which programs to select, please reach out to someone in the #fetch Slack channel or talk with your manager.
+        </div>
+        <div class="chooseTeam">
+
+          <p>Choose your team...</p>
+          <select class="selectpicker" data-live-search="true" id="chooseTeam">
+            <option value="Nothing selected" disabled selected>
+              Nothing selected
+            </option>
+            <% for(var k = 0; k < teams.length; k++) { %>
+            <%
+              var team = teams[k];
+              teamFormatted = team.replace(/([A-Z])/g, ' $1').replace(/^./,function(str){ return str.toUpperCase(); })
+              %>
+
+            <option value="<%= teams[k] %>">
+              <%= teamFormatted %>
+            </option>
+            <% } %>
+          </select>
+        </div>
+        <div class="chooseProgram">
+
+          <p>Choose your program(s)...</p>
+          <select class="selectpicker" multiple data-live-search="true" id="chooseProgram">
+            <% for(var k = 0; k < programs.length; k++) { %>
+            <option>
+              <%= programs[k] %>
+            </option>
+            <% } %>
+          </select>
+        </div>
+        <br>
+        <br>
+        <div>
+          <button class="btn btn-primary" id="updateNewUser">Submit</button>
+        </div>
+        <br>
+        <div> <a href="/authenticate">Go back to the sign in page</a></div>
+      </div>
+    </div>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+<script src='crud.js'></script>
+<script>
+  var googleID = "<%= user.googleID %>";
+</script>
+
+
+</html>

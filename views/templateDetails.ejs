@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <link rel='stylesheet' href='/styles.css'>
+  <% if(settings.darkMode){ %>
+  <link rel='stylesheet' href='/dark.css'>
+  <% } %>
+  <!-- Bootstrap minified CSS -->
+  <link rel='stylesheet' href='bootstrap.min.css'>
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" integrity="sha384-kW+oWsYx3YpxvjtZjFXqazFpA7UP/MbiY4jvs+RWZo2+N94PFZ36T6TFkc9O3qoB" crossorigin="anonymous"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Oleo+Script" rel="stylesheet">
+  <% if(user.email == 'mjenkins@ixl.com'){ %>
+  <title>CS3K</title>
+  <% } else { %>
+  <title>Fetch</title>
+  <% }%>
+</head>
+
+<body>
+  <div class="userAlert" id="userAlert"></div>
+  <!-- Settings -->
+
+  <!-- End Settings -->
+
+  <!-- Manage templates modal -->
+  <%- include include/saveTemplatesModal %>
+  <!-- End manage templates modal -->
+  <!-- Begin confirm remove modal -->
+  <%- include include/deleteTemplateModal %>
+  <!-- End confirm remove modal -->
+  <!-- Begin snippets modal -->
+  <%- include include/snippetsModal %>
+  <!-- End snippets modal -->
+  <!-- Navbar -->
+  <%- include include/navbar %>
+  <!-- End navbar -->
+  <!-- Header -->
+  <%- include include/header %>
+  <!-- End header -->
+  <!-- Spacing -->
+  <div class='row space'>
+    <div class='col-lg-3'></div>
+    <div class='col-lg-6'>
+      <div>
+      </div>
+    </div>
+    <div class='col-lg-3'></div>
+  </div>
+
+      
+  <!-- Templates -->
+  <div class="space">
+
+    <table id="templatesTable" class="display">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Program</th>
+          <th>Folder</th>
+          <th>Clicks</th>
+          <th>Status</th>
+          <th>Vetted?</th>
+          <th>Added by</th>
+          <th>Last Updated by</th>
+          <th>Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for(var i = 0; i < templatesArr.length; i++) { %>
+        <tr>
+          <td>
+            <% if(templatesArr[i].addedByUser != user.email && templatesArr[i].publicStatus == 'false') {%>
+            <a href="  <%= "/personalTemplates#" + templatesArr[i].id %>" target="_blank">Open</a>
+            <% } else { %>
+            <a href="  <%= "/home#" + templatesArr[i].id %>" target="_blank">Open</a>
+
+            <% }  %>
+          </td>
+          <td>
+            <%= templatesArr[i].name %>
+          </td>
+          <td>
+            <%= templatesArr[i].program %>
+          </td>
+          <td>
+            <%= templatesArr[i].folder %>
+          </td>
+          <td>
+            <%= templatesArr[i].ranking %>
+          </td>
+          <td>
+            <%= templatesArr[i].publicStatus.charAt(0).toUpperCase() +  templatesArr[i].publicStatus.substring(1) %>
+          </td>
+          <td>
+            <%= templatesArr[i].vetted %>
+          </td>
+          <td>
+            <%= templatesArr[i].addedByUser %>
+          </td>
+          <td>
+            <%= templatesArr[i].lastUpdatedByUser %>
+          </td>
+          <td style="width: 150px">
+            <%= templatesArr[i].updatedDate %>
+          </td>
+        </tr>
+        <% } %>
+      </tbody>
+
+
+
+    </table>
+
+
+  </div>
+
+</body>
+<script src='tinymce/tinymce.min.js'></script>
+<script src='jquery.min.js'></script>
+<script src='nav.js'></script>
+<script src='bootstrap.min.js'></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#templatesTable').DataTable({
+      "pageLength": 5000,
+      "searching": false,
+      "paging": false,
+      "lengthChange": false
+    });
+  });
+</script>
+
+</html>

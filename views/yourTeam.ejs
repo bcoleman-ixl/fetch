@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <link rel='stylesheet' href='/styles.css'>
+  <!-- Bootstrap minified CSS -->
+  <link rel='stylesheet' href='bootstrap.min.css'>
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" integrity="sha384-kW+oWsYx3YpxvjtZjFXqazFpA7UP/MbiY4jvs+RWZo2+N94PFZ36T6TFkc9O3qoB" crossorigin="anonymous"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Oleo+Script" rel="stylesheet">
+  <% if(user.email == 'mjenkins@ixl.com'){ %>
+  <title>CS3K</title>
+  <% } else { %>
+  <title>Fetch</title>
+  <% }%>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <%- include include/navbar %>
+  <!-- End navbar -->
+
+  <!-- Spacing -->
+  <div class='row space'>
+    <div class='col-lg-2'></div>
+    <div class='col-lg-8'>
+      <div class="pageRedirect">
+        <a href="/personalTemplates">Personal templates</a>
+        <div>Here you will be able to search through all of your teams' personal templates and any templates that have been hidden. By changing the public status from false or hidden to true, the template will be made available for your team.</div>
+      </div>
+      <div class="pageRedirect">
+        <a href="/templateDetails">Template details</a>
+        <div>The template details page shows all of your teams' templates in table format. You can open any of the templates and make any changes. You can also click on each column header to sort the list.</div>
+      </div>
+      <div class="pageRedirect">
+        <a>User profiles</a>
+        <div>Under construction</div>
+      </div>
+    </div>
+    <div class='col-lg-2'></div>
+  </div>
+  <!-- End spacing -->
+
+
+</body>
+<script src='tinymce/tinymce.min.js'></script>
+<script src='jquery.min.js'></script>
+<script src='app-main.js'></script>
+<script src='bootstrap.min.js'></script>
+<script src='nav.js'></script>
+
+</html>

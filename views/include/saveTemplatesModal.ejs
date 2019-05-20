@@ -1,0 +1,255 @@
+<!-- Manage templates modal -->
+<div class='modal' id='saveTemplates' tabindex='-1' role='dialog' aria-labelledby='Save templates' aria-hidden='true'>
+  <div class='modal-dialog' role='document' id="modalTemplates">
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <span id='saveTemplatesTitle'>Create new template (Use Ctrl-Shift-V when pasting)</span>
+        <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+          <span aria-hidden='true'>&times;</span>
+        </button>
+      </div>
+      <div class='new-template'>
+        <div id='templatesForm' action='/createTemplate' autocomplete='off' id='templatesForm'>
+          <div class='row'>
+            <div class='col-lg-12'>
+              <div class='form-group' style='padding-right: 0px;'>
+                <input type='text' class='form-control' id='name' name='name' autocomplete='off' required='true' placeholder='Template Name' maxlength='35'>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-lg-12 col-md-12">
+              <input type='text' class="form-control" id='greeting' name='greeting' placeholder="Opening sentence (i.e., Thank you for reaching out to us.)" required='false'>
+            </div>
+          </div>
+          <div class='form-group'>
+            <ul class="nav nav-pills">
+              <li class="active">
+                <a data-toggle="pill" href="#version0Tab" id="version0Pill">
+                  <div class='versionTabs' spellcheck=false contenteditable="false" id="version0Title">
+                    Main
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a data-toggle="pill" href="#version1Tab" id="version1Pill">
+                  <div class='versionTabs' spellcheck=false contenteditable="true" id="version1Title">
+                    Version1
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a data-toggle="pill" href="#version2Tab" id="version2Pill">
+                  <div class='versionTabs' spellcheck=false contenteditable="true" id="version2Title">
+                    Version2
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a data-toggle="pill" href="#version3Tab" id="version3Pill">
+                  <div class='versionTabs' spellcheck=false contenteditable="true" id="version3Title">
+                    Version3
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a data-toggle="pill" href="#version4Tab" id="version4Pill">
+                  <div class='versionTabs' spellcheck=false contenteditable="true" id="version4Title">
+                    Version4
+                  </div>
+                </a>
+              </li>
+            </ul>
+            <div class="tab-content">
+
+              <!--
+              <div id="version0Field" class="tab-pane fade in active">
+              <textarea rows='0' cols='80' id="body" class="editor" name='body'></textarea>
+            </div>
+
+             -->
+              <div id="version0Tab" class="tab-pane fade in active">
+                <textarea id="version0Field" rows='0' cols='80' class="editor" name='body0'></textarea>
+              </div>
+              <div id="version1Tab" class="tab-pane fade">
+                <div id="version1Field" rows='0' cols='80' class="editor" name='body1'></div>
+              </div>
+              <div id="version2Tab" class="tab-pane fade">
+                <div id="version2Field" rows='0' cols='80' class="editor" name='body2'></div>
+              </div>
+              <div id="version3Tab" class="tab-pane fade">
+                <div id="version3Field" rows='0' cols='80' class="editor" name='body3'></div>
+              </div>
+              <div id="version4Tab" class="tab-pane fade">
+                <div id="version4Field" rows='0' cols='80' class="editor" name='body4'></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group col-lg-12 col-md-12">
+              <input type='text' class="form-control" id='closing' name='closing' placeholder="Closing sentence (i.e., Let me know if you have any questions.)" required='false'>
+            </div>
+          </div>
+          <div class='row'>
+            <div class='form-group col-lg-6 col-md-6'>
+              <select class='form-control' id='category' name='category' required='true'>
+                <option disabled selected value> --Select category-- </option>
+                <% for(var m = 0; m < user.programs.length; m++) { %>
+                <% if(user.programs[m] == 'IXL'){ %>
+                <option>Analytics/Reports</option>
+                <option>Audio</option>
+                <option>Diagnostic</option>
+                <option>Network</option>
+                <option>Roster</option>
+                <option>Skills</option>
+                <option>Signing In</option>
+                <option>SmartScore</option>
+                <option>Other</option>
+                <% } %>
+                <% if(user.programs[m] == 'IXLT'){ %>
+                <option>Analytics</option>
+                <option>Audio</option>
+                <option>Diagnostic</option>
+                <option>Network</option>
+                <option>Roster</option>
+                <option>Skills</option>
+                <option>Signing In</option>
+                <option>SmartScore</option>
+                <option>Other</option>
+                <% } %>
+                <% if(user.programs[m] == 'QW'){ %>
+                <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
+                <option>Activities</option>
+                <option>Reports</option>
+                <option>Classes</option>
+                <option>Quizzes</option>
+                <option>Surveys</option>
+                <% } %>
+                <% if(user.programs[m] == 'CSE'){ %>
+                <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
+                <option>SSO</option>
+                <option>Auto Rostering</option>
+                <% } %>
+                <% if(user.programs[m] == 'FAM'){ %>
+                <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
+                <option>Acct. Changes</option>
+                <option>Alt Pay</option>
+                <option>Cancel</option>
+                <option>HSBC</option>
+                <option>Mobile</option>
+                <option>Other</option>
+                <option>Quotes</option>
+                <option>Refund</option>
+                <% } %>
+                <% if(user.programs[m] == 'QB'){ %>
+                <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
+                <option>Keys</option>
+                <option>Courses</option>
+                <option>Grading</option>
+                <option>Media</option>
+                <% } %>
+                <% if(user.programs[m] == 'AS'){ %>
+                <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
+                <option>Getting started</option>
+                <option>Licenses</option>
+                <option>Roster</option>
+                <option>SSO</option>
+                <option>Other</option>
+                <% } %>
+                <% if(user.programs[m] == 'AM'){ %>
+                <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
+                <option>Other</option>
+                <% } %>
+                <% if(user.programs[m] == 'TM'){ %>
+                <option>Quote</option>
+                <option>Purchasing</option>
+                <option>Quia</option>
+                <option>Resource</option>
+                <option>Classroom</option>
+                <option>Site</option>
+                <option>Trial</option>
+                <option>Other</option>
+                <% } %>
+                <% } %>
+
+              </select>
+            </div>
+            <div class='form-group col-lg-6 col-md-6'>
+              <select class='form-control' id='program' name='program' required='true'>
+                <option disabled selected value> --Select program-- </option>
+                <% for(var k = 0; k < programs.length; k++) { %>
+                <% for(var m = 0; m < user.programs.length; m++) { %>
+                <% if(programs[k] == user.programs[m]){ %>
+                <% if(user.programs[m] == 'IXL' && user.team == 'family'){ %>
+                <% } else { %>
+                <option>
+                  <%= programs[k] %>
+                </option>
+                <% } %>
+                <% } %>
+                <% } %>
+                <% } %>
+
+              </select>
+            </div>
+            <div class='form-group'>
+              <input type='hidden' class='form-control' id='id' name='id' required='true'>
+              <input type='hidden' id='updatedDate' name='updatedDate' value='error'>
+              <input type='hidden' id='ranking' name='ranking' value=0>
+              <input type='hidden' id='copyFull' name='copyFull' value=0>
+              <input type='hidden' id='copyPortion' name='copyPortion' value=0>
+              <input type='hidden' id='team' name='team' value='<%= user.team %>'>
+            </div>
+          </div>
+          <div class="row">
+            <% if (user.type == 'admin') { %>
+            <div class="form-group col-lg-6 col-md-6">
+              <select class='form-control' id='publicStatus' name='publicStatus' required='true'>
+                <option disabled selected value> --Select public status-- </option>
+                <option>true</option>
+                <option>false</option>
+                <option>hide</option>
+              </select>
+            </div>
+            <% } else { %>
+            <input type='hidden' id='publicStatus' name='publicStatus' value='false'>
+            <% } %>
+            <% if(user.team != 'accountServices' && user.team != 'accountManagement' && user.team != 'teacherMemberships'){ %>
+            <div class='form-group col-lg-6 col-md-6'>
+              <input type='text' class='form-control' id='replyEmail' autocomplete='off' name='replyEmail' required='true' placeholder='Signature E-mail'>
+            </div>
+            <% } else { %>
+            <div class='form-group col-lg-6 col-md-6'>
+              <input type='text' class='form-control' id='replyEmail' autocomplete='off' name='replyEmail' required='true' placeholder='Signature E-mail n/a' value=null disabled>
+            </div>
+            <% } %>
+          </div>
+          <div class="row">
+            <div class='form-group col-lg-6 col-md-6'>
+              <input type='text' class='form-control' id='tags' name='tags' required='true' placeholder='Keywords' maxlength='45'>
+            </div>
+            <% if(user.vettingRights) { %>
+            <div class='form-group col-lg-6 col-md-6'>
+              <select class='form-control' id='vetted' name='vetted'>
+                <option disabled selected value> --Has this template been vetted?-- </option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </div>
+            <% } else { %>
+            <div class='form-group col-lg-6 col-md-6' hidden>
+              <select class='form-control' id='vetted' name='vetted'>
+                <option selected>No</option>
+              </select>
+            </div>
+            <% }  %>
+          </div>
+          <button type='submit' class='btn btn-primary' id='saveTemplate' onclick='saveTemplate(event)'>Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End manage templates modal -->
