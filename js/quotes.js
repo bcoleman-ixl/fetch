@@ -130,7 +130,7 @@ function buildQuote(event) {
       quoteArray.rebateEndDate = tempArray[0].rebateEndDate;
       quoteArray.rebateName = tempArray[0].rebateName;
       copyQuote(currentQuoteTemplateId);
-      copiedAlert(event);
+      alertUser('Copied', ' Quote');
       // Hide numberLicenses options for user (change display to `none`)
       removeClickedElements("licenses", currentQuoteTemplateId);
       handleClick(event);
@@ -268,7 +268,7 @@ function addLicense(event) {
       addLicenseValues[addLicenseElementIds[k]] = document.getElementById(`addLicenseFields`).querySelector('#' + addLicenseElementIds[k]).value.trim();
     }
   }
-  fetch('addLicense', {
+  fetch('createLicense', {
     method: 'put',
     headers: {
       'Content-Type': 'application/json'

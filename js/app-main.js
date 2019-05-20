@@ -8,6 +8,20 @@ const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
 
+const FORM_ELEMENTS = [
+  'name',
+  'category',
+  'closing',
+  'greeting',
+  'id',
+  'program',
+  'publicStatus',
+  'replyEmail',
+  'tags',
+  'team',
+  'vetted',
+];
+
 /* Ensures that modal for adding hyperlinks in MCE loads correctly */
 $(document).on('focusin', function(e) {
   if ($(e.target).closest('.mce-window').length) {
@@ -29,12 +43,12 @@ $('.versionTabs').on('keydown', function(event) {
 // NOTE: Side navbar
 /* Set the width of the side navigation to 250px */
 function openNav() {
-  document.getElementById("mySidenav").style.width = "350px";
+  document.getElementById('mySidenav').style.width = '300px';
 }
 
 /* Set the width of the side navigation to 0 */
 function closeNav() {
-  document.getElementById("mySidenav").style.width = "0";
+  document.getElementById('mySidenav').style.width = '0';
 }
 
 /**
@@ -45,6 +59,13 @@ function closeNav() {
  *
  */
 function initialize() {
+
+  /**
+  This is a comment
+  */
+
+  // SIngle line
+
   /**
    * Initialize settings for Tiny MCE editor
    * --Force break tag when entering new lines.
@@ -74,30 +95,12 @@ function initialize() {
       'undo redo | bold italic underline | alignleft  aligncenter  alignright | numlist  bullist | removeformat | link | code'
     ]
   });
-  let date = new Date().toDateInputValue();
-  document.getElementById('updatedDate').value = MONTH_NAMES[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
-  let dataTable = document.querySelector('#data-table');
-  let updateDarkModeBtn = document.querySelector('#updateDarkMode');
-  updateDarkModeBtn.addEventListener('click', updateDarkMode, false);
-  dataTable.addEventListener('click', handleClick, false);
-  dataTable.addEventListener('drop', handleDrop, false);
   var userType = document.getElementById('userType').innerHTML.trim();
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  dataTable = document.getElementById('data-table');
-  loader = document.getElementById('loader');
-  dataTable.style.display = 'flex';
-  $("#loader").children().css({
-    "display": "none"
-  });
-  $("#loader").children().addClass('stopAnimation');
-  search();
-}, false);
-
 function updateDarkMode() {
-  var email = document.getElementById("userEmail").innerHTML.trim();
-  var darkModeValue = document.getElementById("userDarkModeValue").innerHTML.trim();
+  var email = document.getElementById('userEmail').innerHTML.trim();
+  var darkModeValue = document.getElementById('userDarkModeValue').innerHTML.trim();
   darkModeValue = darkModeValue == 'true';
   fetch('updateDarkMode', {
     method: 'put',
@@ -115,49 +118,72 @@ function updateDarkMode() {
   })
 }
 
-var searchByClick = document.getElementsByClassName("searchByClick");
+var searchByClick = document.getElementsByClassName('searchByClick');
 
 for (var i = 0; i < searchByClick.length; i++) {
   searchByClick[i].addEventListener('click', handleSearchByClick, false);
 }
 
 function handleSearchByClick(e) {
-  console.log(e);
-  if (e.target.id == "vetted" || e.target.id == "vettedSvg") {
-    appendSearch('#vetted=yes');
-  } else if (e.target.id == "templateCategoryText") {
-    var target = e.target || e.srcElement;
-    appendSearch('#category=' + target.innerHTML.trim().toLowerCase());
-  } else if (e.target.id == 'notVettedUser') {
-    userEmail = document.getElementById('userEmail').innerHTML.trim();
-    appendSearch('#user=' + userEmail + ' #public=false');
-  } else if (e.target.id == 'templateProgramWithHash') {
-    var target = e.target || e.srcElement;
-    appendSearch('#program=' + target.innerHTML.replace('#', '').trim().toLowerCase());
+  var id = null;
+  if (e.target.id == null || e.target.id == '') {
+    id = e.target.parentNode.id;
   } else {
-    appendSearch('#vetted=no #public=true');
+    id = e.target.id;
   }
+  switch (id) {
+    case 'vetted':
+      appendSearch('#vetted=yes');
+      break;
+    case 'notVetted':
+      appendSearch('#vetted=no #publicStatus=true');
+      break;
+    case 'notVettedUser':
+      userEmail = document.getElementById('userEmail').innerHTML.trim();
+      appendSearch('#user=' + userEmail + ' #publicStatus=false');
+      break;
+    case 'vettedIcon':
+      appendSearch('#vetted=yes');
+      break;
+    case 'notVettedIcon':
+      appendSearch('#vetted=no #publicStatus=true');
+      break;
+    case 'notVettedUserIcon':
+      userEmail = document.getElementById('userEmail').innerHTML.trim();
+      appendSearch('#user=' + userEmail + ' #publicStatus=false');
+      break;
+    case 'templateCategory':
+      var target = e.target || e.srcElement;
+      appendSearch('#category=' + target.innerHTML.trim().toLowerCase());
+      break;
+    case 'templateProgram':
+      var target = e.target || e.srcElement;
+      appendSearch('#program=' + target.innerHTML.trim().toUpperCase());
+      break;
+    default:
+      console.log('default search by click switch');
+  }
+
 }
 
 function appendSearch(textToAppend) {
-  $('#search-bar').val($('#search-bar').val() + " " + textToAppend);
-  document.body.scrollTop = document.documentElement.scrollTop = 0;
+  $('#searchBar').val($('#searchBar').val() + ' ' + textToAppend);
   search();
 }
 
 // Scrolls to top, focuses on search box and highlights text
 $(document).on('keydown', function(e) {
   var kc = e.which || e.keyCode;
-  if (e.ctrlKey && String.fromCharCode(kc).toUpperCase() == "K") {
+  if (e.ctrlKey && String.fromCharCode(kc).toUpperCase() == 'K') {
     e.preventDefault();
     document.body.scrollTop = document.documentElement.scrollTop = 0;
-    $('#search-bar').focus();
-    $('#search-bar').select();
+    $('#searchBar').focus();
+    $('#searchBar').select();
   }
 });
 
 Date.prototype.toDateInputValue = (function() {
-  let local = new Date(this);
+  var local = new Date(this);
   local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
   return local;
 })
@@ -170,13 +196,13 @@ $('#confirmRemoveDialog').on('hidden.bs.modal', function() {
 })
 
 /**
- * Looks for # in URL and loads value into search-bar
+ * Looks for # in URL and loads value into searchBar
  */
 var hashParams = window.location.hash.substr(1).split('&'); // substr(1) to remove the `#`
-if (hashParams[0] == "") {} else {
+if (hashParams[0] == '') {} else {
   for (var i = 0; i < hashParams.length; i++) {
     var p = hashParams[i].split('=');
-    document.getElementById('search-bar').value = decodeURIComponent(p[0]);;
+    document.getElementById('searchBar').value = decodeURIComponent(p[0]);;
   }
 
 }
@@ -185,43 +211,20 @@ if (hashParams[0] == "") {} else {
  * Clears search box when x is clicked, search() Function
  * is also fired to resort list.
  */
-$('#clear-search').click(function() {
-  document.getElementById('search-bar').value = '';
+$('#clearSearch').click(function() {
+  /**
+  if ($(this).css("transform") == 'none') {
+    $(this).css("transform", "rotate(360deg)");
+  } else {
+    $(this).css("transform", "");
+  } */
+  document.getElementById('searchBar').value = '';
   reset();
   // Places cursor back in search box
-  $('#search-bar').focus();
-});
-
-
-
-$('#quickAccess').click(function() {
-
-
-  /**
-
-  quickAccess = document.getElementById("quickAccess");
-  if ($('#quickAccessObjects').hasClass('quickAccessObjectsShow')) {
-
-  quickAccess.innerHTML = '&#x2039;';
-  $('#quickAccessObjects').addClass('quickAccessObjectsHide');
-  $('#quickAccessObjects').removeClass('quickAccessObjectsShow');
-} else {
-quickAccess.innerHTML = '&#x203A';
-$('#quickAccessObjects').addClass('quickAccessObjectsShow');
-$('#quickAccessObjects').removeClass('quickAccessObjectsHide');
-}
-  */
+  $('#searchBar').focus();
 });
 
 $('#empty').click(function() {});
-
-
-
-function toggleQuickAccess() {
-  // if showing, change to right: 25px and z-index -1 and change icon to >
-  // if not showing, change to right 370px z-index
-
-}
 
 /* Functions for template modal */
 
@@ -229,51 +232,26 @@ function toggleQuickAccess() {
  * When Manage Templates modal is hidden,
  * form fields, method, and action are reset
  */
-$('#manageTemplates').on('hidden.bs.modal', function() {
-  $('#templatesForm').trigger('reset');
-  document.getElementById('manageTemplatesTitle').innerHTML = 'Add new template';
-  form = document.getElementById('templatesForm');
-  document.getElementById('submitBtn').removeEventListener('click', update);
-  form.method = 'POST';
-  form.action = '/add';
-
-  for (var i = 0; i < 4; i++) {
+$('#saveTemplates').on('hidden.bs.modal', function() {
+  $('#templatesForm').find('input:text').val('');
+  $('#templatesForm').find('select').each(function() {
+    this.selectedIndex = 0;
+  });
+  document.getElementById('saveTemplatesTitle').innerHTML = 'Add new template';
+  for (var i = 0; i <= 4; i++) {
+    var bodyField = tinymce.get('version' + i + 'Field').getBody();
     var versionTab = document.getElementById('version' + i + 'Title');
-    versionTab.innerHTML = ('Version' + (i + 1));
-  }
-
-  let updateBtn = document.getElementById('submitBtn');
-  updateBtn.innerHTML = 'Submit';
-  updateBtn.onclick = '';
-});
-
-
-$('#snippetsView').on('hidden.bs.modal', function() {
-  for (var i = 0; i < 4; i++) {
-    // Grab current blank fields
-    var bodyFieldTemp = document.getElementById('version' + i + 'Snippet');
-    var versionTab = document.getElementById('version' + i + 'SnippetTitle');
-    //Get current version info
-    bodyFieldTemp.innerHTML = "";
-    versionTab.innerHTML = "";
-  }
-  for (var k = 0; k < 4; k++) {
-    if ($('#originalSnippetTab' + k).hasClass('active')) {
-      $('#originalSnippetTab' + k).attr('class', '');
+    bodyField.innerHTML = '';
+    if (i == 0) {
+      versionTab.innerHTML = ('Main');
+    } else {
+      versionTab.innerHTML = ('Version' + i);
     }
   }
-  $('#originalSnippetTab').attr('class', 'active');
-  for (var m = 0; m < 4; m++) {
-    if ($('#version' + m + 'Snippet').hasClass('active') && $('#version' + m + 'Snippet').hasClass('in')) {
-      $('#version' + m + 'Snippet').attr('class', 'tab-pane fade');
-    }
-  }
-  $('#versionOriginalSnippetPill').attr('class', 'tab-pane fade in active');
+  var templateModalBtn = document.getElementById('saveTemplate');
+  templateModalBtn.innerHTML = 'Submit';
 
-  // BUG: some issue with how the body loads. with classes fade and in.
 });
-
-
 
 /* Prevents colors from sticking on button operations when clicked */
 $('.btn').mouseup(function() {
@@ -282,24 +260,26 @@ $('.btn').mouseup(function() {
 
 /**
  * Generates a unique alphanumeric ID for each template. Template
- * ID is set when the function completes. setTemplateId() function
+ * ID is set when the function completes. setId() function
  * is fired each time user clicks add new template link in the
  * account menu.
  */
-function setTemplateId() {
-  var templateId = '';
-  let digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+function setId() {
+  var id = '';
+  var digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   // Number 100 - 999
   for (var k = 0; k < 18; k++) {
     if (k % 2 > 0) {
-      templateId += Math.floor(Math.random() * 9) + 1;
+      id += Math.floor(Math.random() * 9) + 1;
 
     } else {
-      templateId += digits.charAt(Math.floor((Math.random() * 25)));
+      id += digits.charAt(Math.floor((Math.random() * 25)));
     }
   }
-  document.getElementById('id').value = templateId;
+  document.getElementById('id').value = id;
+
 }
+
 
 /**
  * Handles all click events in the data-table. When click is fired,
@@ -310,8 +290,8 @@ function setTemplateId() {
  * 4. The template element
  * 5. The template program (i.e., 'IXL', 'FAM', 'QW', etc.)
  * 6. The reply email (a.k.a. Signature e-mail)
- * 7. The tempalte greeting ('Thank you for reaching...')
- * 8. The tempalte closing ('Please let me know if you have any questions...')
+ * 7. The template greeting ('Thank you for reaching...')
+ * 8. The template closing ('Please let me know if you have any questions...')
  *
  * Logic determines the kind of click and executes appropriate actions
  *
@@ -331,34 +311,34 @@ function handleClick(e) {
      */
     if (e.target !== e.currentTarget && (obj.eventId == 'templateBody' || obj.eventId == 'copyFull')) {
       copy(buildEmail(obj.body, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
-      copiedAlert(e);
+      alertUser('Copied:', document.getElementById(obj.templateId).querySelector('#templateName').innerHTML);
       updateRanking(obj.templateId, obj.eventId);
       /**
        * If copyPortion is clicked, then execute the following:
        * 1. Alert user that the template has been copied.
-       * 3. Copy the body of the template using copy().
-       * 4. Updates the ranking of this template.
+       * 3. Copy the body of the template using the copy() function.
+       * 4. Update the ranking of this template.
        */
     } else if (e.target !== e.currentTarget && obj.eventId == 'reply') {
-      copy(buildEmail(obj.body, obj.program, obj.replyEmail, "Thank you for your reply.", obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
-      copiedAlert(e);
+      copy(buildEmail(obj.body, obj.program, obj.replyEmail, 'Thank you for your reply.', obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
+      alertUser('Copied:', document.getElementById(obj.templateId).querySelector('#templateName').innerHTML);
       updateRanking(obj.templateId, obj.eventId);
 
     } else if (e.target !== e.currentTarget && obj.eventId == 'share') {
-      copy("http://scruffy.quiacorp.com:3000/templates" + "#" + obj.templateId);
+      copy('http://scruffy.quiacorp.com:3000/home' + '#' + obj.templateId);
 
     } else if (e.target !== e.currentTarget && obj.eventId == 'copyPortion') {
       copy(obj.body);
-      copiedAlert(e);
+      alertUser('Copied:', document.getElementById(obj.templateId).querySelector('#templateName').innerHTML);
       updateRanking(obj.templateId, obj.eventId);
 
       /* If trash (or remove) button was clicked */
     } else if (e.target !== e.currentTarget && obj.eventId == 'removeConfirm') {
       // Grab elements to load template name and id into these elements
-      let confirmRemoveName = document.getElementById('confirmRemoveName');
-      let confirmRemoveBtn = document.getElementById('confirmRemoveBtn');
-      // Grab name of tempalte to be removed
-      let nameToRemove = document.getElementById(obj.templateId).querySelector('#templateName');
+      var confirmRemoveName = document.getElementById('confirmRemoveName');
+      var confirmRemoveBtn = document.getElementById('confirmRemoveBtn');
+      // Grab name of template to be removed
+      var nameToRemove = document.getElementById(obj.templateId).querySelector('#templateName');
       // Set to display name of item to be removed, set btn id to template id
       confirmRemoveName.innerHTML = nameToRemove.innerHTML.trim();
       confirmRemoveBtn.id = obj.templateId;
@@ -368,7 +348,7 @@ function handleClick(e) {
 
       /* If snippets icon was clicked */
     } else if (e.target !== e.currentTarget && obj.eventId == 'snippets') {
-      // Get the template body and the body field element. Display just the tempalte body.
+      // Get the template body and the body field element. Display just the template body.
       $('#snippetsView').modal('show');
       loadSnippetsModal(obj);
 
@@ -377,11 +357,11 @@ function handleClick(e) {
 
       /* If a version was clicked for copying */
     } else if (e.target !== e.currentTarget && versionsRegex.test(obj.eventId)) {
-      let versionsBody = document.getElementById(obj.templateId).querySelector('#versionBody' + (obj.eventId).substr(obj.eventId.length - 1));
+      var versionsBody = document.getElementById(obj.templateId).querySelector('#versionBody' + (obj.eventId).substr(obj.eventId.length - 1));
       copy(buildEmail(versionsBody.innerHTML, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder, obj.eventId));
-      copiedAlert(e);
+      alertUser('Copied:', document.getElementById(obj.templateId).querySelector('#templateName').innerHTML);
       updateRanking(obj.templateId, 'copyFull');
-      let versionsElementToHide = document.getElementById(obj.templateId).querySelector('.versions');
+      var versionsElementToHide = document.getElementById(obj.templateId).querySelector('.versions');
       versionsDisplay(versionsElementToHide);
       /* If quote  button was clicked for displaying */
     } else if (e.target !== e.currentTarget && obj.eventId == 'quote') {
@@ -392,16 +372,16 @@ function handleClick(e) {
       }
       /* If versions button was clicked for displaying */
     } else if (e.target !== e.currentTarget && obj.eventId == 'versions') {
-      let versionsElement = document.getElementById(obj.templateId).querySelector('.versions');
+      var versionsElement = document.getElementById(obj.templateId).querySelector('.versions');
       versionsDisplay(versionsElement);
       /* If info button was clicked */
     } else if (e.target !== e.currentTarget && obj.eventId == 'info') {
-      let infoElement = document.getElementById(obj.templateId).querySelector('.tooltiptext');
+      var infoElement = document.getElementById(obj.templateId).querySelector('.tooltiptext');
       infoDisplay(infoElement);
       /* If edit button was clicked */
     } else if (e.target !== e.currentTarget && obj.eventId == 'edit') {
       //  Show manage teampltes modal
-      $('#manageTemplates').modal('show');
+      $('#saveTemplates').modal('show');
       // Load all elements into the modal
       editTemplate(obj.templateId);
     } else {
@@ -412,40 +392,63 @@ function handleClick(e) {
 
 function loadSnippetsModal(obj) {
   // Grab snippets fields
-  let bodyField = document.getElementById('snippetsBody');
+  // var bodyField = document.getElementById('version0Snippet');
+  // var templateBody = document.getElementById(obj.templateId).querySelector('#templateBody');
+  // bodyField.innerHTML = templateBody.innerHTML.trim();
+  // Grab version body and insert into snippets modal field
 
-  // Grab this templates information
-  let templateBody = document.getElementById(obj.templateId).querySelector('#templateBody');
-  if (document.getElementById(obj.templateId).querySelector('#versionDescription0') != null) {
-    // Grab version body and insert into snippets modal field
-    for (var i = 0; i < 4; i++) {
 
-      // Grab current blank fields
-      var bodyFieldTemp = document.getElementById('version' + i + 'Snippet');
-      var versionTab = document.getElementById('version' + i + 'SnippetTitle');
-
-      //Get current version info
-      var versionBodyTemp = document.getElementById(obj.templateId).querySelector('#versionBody' + i);
-      var versionDescription = document.getElementById(obj.templateId).querySelector('#versionDescription' + i);
-      bodyFieldTemp.innerHTML = versionBodyTemp.innerHTML.trim();
-      versionTab.innerHTML = versionDescription.innerHTML.trim();
+  for (var i = 0; i < 5; i++) {
+    // Get modal fields
+    var modalVersionTitle = document.getElementById('version' + i + 'SnippetTitle');
+    var modalVersionBody = document.getElementById('version' + i + 'Snippet');
+    if (i == 0) {
+      var thisVersionBody = document.getElementById(obj.templateId).querySelector('#templateBody').innerHTML
+      var thisVersionTitle = 'Main';
+    } else {
+      var thisVersionTitle = document.getElementById(obj.templateId).querySelector('#versionDescription' + i).innerHTML;
+      var thisVersionBody = document.getElementById(obj.templateId).querySelector('#versionBody' + i).innerHTML;
     }
+
+    modalVersionTitle.innerHTML = thisVersionTitle.trim();
+    modalVersionBody.innerHTML = thisVersionBody.trim();
+    if (i == 0 && document.getElementById(obj.templateId).querySelector('#versionDescription1') == null) {
+      for (var i = 1; i < 5; i++) {
+        // Get modal fields
+        var modalVersionTitle = document.getElementById('version' + i + 'SnippetTitle');
+        var modalVersionBody = document.getElementById('version' + i + 'Snippet');
+        modalVersionTitle.innerHTML = '';
+        modalVersionBody.innerHTML = '';
+        var tabs = document.querySelector('#snippetTitles').getElementsByTagName('LI');
+        console.log(tabs);
+        $('#' + obj.templateId + ' #snippetTitles li').each(function(i) {
+          console.log($(this)); // This is your rel value
+        });
+
+      }
+      break;
+    }
+
   }
   // Set all form fields equal to this templates fields
-  bodyField.innerHTML = templateBody.innerHTML.trim();
 
 }
 
-function copiedAlert(e) {
-  let templateObjId = $(e.target).closest(`li[class^='template']`).attr('id');
-  let templateName = document.getElementById(templateObjId).querySelector("#templateName").innerHTML;
-  let templateObj = document.getElementById('copiedAlert');
-  $(templateObj).addClass('animateCopied');
-  $(templateObj).html("Copied: <b>" + templateName + "</b>");
+function alertUser(message, objectName) {
+  var alertObj = document.getElementById('alertUser');
+
+  $(alertObj).html('<b>' + message + ' ' + objectName + '</b>');
+  if (message == 'Updated' || message == 'Added') {
+    time = 5000;
+  } else {
+    time = 2000;
+  }
+  $(alertObj).addClass('animateCopied');
   setTimeout(function() {
-      $(templateObj).removeClass('animateCopied');
+      $(alertObj).removeClass('animateCopied');
     },
-    1000);
+    time);
+
 
 }
 
@@ -459,7 +462,7 @@ function resetStyle(e) {
 }
 
 function showOptions() {
-  document.getElementById("myDropdown").classList.toggle("show");
+  document.getElementById('myDropdown').classList.toggle('show');
 }
 
 function versionsDisplay(versionsElement) {
@@ -486,11 +489,10 @@ function infoDisplay(infoElement) {
   }
 }
 
-
 function buildObj(e) {
   var obj = new Object();
-  let templateId = $(e.target).closest(`li[class^='template']`).attr('id');
-  obj.templateId = $(e.target).closest(`li[class^='template']`).attr('id');
+  var templateId = $(e.target).closest(`li[class^='template']`).attr('id');
+  obj.templateId = templateId;
   obj.userTeam = document.getElementById('userTeam').innerHTML.trim();
   obj.eventId = $(e.target).closest('div').attr('id');
   obj.template = $(e.target).closest(`li[class^='template']`);
@@ -503,7 +505,6 @@ function buildObj(e) {
   return obj;
 }
 
-
 /**
  * 1. Creates and hides a container for the HTML
  * 2. Detects the stylesheets of the page
@@ -514,28 +515,27 @@ function buildObj(e) {
  * @param  {[type]} html [description]
  */
 function copy(html) {
-  let container = document.createElement('div');
+  var container = document.createElement('div');
   container.innerHTML = html;
   container.style.opacity = 100;
-  let activeSheets = Array.prototype.slice.call(document.styleSheets)
+  var activeSheets = Array.prototype.slice.call(document.styleSheets)
     .filter(function(sheet) {
       return !sheet.disabled;
     });
   document.body.appendChild(container);
   window.getSelection().removeAllRanges();
-  let range = document.createRange();
+  var range = document.createRange();
   range.selectNode(container);
   window.getSelection().addRange(range);
   document.execCommand('copy');
   document.body.removeChild(container)
 }
 
-
 function trimElement(element) {
   if (typeof element != 'undefined') {
     return element.trim();
   }
-  return "";
+  return '';
 }
 
 function buildEmail(body, program, replyEmail, greeting, closing, templateId, userTeam, folder, eventId) {
@@ -612,7 +612,7 @@ function buildEmail(body, program, replyEmail, greeting, closing, templateId, us
     body = `</br></br>${body}</br></br>`;
     opening = `Hi NAME, ${greeting}`;
   } else if (templateId == `X00_1_Blank_Signature_only`) {
-    return getProgramSignature(program, replyEmail, userTeam, folder);
+    return getProgramSignature(program, replyEmail, userTeam, folder, templateId);
 
   } else if ((greeting == 'none' || greeting == ' ' || greeting == '') && (closing == '' || closing == ' ' || closing == 'none') && (templateId != `X00_1_Blank_Signature_only`)) {
     greeting = '';
@@ -624,7 +624,7 @@ function buildEmail(body, program, replyEmail, greeting, closing, templateId, us
     closing = `${closing}</br></br>`;
     opening = `Hi NAME, <br/><br/> ${greeting}`;
   }
-  var signature = getProgramSignature(program, replyEmail, userTeam, folder);
+  var signature = getProgramSignature(program, replyEmail, userTeam, folder, templateId);
   if (eventId == 'reply') {
     return `Hello NAME,<br/><br/> ${greeting} ${body} ${closing} ${signature}`;
   }
@@ -637,15 +637,19 @@ function buildEmail(body, program, replyEmail, greeting, closing, templateId, us
  * @param  {[type]} replyEmail The reply e-mail that will be included in the signature
  * @return {String} Return the complete signature
  */
-function getProgramSignature(program, replyEmail, userTeam, folder) {
+function getProgramSignature(program, replyEmail, userTeam, folder, templateId) {
   program = program.trim();
   replyEmail = replyEmail.trim();
   userTeam = userTeam.trim();
   folder = folder.trim();
   var user = document.getElementById('userFirstName').innerHTML.trim();
   var userEmail = document.getElementById('userEmail').innerHTML.trim();
+  if (
 
-  if ((userTeam == 'techSupport' || userTeam == 'techSupportCSE') && (program == 'IXL' || program == 'IXLT')) {
+    ((userTeam == 'techSupport' || userTeam == 'customerSupportEngineer') &&
+      (program == 'IXL' || program == 'IXLT')) || (userEmail == 'kgrant@ixl.com' && program == 'IXL')
+
+  ) {
     var valediction = ``;
     var name = `<b>${user}</b></br>`;
     var department = 'IXL Support</br></br>';
@@ -654,9 +658,10 @@ function getProgramSignature(program, replyEmail, userTeam, folder) {
     var website = 'Website: www.ixl.com</br>';
     var logoLocation = `'https://c.na57.content.force.com/servlet/servlet.ImageServer?id=0150b0000027zq8&oid=00D300000001FBU&lastMod=1495736864000'`
     var logo = `<img src= ${logoLocation} alt='ixl-logo'>`;
-    return `${valediction} ${name} ${department} ${email} ${phone} ${website} ${logo}`;
+    templateIdWhite = `<br><p hidden> ${templateId} </p>`;
+    return `${valediction} ${name} ${department} ${email} ${phone} ${website} ${logo} ${templateIdWhite}`;
 
-  } else if ((userTeam == 'techSupport' || userTeam == 'techSupportCSE') && (program == 'QW' || program == 'QB' || program == 'QBT')) {
+  } else if ((userTeam == 'techSupport' || userTeam == 'customerSupportEngineer') && (program == 'QW' || program == 'QB' || program == 'QBT')) {
     var valediction = ``;
     var name = `${user}</br>Quia Support</br>`;
     return `${valediction} ${name} ${replyEmail}`;
@@ -671,7 +676,7 @@ function getProgramSignature(program, replyEmail, userTeam, folder) {
     }
     var phone = 'Phone: 855.255.8800</br>';
 
-  } else if (userTeam == 'techSupportCSE') {
+  } else if (userTeam == 'customerSupportEngineer') {
     var valediction = ``;
     var name = `<b>${user}</b></br>`;
     var department = 'Customer Support Engineer</br></br>';
@@ -694,11 +699,10 @@ function getProgramSignature(program, replyEmail, userTeam, folder) {
   return `${valediction} ${name} ${department} ${email} ${phone} ${website} ${logo}`;
 }
 
-
 function handleDrop(e) {
   try {
     var obj = buildObj(e);
-    let template = $(e.target).closest(`li[class^='template']`);
+    var template = $(e.target).closest(`li[class^='template']`);
     var droppedText = e.dataTransfer.getData('Text').replace(/(\r\n|\n|\r)/gm, ' ');
     if (obj.templateId == 'X1_01_New_Set_up_Teacher_info_NOT_included') {
       var regexSchoolName = /Name\s(.*)\sAcce/;
@@ -721,7 +725,7 @@ function handleDrop(e) {
         obj.body = obj.body.replace('http://www.ixl.com/signin/CUSTOM', `<b>http://www.ixl.com/signin/${username.split('@')[1]}</b>`);
       } else {
         obj.body = obj.body.replace('from your dedicated sign in page', '');
-        obj.body = obj.body.replace('http://www.ixl.com/signin/CUSTOM', `<b>http://www.ixl.com/signin</b>`);
+        obj.body = obj.body.replace('www.ixl.com/signin/CUSTOM', `www.ixl.com/signin`);
         obj.body = obj.body.replace('http://books.quia.com', '<b>http://books.quia.com</b>');
         obj.body = obj.body.replace('http://www.quia.com/web', '<b>http://www.quia.com/web</b>');
         obj.body = obj.body.replace('http://hlc.quia.com', '<b>http://hlc.quia.com</b>');
@@ -729,11 +733,11 @@ function handleDrop(e) {
     }
     copy(buildEmail(obj.body, obj.program, obj.replyEmail, obj.greeting, obj.closing, obj.templateId, obj.userTeam, obj.folder));
     updateRanking(obj.templateId, 'copyFull');
-    copiedAlert(e);
+
+    alertUser('Copied:', document.getElementById(obj.templateId).querySelector('#templateName').innerHTML);
   } catch (e) {
     console.log(e);
   }
-
 }
 
 function allowDrop(event) {
@@ -746,8 +750,8 @@ function allowDrop(event) {
  * has been removed.
  * @param  {Event} e the Click event
  */
-function remove(e) {
-  fetch('remove', {
+function deleteTemplate(e) {
+  fetch('deleteTemplate', {
       method: 'delete',
       headers: {
         'Content-Type': 'application/json'
@@ -772,129 +776,94 @@ function remove(e) {
  * @return {[type]}            [description]
  */
 function editTemplate(templateId) {
-  // Grab the maange templates form
-  let form = document.getElementById('templatesForm');
-  let idField = document.getElementById('id');
+  var formElements = FORM_ELEMENTS;
+  for (var i = 0; i < formElements.length; i++) {
+    var formField = document.getElementById(formElements[i]);
+    var valueToInsert = document.getElementById(templateId).querySelector('#template' + formElements[i].charAt(0).toUpperCase() + formElements[i].slice(1));
+    formField.value = valueToInsert.textContent.trim();
+  }
 
-  // Grab form fields
-  let nameField = document.getElementById('name');
-  let bodyField = tinymce.get('body').getBody();
-  let categoryField = document.getElementById('category');
-  let programField = document.getElementById('program');
-  let tagsField = document.getElementById('tags');
-  let teamField = document.getElementById('team');
-  let publicStatusField = document.getElementById('publicStatus');
-  let vettedField = document.getElementById('vetted');
-  let greetingField = document.getElementById('greeting');
-  let closingField = document.getElementById('closing');
-  let replyEmailField = document.getElementById('replyEmail');
+  var mainBody = document.getElementById(templateId).querySelector('#templateBody');
+  var bodyField = tinymce.get('version0Field').getBody();
+  bodyField.innerHTML = mainBody.innerHTML;
 
-
-  // Grab this templates information
-  let name = document.getElementById(templateId).querySelector('#templateName');
-  let body = document.getElementById(templateId).querySelector('#templateBody');
-  let category = document.getElementById(templateId).querySelector('#templateCategory');
-  let program = document.getElementById(templateId).querySelector('#templateProgram');
-  let tags = document.getElementById(templateId).querySelector('#templateTags');
-  let team = document.getElementById(templateId).querySelector('#templateTeam');
-  let publicStatus = document.getElementById(templateId).querySelector('#templatePublicStatus');
-  let vetted = document.getElementById(templateId).querySelector('#templateVetted');
-  let greeting = document.getElementById(templateId).querySelector('#templateGreeting');
-  let closing = document.getElementById(templateId).querySelector('#templateClosing');
-  let replyEmail = document.getElementById(templateId).querySelector('#templateReplyEmail');
-  if (document.getElementById(templateId).querySelector('#versionDescription0') != null) {
-    for (var i = 0; i < 4; i++) {
-      var bodyFieldTemp = tinymce.get('version' + i + 'Field').getBody();
-      var versionTab = document.getElementById('version' + i + 'Title');
-      var versionBodyTemp = document.getElementById(templateId).querySelector('#versionBody' + i);
+  if (document.getElementById(templateId).querySelector('#versionDescription1') != null) {
+    for (var i = 1; i < 5; i++) {
+      // Grab elements on the page and insert data in to those elements.
+      var versionTitle = document.getElementById('version' + i + 'Title');
+      var bodyField = tinymce.get('version' + i + 'Field').getBody();
+      // Grab the data
+      var versionBodyElement = document.getElementById(templateId).querySelector('#versionBody' + i);
       var versionDescription = document.getElementById(templateId).querySelector('#versionDescription' + i);
-      bodyFieldTemp.innerHTML = versionBodyTemp.innerHTML.trim();
-      versionTab.innerHTML = versionDescription.innerHTML.trim();
+      bodyField.innerHTML = versionBodyElement.innerHTML.trim();
+      versionTitle.innerHTML = versionDescription.innerHTML.trim();
     }
   }
-  let today = new Date().toDateInputValue();
-  // Set all form fields equal to this templates fields
-  idField.value = templateId;
-  nameField.value = name.textContent.trim();
-  bodyField.innerHTML = body.innerHTML.trim();
-  categoryField.value = category.textContent.trim();
-  programField.value = program.textContent.trim();
-  tagsField.value = tags.textContent.trim();
-  teamField.value = team.textContent.trim();
-  publicStatusField.value = publicStatus.textContent.trim();
-  vettedField.value = vetted.textContent.trim();
-  greetingField.value = greeting.textContent.trim();
-  closingField.value = closing.textContent.trim();
-  replyEmailField.value = replyEmail.textContent.trim();
-  // Removes forms method and action, form handled by update method (below)
-  form.method = '';
-  form.action = '';
+
+  var today = new Date().toDateInputValue();
+
   // Change title of template to 'Edit template'
-  document.getElementById('manageTemplatesTitle').innerHTML = 'Edit template';
-  let updateBtn = document.getElementById('submitBtn');
-  updateBtn.innerHTML = 'Update';
-  // Run update function on click of update button
-  updateBtn.onclick = update;
+  document.getElementById('saveTemplatesTitle').innerHTML = 'Edit template';
+  var templateModalBtn = document.getElementById('saveTemplate');
+  templateModalBtn.innerHTML = 'Update';
+
 }
 
-// TODO: Remove e from function parameter
-function update(e) {
-  let id = document.querySelector('#id').value;
-  let updatedDate = document.querySelector('#updatedDate').value;
-  let updatedByUser = document.querySelector('#userEmail').innerHTML.trim();
-  let name = document.querySelector('#name').value;
-  let body = tinymce.get('body').getBody().innerHTML.trim();
-  let category = document.querySelector('#category').value;
-  let program = document.querySelector('#program').value;
-  let tags = document.querySelector('#tags').value;
-  let team = document.querySelector('#team').value;
-  let publicStatus = document.querySelector('#publicStatus').value;
-  let vetted = document.querySelector('#vetted').value;
-  let greeting = document.querySelector('#greeting').value;
-  let closing = document.querySelector('#closing').value;
-  let replyEmail = document.querySelector('#replyEmail').value;
-  let versions = [];
-  for (var i = 0; i < 4; i++) {
-    var iFrame = document.querySelector('#version' + i + 'Field_ifr');
-    var iFrameContent = iFrame.contentDocument || iframe.contentWindow.document;
-    var versionTabName = document.getElementById('version' + i + 'Title').innerHTML.trim();
-    var versionText = iFrameContent.body.innerHTML.trim();
-    versionTextFormatted = format(versionText);
-    versions.push([versionTabName.trim(), versionTextFormatted.trim()]);
+// Updates user view with new updates to a template
+function updateTemplate(templateId) {
+  var currentCategory = document.getElementById(templateId).querySelector('#templateCategory').innerHTML.trim().toLowerCase();
+  var formElements = FORM_ELEMENTS;
+  for (var i = 0; i < formElements.length; i++) {
+    var formFieldValue = document.getElementById(formElements[i]).value;
+    formFieldValue = format(formFieldValue);
+    var templateField = document.getElementById(templateId).querySelector('#template' + formElements[i].charAt(0).toUpperCase() + formElements[i].slice(1));
+    if (document.getElementById(templateId).querySelector('#' + formElements[i] + 'HashtagSearch') != null) {
+      var hashtagSearchElement = document.getElementById(templateId).querySelector('#' + formElements[i] + 'HashtagSearch');
+      hashtagSearchElement.innerHTML = '#' + formElements[i] + '=' + document.getElementById(formElements[i]).value;
+    }
+    if (formElements[i] == 'program') {
+      hiddenProgramSearch = document.getElementById(templateId).querySelector('#templateProgramWithHash');
+      hiddenProgramSearch.innerHTML = '#' + formFieldValue.trim();
+      templateField.innerHTML = formFieldValue.trim() + ' ';
+    } else {
+      templateField.innerHTML = formFieldValue.trim();
+    }
   }
-  body = format(body);
-  fetch('update', {
-    method: 'put',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      'id': id,
-      'updatedDate': updatedDate,
-      'updatedByUser': updatedByUser,
-      'name': name,
-      'body': body,
-      'category': category,
-      'program': program,
-      'tags': tags,
-      'team': team,
-      'publicStatus': publicStatus,
-      'vetted': vetted,
-      'greeting': greeting,
-      'closing': closing,
-      'replyEmail': replyEmail,
-      'versions': versions
-    })
-  }).then(res => {
-    if (res.ok) return res.json()
-  }).then(data => {
-    window.location.reload()
-  })
+  var mainBody = document.getElementById(templateId).querySelector('#templateBody');
+  var bodyField = tinymce.get('version0Field').getBody();
+  mainBody.innerHTML = bodyField.innerHTML;
+  for (var i = 1; i < 5; i++) {
+    // get version title and content
+    var versionTitle = document.getElementById('version' + i + 'Title').innerHTML;
+    var bodyField = tinymce.get('version' + i + 'Field').getBody();
+    var versionBodyElement = document.getElementById(templateId).querySelector('#versionBody' + i);
+    var versionDescription = document.getElementById(templateId).querySelector('#versionDescription' + i);
+    if (versionDescription != null && versionBodyElement != null) {
+      versionDescription.innerHTML = versionTitle;
+      versionBodyElement.innerHTML = bodyField.innerHTML;
+    }
+  }
+
+
+
+
+  // Update class name for category element
+  var newCategory = document.getElementById(templateId).querySelector('#templateCategory').innerHTML.trim();
+  var element = document.getElementById(templateId).querySelector('#templateCategory');
+  element.classList.remove(currentCategory.substr(0, 5).toLowerCase().trim());
+  element.classList.add(newCategory.substr(0, 5).toLowerCase().trim());
+
+
+
+
+  // Update Vetted icon
+  // Build out alert icon
+  alertUser('Updated', document.getElementById('name').value);
 }
 
 function format(body) {
   body = body.replace(/<div><br><\/div>/g, '<br/>');
-  body = body.replace(/<br data-mce-bogus="1">/g, '');
+  body = body.replace(/<br data-mce-bogus='1'>/g, '');
   body = body.replace(/<\/div>/g, '');
   body = body.replace(/<div>/g, '<br/>');
   body = body.replace(/ \'body\': '<br\/>/g, '\'body\': \'');
@@ -904,7 +873,6 @@ function format(body) {
   }
   return body;
 }
-
 
 function updateRanking(templateId, eventId) {
   var rankingElement = document.getElementById(templateId).querySelector('#templateRanking');
@@ -949,10 +917,10 @@ function updateRanking(templateId, eventId) {
  * from highest rank number to lowest.
  */
 function rank() {
-  let list = document.getElementById('data-table');
-  let li = null;
-  let shouldSwitch = false;
-  let switching = true;
+  var list = document.getElementById('data-table');
+  var li = null;
+  var shouldSwitch = false;
+  var switching = true;
   /* Make a loop that will continue until
   no switching has been done */
   while (switching) {

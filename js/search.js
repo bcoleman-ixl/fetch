@@ -1,12 +1,10 @@
 var searchLogArr = new Array();
-let scruffy = document.getElementById('scruffy');
-let scruffySurprised = document.getElementById('scruffySurprised');
-let scruffyMessage = document.getElementById('scruffyMessage');
+let noResults = document.getElementById('noResults');
 let ul = document.getElementById('data-table');
 let li = ul.getElementsByClassName('template');
 
 function search() {
-  let input = document.getElementById('search-bar');
+  let input = document.getElementById('searchBar');
   // If the user has entered one character, do not search.
   if (input.value.length != 0) {
     let filterArr = input.value.toUpperCase().split(' ').clean('');
@@ -41,17 +39,10 @@ function search() {
 
       document.getElementById('templateCount').innerHTML = $('#data-table').children(':visible').length;
       if (($('#data-table').children(':visible').length) == 0) {
-        let searchContents = document.getElementById('search-bar').value;
-        scruffy.style.display = 'none';
-        scruffySurprised.style.display = 'flex';
-        var rand = Math.floor(Math.random() * 6);
-        var scruffyMessages = ["What did the dog say to the tree?....Bark. Also, nothing matched what you searched. Please try again", "After sniffing and searching, nothing came up. Can you please try searching again?", "Dang it. Your search didn't come up with anything. Give it another shot.", "So, this is awkward but nothing came up. Please give it another go.", "Oh no! Nothing matched your search. Check what you typed and try again.", "Uh-oh! It looks like nothing matched what you were looking for. Please try again."]
-        scruffyMessage.innerHTML = scruffyMessages[rand];
-        scruffyMessage.style.display = 'inline-block';
+        let searchContents = document.getElementById('searchBar').value;
+        noResults.style.display = 'block';
       } else {
-        scruffy.style.display = 'flex';
-        scruffySurprised.style.display = 'none';
-        scruffyMessage.style.display = 'none';
+        noResults.style.display = 'none';
       }
     }
   } else {
@@ -104,9 +95,6 @@ function reset() {
       item.style.display = '';
     }
   }
-  scruffy.style.display = 'flex';
-  scruffySurprised.style.display = 'none';
-  scruffyMessage.style.display = 'none';
   document.getElementById('templateCount').innerHTML = li.length;
 }
 
@@ -127,7 +115,7 @@ Array.prototype.clean = function(value) {
  */
 var typingTimer; //timer identifier
 var doneTypingInterval = 200; //time in ms
-var $input = $('#search-bar');
+var $input = $('#searchBar');
 
 //on keyup, start the countdown
 $input.on('keyup', function() {
