@@ -1,17 +1,18 @@
 *****Pending Feature requests*****
-Let users select what team and program they are doing when signing up the first time.
-Have filters available near search bar for click by search.
 More robust data tracking (when were templates used, by whom, how many times)
 Pin templates
-
-
-
+Folders (Option to view by folder. You can switch back and forth)
+Increase width for side scroll bar on hover for page (and maybe template)
+Last clicked field
 
 
 *****Building Feature requests*****
 Change backup from mLab (third party server) to IXL server. Train Admins on how to restore data using backup on IXL server.
 
 *****Completed Feature requests*****
+Let users select what team and program they are doing when signing up the first time.
+Have filters available near search bar for click by search.
+Make it so only people with vetting rights can make changes to vetted templates
 Dark mode
 Add drill down feature (click on categories, click on vetted icons, etc) as a way to drill down.
 Quotation marks for searching
@@ -28,4 +29,4 @@ Have each EJS do the rank computation, rather than the javascript. (Speed!)
 Make a way to paste in the username and pw link into the user/pass request email and have it generate an email with the username and link to be ready to copy and paste. Have it identify if the username is a custom domain, if so, then include that in the sign in link.
 Doraly suggested adding different shape and color for personal templates
 Updated verified icons to circles
-Add @mjenkins to search feature.
+Add @mjenkins to search feature
