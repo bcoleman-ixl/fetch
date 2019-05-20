@@ -4,6 +4,18 @@
   --opacity: 1 !important;
 }
 
+.tooltiptext {
+  background-color: var(--black) !important;
+}
+
+#scruffyMessage {
+  color: var(--white) !important;
+}
+
+#scruffy {
+  opacity: 1 !important;
+}
+
 #templateProgramWithHash, #quickAccess, #clear-search {
   background-color: var(--white) !important;
   opacity: 1 !important;
@@ -13,18 +25,18 @@
   fill: var(--white);
 }
 
-html, body, #data-table, #search-bar, .header, .menubar {
+html, body, #data-table, #searchBar, .header, .menubar {
   background-color: var(--black) !important;
 }
 
-#title, #subtitle, #search-bar {
+#title, #subtitle, #searchBar, #clearSearch, #templateCount, .template, .templateBodyUser, .noResults {
   color: var(--white) !important;
 }
 
-.template, .templateBodyUser {
-  color: var(--white) !important;
-}
-
-#search-bar, .template {
+.searchBarRow, .template {
   box-shadow: none !important;
+}
+
+#templatesTable {
+  background-color: white;
 }
