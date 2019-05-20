@@ -10,6 +10,10 @@ const userSchema = new Schema({
   programs: [String],
   type: String,
   vettingRights: Boolean,
+  settings: {
+    darkMode: Boolean,
+    signature: Boolean
+  },
   email: String
 })
 
