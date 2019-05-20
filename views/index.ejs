@@ -5,34 +5,33 @@
   <meta charset='utf-8'>
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
   <link rel='stylesheet' href='/styles.css'>
+  <link rel='stylesheet' href='/search.css'>
   <% if(settings.darkMode){ %>
-    <link rel='stylesheet' href='/dark.css'>
+  <link rel='stylesheet' href='/dark.css'>
   <% } %>
   <!-- Bootstrap minified CSS -->
   <link rel='stylesheet' href='bootstrap.min.css'>
-  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js" integrity="sha384-kW+oWsYx3YpxvjtZjFXqazFpA7UP/MbiY4jvs+RWZo2+N94PFZ36T6TFkc9O3qoB" crossorigin="anonymous"></script>
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Oleo+Script" rel="stylesheet">
   <% if(user.email == 'mjenkins@ixl.com'){ %>
   <title>CS3K</title>
   <% } else { %>
-  <title>Fetch!</title>
+  <title>Fetch</title>
   <% }%>
 </head>
 
 <body>
-  <div class="copiedAlert" id="copiedAlert">
-    Copied
+  <div class="alertUser" id="alertUser">
   </div>
   <!-- Settings -->
 
   <!-- End Settings -->
 
   <!-- Manage templates modal -->
-  <%- include include/manageTemplatesModal %>
+  <%- include include/saveTemplatesModal %>
   <!-- End manage templates modal -->
   <!-- Begin confirm remove modal -->
-  <%- include include/removeModal %>
+  <%- include include/deleteTemplateModal %>
   <!-- End confirm remove modal -->
   <!-- Begin snippets modal -->
   <%- include include/snippetsModal %>
@@ -55,7 +54,7 @@
   <!-- End spacing -->
   <!-- Search bar -->
   <%- include include/searchBar %>
-  <!-- End search bar -->
+  <!--   End search bar -->
   <!-- Templates -->
   <div class="space">
     <!-- TODO: Work on adding loading icon here -->
@@ -68,18 +67,21 @@
       <%- include include/template %>
     </ul>
   </div>
+
+  <%- include include/noResults %>
+
   <!-- End templates -->
-  <div class="row space bottom">
-    <h3 id="scruffyMessage">Uh-oh! Scruffy couldn't find what you were looking for.</h3>
-  </div>
 
 </body>
 <script src='tinymce/tinymce.min.js'></script>
 <script src='jquery.min.js'></script>
 <script src='app-main.js'></script>
+<script src='crud.js'></script>
 <script src='quotes.js'></script>
 <script src='search.js'></script>
+<script src='templates.js'></script>
 <script src='bootstrap.min.js'></script>
+<script src='nav.js'></script>
 <script>
   var currencyArray = <%- JSON.stringify(currency) %>;
   var licensesArray = <%- JSON.stringify(licenses) %>;
