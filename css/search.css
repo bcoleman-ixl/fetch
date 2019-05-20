@@ -1,0 +1,13 @@
+.search {
+	color: black;
+	height: 50px;
+	border: none;
+}
+
+.search:focus {
+	outline: none;
+}
+
+#vettedSvg {
+	height: 25px;
+}
