@@ -18,33 +18,12 @@
 </head>
 
 <body>
-  <%- include include/templateAndLogicReview %>
+  
 </body>
 <script src='tinymce/tinymce.min.js'></script>
 <script src='jquery.min.js'></script>
 <script src='app-main.js'></script>
 <script src='search.js'></script>
 <script src='bootstrap.min.js'></script>
-<script>
-  var currencyArray = <%- JSON.stringify(currency) %>;
-  var licensesArray = <%- JSON.stringify(licenses) %>;
-  var objectsArray = <%- JSON.stringify(objects) %>;
-  var buildingQuote = false;
-  var spanishClicked = false;
-  var templateId = "";
-  var tempArray = [];
-  var quoteArray = [{
-    "countryCode": null,
-    "subjectQuantity": null,
-    "subjectQuantityName": null,
-    "numberLicenses": null,
-    "spanishCost": null,
-    "rebateEndDate": null,
-    "rebateName": null,
-    "cost": null,
-    "currencySymbol": null,
-    "type": null
-  }];
-</script>
 
 </html>

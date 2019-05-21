@@ -325,6 +325,11 @@ app.get('/quotes', authCheck, (req, res) => {
 app.get('/userGuide', function(req, res) {
   res.redirect('https://docs.google.com/document/d/12taMlvNPy3oJe8amdPj7wn_uwSssGF0UC_Z82I3cYUQ/edit#heading=h.qwiv98ort26c');
 
+
+});
+
+app.get('/templates', function(req, res) {
+  res.redirect('/home');
 });
 
 app.get('/userProfiles', authCheck, (req, res) => {
@@ -341,7 +346,7 @@ app.get('/userProfiles', authCheck, (req, res) => {
   })
 });
 
-app.get('/templates', authCheck, (req, res) => {
+app.get('/jsonTemplates', authCheck, (req, res) => {
   fetchDb.collection('templates').find().toArray((err, result) => {
     if (err) return console.log(err)
     // Renders userProfiles.ejs and loads tempaltes and user profile
@@ -378,7 +383,7 @@ app.get('/', (req, res) => {
   res.redirect('/home');
 });
 
-/*app.get('/review', authCheckAdmin, (req, res) => {
+app.get('/review', authCheckAdmin, (req, res) => {
   fetchDb.collection('templates').find().toArray((err, result) => {
     con.query(query, [1, 2, 3, 4], function(error, results, fields) {
 
@@ -386,11 +391,11 @@ app.get('/', (req, res) => {
       // Renders review.ejs and loads templates and user profile
       var userTemplates = [];
       for (var i = 0; i < result.length; i++) {
-        for (var m = 0; m < req.user.programs.length; m++) {
-          if (result[i].program == req.user.programs[m]) {
-            userTemplates.push(result[i]);
-          }
+
+        if (result[i].vetted == 'No' && result[i].publicStatus == 'true' && result[i].program == 'QW') {
+          userTemplates.push(result[i]);
         }
+
       }
       res.render('review.ejs', {
         templatesArr: userTemplates,
@@ -404,7 +409,7 @@ app.get('/', (req, res) => {
     });
   })
 });
-*/
+
 
 // Create, update, and delete routes for templates and knowledge base articles
 app.post('/createArticle', (req, res) => {
@@ -723,6 +728,7 @@ app.get('/auth/google',
   passport.authenticate('google', {
     scope: ['profile', 'email']
   }));
+
 
 app.get('/auth/google/callback',
   passport.authenticate('google'), // complete the authenticate using the google strategy
