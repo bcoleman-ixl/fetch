@@ -304,9 +304,9 @@ function handleClick(e) {
     var versionsRegex = RegExp(/versionDescription.*/);
     /**
      * If templateBody or copyFull is clicked, then execute the following:
-     * 1. P tags are removed and replaced with breaks. Divs are also replaced with breaks. TODO: Need better solution here.
+     * 1. P tags are removed and replaced with breaks. Divs are also replaced with breaks.
      * 2. Alert user that the template has been copied.
-     * 3. Copy by sending body to buildEmail(). Greeting, closing, signature, and othe components added. Then full e-mail is copied to the clipboard.
+     * 3. Copy by sending body to buildEmail(). Greeting, closing, signature, and other components added. Then full e-mail is copied to the clipboard.
      * 4. Updates the ranking of this template.
      */
     if (e.target !== e.currentTarget && (obj.eventId == 'templateBody' || obj.eventId == 'copyFull')) {
@@ -388,6 +388,7 @@ function handleClick(e) {
       e.stopPropagation();
     }
   }
+
 }
 
 function loadSnippetsModal(obj) {

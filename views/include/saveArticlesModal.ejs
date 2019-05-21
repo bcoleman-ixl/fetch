@@ -85,6 +85,13 @@
             <% } else { %>
             <input type='hidden' id='publicStatus' name='publicStatus' value='false'>
             <% } %>
+            <div class="form-group col-lg-6 col-md-6">
+              <select class='form-control' id='type' name='type' required='true'>
+                <option disabled selected value> --Select type-- </option>
+                <option>Process</option>
+                <option>Reference</option>
+              </select>
+            </div>
 
             <div class='form-group col-lg-6 col-md-6'>
               <input type='text' class='form-control' id='tags' name='tags' required='true' placeholder='Keywords' maxlength='45'>
