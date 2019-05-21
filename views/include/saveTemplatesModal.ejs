@@ -98,34 +98,70 @@
                 <option disabled selected value> --Select category-- </option>
                 <% for(var m = 0; m < user.programs.length; m++) { %>
                 <% if(user.programs[m] == 'IXL'){ %>
-                <option>Analytics/Reports</option>
-                <option>Audio</option>
+                <option>Accessibility</option>
+                <option>Analytics</option>
+                <option>Deletion</option>
                 <option>Diagnostic</option>
+                <option>Enhancement</option>
+                <option>Feature request</option>
+                <option>Internal</option>
                 <option>Network</option>
+                <option>Practice</option>
+                <option>Product</option>
+                <option>Recommendations</option>
+                <option>Reports</option>
                 <option>Roster</option>
-                <option>Skills</option>
                 <option>Signing In</option>
+                <option>Skills</option>
                 <option>SmartScore</option>
+                <option>Third Party</option>
+                <option>Technical Errors</option>
+                <option>Unsubscribe</option>
                 <option>Other</option>
                 <% } %>
-                <% if(user.programs[m] == 'IXLT'){ %>
-                <option>Analytics</option>
+                <% if(user.programs[m] == 'QB'){ %>
+                <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
+                <option>Activities</option>
+                <option>Assigning</option>
                 <option>Audio</option>
-                <option>Diagnostic</option>
-                <option>Network</option>
-                <option>Roster</option>
-                <option>Skills</option>
-                <option>Signing In</option>
-                <option>SmartScore</option>
-                <option>Other</option>
+                <option>Classes</option>
+                <option>Deletion</option>
+                <option>Exams</option>
+                <option>Grading</option>
+                <option>Internal</option>
+                <option>Logging in</option>
+                <option>Quizzes</option>
+                <option>Registration</option>
+                <option>Results</option>
+                <option>Rosters</option>
+                <option>Students</option>
+                <option>Third Party</option>
+                <option>Technical Errors</option>
+                <option>Unsubscribe</option>
                 <% } %>
                 <% if(user.programs[m] == 'QW'){ %>
                 <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
                 <option>Activities</option>
-                <option>Reports</option>
+                <option>Assigning</option>
                 <option>Classes</option>
+                <option>Copyright</option>
+                <option>Custom Exams</option>
+                <option>Deletion</option>
+                <option>Grading</option>
+                <option>Internal</option>
+                <option>Keys</option>
+                <option>Navy BMR</option>
+                <option>Logging in</option>
+                <option>Media</option>
+                <option>Product</option>
                 <option>Quizzes</option>
+                <option>Reports</option>
+                <option>Results</option>
+                <option>Rosters</option>
                 <option>Surveys</option>
+                <option>Technical Errors</option>
+                <option>Third Party</option>
+                <option>Unsubscribe</option>
                 <% } %>
                 <% if(user.programs[m] == 'CSE'){ %>
                 <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
@@ -142,13 +178,6 @@
                 <option>Other</option>
                 <option>Quotes</option>
                 <option>Refund</option>
-                <% } %>
-                <% if(user.programs[m] == 'QB'){ %>
-                <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
-                <option>Keys</option>
-                <option>Courses</option>
-                <option>Grading</option>
-                <option>Media</option>
                 <% } %>
                 <% if(user.programs[m] == 'AS'){ %>
                 <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
@@ -191,7 +220,6 @@
                 <% } %>
                 <% } %>
                 <% } %>
-
               </select>
             </div>
             <div class='form-group'>
