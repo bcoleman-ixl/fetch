@@ -248,6 +248,7 @@
          data: {
            name: $('#name').val().trim(),
            category: $('#category').val().trim(),
+           type: $('#type').val().trim(),
            program: $('#program').val().trim(),
            article: body,
            id: $('#id').val().trim(),
